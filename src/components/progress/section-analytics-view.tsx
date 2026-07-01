@@ -1,0 +1,163 @@
+"use client";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Card, CardBody, CardHeader } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty";
+import { DeltaBadge } from "@/components/ui/status";
+import { KVBarChart, KVLineChart } from "@/components/charts";
+import { TrophyIcon, AlertIcon, ProgressIcon, ArrowRightIcon } from "@/components/icons";
+import { useI18n } from "@/i18n/provider";
+import { fmtPercent } from "@/i18n/format";
+
+type Analytics = Awaited<ReturnType<typeof import("@/lib/data/analytics").getSectionAnalytics>>;
+type Roster = { id: number; name: string; admissionNo: string; roll: number | null }[];
+
+export function SectionAnalyticsView({
+  data, roster, subjectName,
+}: {
+  data: Analytics;
+  roster: Roster;
+  subjectName: string | null;
+}) {
+  const { t, locale } = useI18n();
+  const pathname = usePathname();
+  const params = useSearchParams();
+
+  const drillHref = (studentId: number) => {
+    const next = new URLSearchParams(params.toString());
+    next.set("studentId", String(studentId));
+    return `${pathname}?${next.toString()}`;
+  };
+
+  if (!data.subjectAverages.length) {
+    return <EmptyState icon={ProgressIcon} title={t("progress.noMarks")} hint={t("progress.pickStudent")} />;
+  }
+
+  const subjBars = data.subjectAverages.map((s) => ({ subject: s.subject, avg: s.avg }));
+  const compBars = data.sectionComparison.map((s) => ({ name: s.section_name, avg: Math.round(Number(s.avg_percent) * 10) / 10 }));
+
+  return (
+    <div className="space-y-5">
+      {/* Auto-generated conclusions */}
+      {data.conclusions.length > 0 && (
+        <Card className="border-gold-500/40 bg-gold-100/50">
+          <CardHeader eyebrow={t("progress.autoInsights")} title="" />
+          <CardBody className="pt-1">
+            <ul className="space-y-2">
+              {data.conclusions.map((c, i) => (
+                <li key={i} className="flex gap-2.5 text-[14px] text-ink-900">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-700" />
+                  {c}
+                </li>
+              ))}
+            </ul>
+          </CardBody>
+        </Card>
+      )}
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        {/* Subject vs subject */}
+        <Card>
+          <CardHeader eyebrow={t("progress.subjectCompare")} title={t("progress.average")} />
+          <CardBody className="pt-2">
+            <KVBarChart data={subjBars} xKey="subject" valueKey="avg" horizontal height={280} />
+          </CardBody>
+        </Card>
+
+        {/* Term trend */}
+        <Card>
+          <CardHeader eyebrow={t("progress.timeline")} title={t("progress.thisTerm")} />
+          <CardBody className="pt-2">
+            {data.termTrend.length > 1 ? (
+              <KVLineChart data={data.termTrend} xKey="term" lines={[{ key: "avg", name: t("progress.average"), color: "#E09E3E" }]} height={280} area />
+            ) : (
+              <div className="flex h-[280px] items-center justify-center text-[14px] text-ink-500">{t("common.noData")}</div>
+            )}
+          </CardBody>
+        </Card>
+
+        {/* Distribution */}
+        <Card>
+          <CardHeader eyebrow={t("progress.distribution")} title={subjectName ?? t("common.all")} />
+          <CardBody className="pt-2">
+            <KVBarChart data={data.distribution} xKey="band" valueKey="n" colorByBand showValues
+              maxDomain={Math.max(5, ...data.distribution.map((d) => d.n)) + 2} height={280} />
+          </CardBody>
+        </Card>
+
+        {/* Section comparison (only when a subject is chosen) */}
+        <Card>
+          <CardHeader eyebrow={t("progress.sectionCompare")} title={subjectName ?? "—"} />
+          <CardBody className="pt-2">
+            {compBars.length ? (
+              <KVBarChart data={compBars} xKey="name" valueKey="avg" horizontal height={280} />
+            ) : (
+              <div className="flex h-[280px] items-center justify-center px-6 text-center text-[14px] text-ink-500">
+                {t("progress.subjectCompare")} — {t("common.filter").toLowerCase()} {t("common.subject").toLowerCase()}.
+              </div>
+            )}
+          </CardBody>
+        </Card>
+      </div>
+
+      {/* Top performers & needs support */}
+      <div className="grid gap-5 lg:grid-cols-2">
+        <Card>
+          <CardHeader eyebrow={t("progress.topPerformers")} title="" action={<TrophyIcon size={18} className="text-gold-700" />} />
+          <CardBody className="pt-1">
+            <ol className="space-y-1.5">
+              {data.topPerformers.map((s, i) => (
+                <li key={i} className="flex items-center gap-3 rounded-sm px-2 py-1.5 odd:bg-panel/50">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gold-100 text-[12px] font-bold text-gold-700 tabular">{i + 1}</span>
+                  <span className="flex-1 truncate text-[14px] text-ink-900">{s.student_name}</span>
+                  <span className="text-[14px] font-semibold tabular text-ink-900">{fmtPercent(locale, Number(s.avg_percent), 1)}</span>
+                </li>
+              ))}
+            </ol>
+          </CardBody>
+        </Card>
+
+        <Card className="border-watch/30">
+          <CardHeader eyebrow={t("progress.needsSupport")} title="" action={<AlertIcon size={18} className="text-watch" />} />
+          <CardBody className="pt-1">
+            <p className="mb-2 text-[12px] text-muted">{t("progress.needsSupportNote")}</p>
+            {data.needsSupport.length ? (
+              <ul className="space-y-2">
+                {data.needsSupport.slice(0, 6).map((s, i) => (
+                  <li key={i} className="rounded-sm border border-hair bg-surface p-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[14px] font-semibold text-ink-900">{s.student_name}</span>
+                      <span className="flex items-center gap-2">
+                        <span className="text-[13px] tabular text-ink-700">{fmtPercent(locale, Number(s.avg_percent), 0)}</span>
+                        <DeltaBadge value={Math.round(Number(s.recent_trend))} />
+                      </span>
+                    </div>
+                    <div className="mt-0.5 text-[12px] text-ink-500">{s.reason}</div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="py-2 text-[14px] text-ink-500">{t("common.noData")}</p>
+            )}
+          </CardBody>
+        </Card>
+      </div>
+
+      {/* Roster with drill-down to each student's record */}
+      <Card>
+        <CardHeader eyebrow={t("common.students")} title={`${roster.length}`} />
+        <CardBody className="pt-2">
+          <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+            {roster.map((s) => (
+              <Link key={s.id} href={drillHref(s.id)} className="group flex items-center gap-2.5 rounded-sm border border-hair bg-surface px-3 py-2 transition-colors hover:border-gold-500 hover:bg-gold-100">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-panel text-[11px] font-semibold text-ink-700 tabular">{s.roll ?? "–"}</span>
+                <span className="flex-1 truncate text-[13px] font-medium text-ink-900">{s.name}</span>
+                <ArrowRightIcon size={15} className="text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-gold-700" />
+              </Link>
+            ))}
+          </div>
+        </CardBody>
+      </Card>
+    </div>
+  );
+}

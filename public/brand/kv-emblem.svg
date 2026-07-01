@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="KV emblem placeholder">
+  <!-- PLACEHOLDER emblem slot. Replace this file with the official Kendriya
+       Vidyalaya Sangathan emblem (SVG/PNG). Typographic monogram only — no
+       invented graphical logo (brief §5.1). -->
+  <rect x="2" y="2" width="92" height="92" rx="16" fill="#FBF3E2" stroke="#E09E3E" stroke-width="2"/>
+  <text x="48" y="59" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="40" font-weight="700" letter-spacing="-1" fill="#B5761B">KV</text>
+</svg>
