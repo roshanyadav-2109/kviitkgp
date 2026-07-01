@@ -15,11 +15,11 @@ export type NavItem = {
 
 const ALL: NavRole[] = ["student", "guardian", "subject_teacher", "class_teacher", "principal", "office"];
 const STAFF: NavRole[] = ["subject_teacher", "class_teacher", "principal", "office"];
-const OWNERS: NavRole[] = ["student", "guardian"];
 
 export const NAV: NavItem[] = [
   { href: "/", icon: DashboardIcon, labelKey: "nav.dashboard", roles: ALL },
-  { href: "/progress", icon: ProgressIcon, labelKey: "nav.myProgress", roles: OWNERS },
+  { href: "/progress", icon: ProgressIcon, labelKey: "nav.myProgress", roles: ["student"] },
+  { href: "/progress", icon: ProgressIcon, labelKey: "nav.childProgress", roles: ["guardian"] },
   { href: "/progress", icon: ProgressIcon, labelKey: "nav.progress", roles: STAFF },
   { href: "/attendance", icon: AttendanceIcon, labelKey: "nav.attendance", roles: ALL },
   { href: "/marks", icon: MarksIcon, labelKey: "nav.marks", roles: ["subject_teacher", "class_teacher"] },

@@ -38,9 +38,11 @@ export default function LoginPage() {
       {/* Brand panel */}
       <aside className="relative hidden flex-col justify-between bg-ink-900 p-10 text-gold-100 lg:flex">
         <div className="flex items-center gap-3">
-          <KVEmblem size={44} />
+          <span className="flex h-12 w-12 items-center justify-center rounded-md bg-gold-100 p-1">
+            <KVEmblem size={40} />
+          </span>
           <div className="leading-tight">
-            <div className="text-[15px] font-bold">Kendriya Vidyalaya</div>
+            <div className="text-[15px] font-bold">Kendriya Vidyalaya No 1</div>
             <div className="text-[12px] text-gold-300">IIT Kharagpur</div>
           </div>
         </div>
@@ -65,7 +67,7 @@ export default function LoginPage() {
           <div className="mb-8 flex items-center justify-between lg:hidden">
             <div className="flex items-center gap-2.5">
               <KVEmblem size={36} />
-              <span className="text-[14px] font-bold text-ink-900">KV IIT Kharagpur</span>
+              <span className="text-[14px] font-bold text-ink-900">Kendriya Vidyalaya No 1, IIT Kharagpur</span>
             </div>
             <LocaleSwitcher />
           </div>

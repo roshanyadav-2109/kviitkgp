@@ -35,6 +35,7 @@ const bn: Messages = {
     dashboard: "ড্যাশবোর্ড",
     progress: "অগ্রগতি ও বিশ্লেষণ",
     myProgress: "আমার অগ্রগতি",
+    childProgress: "সন্তানের অগ্রগতি",
     attendance: "উপস্থিতি",
     marks: "নম্বর",
     students: "ছাত্র",

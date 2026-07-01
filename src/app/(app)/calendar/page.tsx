@@ -15,17 +15,8 @@ export default async function CalendarPage() {
   const { data: events } = await supabase.from("event").select("title, event_type, start_date");
   for (const e of events ?? []) items.push({ date: e.start_date, kind: e.event_type, label: e.title });
 
-  if (session.role === "student" || session.role === "guardian") {
-    // Owner: their own assessment marks on the day they were assessed.
-    const { data: marks } = await supabase
-      .from("v_mark_detail")
-      .select("assessed_on, subject_code, percent, is_numeric, marks_obtained");
-    for (const m of marks ?? []) {
-      if (!m.is_numeric || m.marks_obtained == null || !m.assessed_on) continue;
-      items.push({ date: m.assessed_on, kind: "mark", label: `${m.subject_code} ${m.percent}%` });
-    }
-  } else {
-    // Staff: assessment windows for their sections (deduped by date + name).
+  // Staff also see assessment/exam windows for their sections (deduped).
+  if (session.role !== "student" && session.role !== "guardian") {
     const { data: assess } = await supabase.from("assessment").select("assessed_on, name");
     const seen = new Set<string>();
     for (const a of assess ?? []) {

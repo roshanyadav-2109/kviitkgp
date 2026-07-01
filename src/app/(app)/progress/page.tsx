@@ -35,7 +35,7 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
     ]);
     return (
       <div>
-        <PageHeader eyebrow={t("nav.myProgress")} title={t("progress.title")} description={data.student?.admission_no ? `${data.student.full_name} · ${data.student.admission_no}` : undefined} />
+        <PageHeader eyebrow={t(session.role === "guardian" ? "nav.childProgress" : "nav.myProgress")} title={t("progress.title")} description={data.student?.admission_no ? `${data.student.full_name} · ${data.student.admission_no}` : undefined} />
         {session.role === "guardian" && children.length > 1 && (
           <div className="mb-5 flex flex-wrap gap-2">
             {children.map((c) => {

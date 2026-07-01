@@ -34,6 +34,7 @@ const en = {
     dashboard: "Dashboard",
     progress: "Progress & Analytics",
     myProgress: "My Progress",
+    childProgress: "Child's Progress",
     attendance: "Attendance",
     marks: "Marks",
     students: "Students",

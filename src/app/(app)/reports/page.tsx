@@ -54,7 +54,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: SP }
             <div className="mb-4 flex items-center gap-3 border-b border-hair pb-4">
               <KVEmblem size={44} />
               <div className="flex-1">
-                <div className="t-h3 text-ink-900">Kendriya Vidyalaya IIT Kharagpur</div>
+                <div className="t-h3 text-ink-900">Kendriya Vidyalaya No 1, IIT Kharagpur</div>
                 <div className="text-[13px] text-ink-500">{t("report.title")} · {fmtMonth(locale, `${month}-01`)}</div>
               </div>
               <div className="text-right">

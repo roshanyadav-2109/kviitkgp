@@ -35,6 +35,7 @@ const hi: Messages = {
     dashboard: "डैशबोर्ड",
     progress: "प्रगति एवं विश्लेषण",
     myProgress: "मेरी प्रगति",
+    childProgress: "बच्चे की प्रगति",
     attendance: "उपस्थिति",
     marks: "अंक",
     students: "छात्र",

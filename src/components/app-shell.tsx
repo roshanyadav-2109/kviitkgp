@@ -59,10 +59,10 @@ export function AppShell({
       {/* Desktop sidebar */}
       <aside className="sticky top-0 hidden h-dvh flex-col border-r border-hair bg-surface lg:flex">
         <div className="flex h-16 items-center gap-2.5 border-b border-hair px-4">
-          <KVEmblem size={34} />
+          <KVEmblem size={36} />
           <div className="leading-tight">
-            <div className="text-[13px] font-bold text-ink-900">KV IIT Kharagpur</div>
-            <div className="text-[11px] text-muted">Student Portal</div>
+            <div className="text-[13px] font-bold text-ink-900">Kendriya Vidyalaya No 1</div>
+            <div className="text-[11px] text-muted">IIT Kharagpur</div>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -79,7 +79,7 @@ export function AppShell({
             <div className="flex h-16 items-center justify-between border-b border-hair px-4">
               <div className="flex items-center gap-2.5">
                 <KVEmblem size={32} />
-                <span className="text-[13px] font-bold text-ink-900">KV IIT KGP</span>
+                <span className="text-[13px] font-bold text-ink-900">Kendriya Vidyalaya No 1</span>
               </div>
               <button aria-label={t("common.close")} onClick={() => setOpen(false)} className="rounded-sm p-1.5 text-ink-500 hover:bg-panel">
                 <CloseIcon size={20} />

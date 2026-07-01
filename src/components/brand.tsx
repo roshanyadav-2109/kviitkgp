@@ -2,16 +2,15 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-// KV emblem SLOT. Per brief §5.1 we do NOT invent or generate a school logo.
-// Drop the official KV emblem at /public/brand/kv-emblem.svg (or .png) and it
-// renders automatically; until then a neutral typographic monogram stands in.
+// Official Kendriya Vidyalaya Sangathan emblem (public/brand/kv-logo.png).
+// Falls back to a typographic monogram if the asset is missing.
 export function KVEmblem({ size = 40, className }: { size?: number; className?: string }) {
   const [failed, setFailed] = useState(false);
   if (!failed) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src="/brand/kv-emblem.svg"
+        src="/brand/kv-logo.png"
         alt="Kendriya Vidyalaya emblem"
         width={size}
         height={size}
@@ -42,7 +41,7 @@ export function BrandLockup({ subtitle }: { subtitle?: string }) {
     <div className="flex items-center gap-3">
       <KVEmblem size={40} />
       <div className="leading-tight">
-        <div className="text-[15px] font-bold text-ink-900">Kendriya Vidyalaya</div>
+        <div className="text-[15px] font-bold text-ink-900">Kendriya Vidyalaya No 1</div>
         <div className="text-[12px] text-ink-500">{subtitle ?? "IIT Kharagpur"}</div>
       </div>
     </div>
