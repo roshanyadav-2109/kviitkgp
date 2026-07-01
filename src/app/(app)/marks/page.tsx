@@ -1,4 +1,5 @@
 import { getT } from "@/i18n/server";
+import { getSession } from "@/lib/session";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty";
 import { MarksScopeBar } from "@/components/marks/marks-scope-bar";
@@ -13,6 +14,19 @@ const num = (v: string | string[] | undefined) => (typeof v === "string" && v ? 
 export default async function MarksPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
   const { t } = await getT();
+  const session = await getSession();
+
+  // Principal / office do not enter marks (no teaching entry).
+  if (session?.isAdminScope) {
+    return (
+      <div>
+        <PageHeader title={t("marks.title")} />
+        <EmptyState icon={MarksIcon} title="Marks entry is for teachers"
+          hint="Principal and office can view analytics and attendance, but marks are entered by subject and class teachers." />
+      </div>
+    );
+  }
+
   const scope = await getStaffScope();
 
   if (!scope.sections.length || !scope.subjects.length || !scope.currentYearId) {

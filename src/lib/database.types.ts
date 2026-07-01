@@ -1594,6 +1594,18 @@ export type Database = {
           weak_subjects: string
         }[]
       }
+      needs_support_class: {
+        Args: { p_class: number; p_threshold?: number; p_year: number }
+        Returns: {
+          avg_percent: number
+          reason: string
+          recent_trend: number
+          section_name: string
+          student_id: number
+          student_name: string
+          weak_subjects: string
+        }[]
+      }
       refresh_slippage_flags: {
         Args: { p_threshold?: number; p_window?: number }
         Returns: number
@@ -1631,6 +1643,21 @@ export type Database = {
         Returns: {
           avg_percent: number
           n_marks: number
+          student_id: number
+          student_name: string
+        }[]
+      }
+      top_performers_class: {
+        Args: {
+          p_class: number
+          p_limit?: number
+          p_subject?: number
+          p_year: number
+        }
+        Returns: {
+          avg_percent: number
+          n_marks: number
+          section_name: string
           student_id: number
           student_name: string
         }[]

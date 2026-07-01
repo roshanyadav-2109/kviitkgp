@@ -6,9 +6,10 @@ import { EmptyState } from "@/components/ui/empty";
 import { FilterBar } from "@/components/progress/filter-bar";
 import { StudentProgressView } from "@/components/progress/student-progress-view";
 import { SectionAnalyticsView } from "@/components/progress/section-analytics-view";
+import { ClassAnalyticsView } from "@/components/progress/class-analytics-view";
 import { ProgressIcon, ArrowRightIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
-import { getSectionAnalytics, getStudentProgress, getStudentStanding, getMyChildren } from "@/lib/data/analytics";
+import { getSectionAnalytics, getClassAnalytics, getStudentProgress, getStudentStanding, getMyChildren } from "@/lib/data/analytics";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 const num = (v: string | string[] | undefined) => (typeof v === "string" && v ? Number(v) : null);
@@ -65,19 +66,38 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
   }
 
   const yearId = num(sp.year) ?? scope.currentYearId;
-  const section = scope.sections.find((s) => s.id === num(sp.section)) ?? scope.sections[0];
   const subjectId = num(sp.subject);
   const subjectName = subjectId ? scope.subjects.find((s) => s.id === subjectId)?.name ?? null : null;
+
+  const classId = num(sp.class);
+  const level: "class" | "section" = classId ? "class" : "section";
+  const section = scope.sections.find((s) => s.id === num(sp.section)) ?? scope.sections[0];
+  const cls = classId ? (scope.classes.find((c) => c.id === classId) ?? scope.classes[0]) : null;
+  const scopeId = level === "class" && cls ? cls.id : section.id;
+
+  const filters = (
+    <FilterBar years={scope.years} classes={scope.classes} sectionMeta={scope.sectionMeta} subjects={scope.subjects}
+      yearId={yearId} level={level} scopeId={scopeId} subjectId={subjectId} />
+  );
+
+  // Whole-class view: aggregate all sections + section-vs-section comparison
+  if (level === "class" && cls) {
+    const sectionIds = scope.sections.filter((s) => s.class_id === cls.id).map((s) => s.id);
+    const data = await getClassAnalytics(cls.id, sectionIds, yearId, subjectId);
+    return (
+      <div>
+        <PageHeader eyebrow={`${t("common.class")} ${cls.name}`} title={t("progress.title")}
+          description={`${sectionIds.length} ${t("common.section").toLowerCase()}(s)`} />
+        {filters}
+        <ClassAnalyticsView data={data} subjectName={subjectName} />
+      </div>
+    );
+  }
 
   const backQs = new URLSearchParams();
   backQs.set("year", String(yearId));
   backQs.set("section", String(section.id));
   if (subjectId) backQs.set("subject", String(subjectId));
-
-  const filters = (
-    <FilterBar years={scope.years} sectionMeta={scope.sectionMeta}
-      yearId={yearId} sectionId={section.id} subjectId={subjectId} />
-  );
 
   // Drill-down into one student's record
   const studentId = num(sp.studentId);

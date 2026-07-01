@@ -65,6 +65,62 @@ export async function getSectionAnalytics(
 }
 
 // ---------------------------------------------------------------------------
+// Whole-class analytics: aggregate across all sections of a class, plus
+// section-vs-section comparison. RLS scopes rows to what the caller may see.
+// ---------------------------------------------------------------------------
+export async function getClassAnalytics(
+  classId: number, sectionIds: number[], yearId: number, subjectId: number | null,
+) {
+  const supabase = await createClient();
+  const [{ data: summary }, { data: dist }, top, needs, comparison] = await Promise.all([
+    supabase.from("v_section_subject_summary")
+      .select("section_id, section_name, subject_id, subject_name, term, avg_percent")
+      .eq("class_id", classId).eq("academic_year_id", yearId),
+    supabase.from("v_section_distribution")
+      .select("band, n, subject_id").in("section_id", sectionIds).eq("academic_year_id", yearId),
+    supabase.rpc("top_performers_class", { p_class: classId, p_year: yearId, p_subject: subjectId ?? undefined, p_limit: 6 }),
+    supabase.rpc("needs_support_class", { p_class: classId, p_year: yearId, p_threshold: 40 }),
+    subjectId ? supabase.rpc("section_comparison", { p_class: classId, p_subject: subjectId, p_year: yearId }) : Promise.resolve({ data: [] }),
+  ]);
+
+  // subject vs subject across the whole class
+  const subjAgg = new Map<string, { sum: number; n: number }>();
+  const secAgg = new Map<string, { sum: number; n: number }>();
+  for (const r of summary ?? []) {
+    const s = subjAgg.get(r.subject_name!) ?? { sum: 0, n: 0 };
+    s.sum += Number(r.avg_percent); s.n += 1; subjAgg.set(r.subject_name!, s);
+    const sc = secAgg.get(r.section_name!) ?? { sum: 0, n: 0 };
+    sc.sum += Number(r.avg_percent); sc.n += 1; secAgg.set(r.section_name!, sc);
+  }
+  const subjectAverages = [...subjAgg.entries()].map(([subject, v]) => ({ subject, avg: Math.round((v.sum / v.n) * 10) / 10 })).sort((a, b) => b.avg - a.avg);
+
+  // section comparison: use the subject RPC when a subject is chosen, else overall
+  const sectionComparison = subjectId
+    ? (comparison.data ?? []).map((c: { section_name: string; avg_percent: number }) => ({ name: c.section_name, avg: Math.round(Number(c.avg_percent) * 10) / 10 }))
+    : [...secAgg.entries()].map(([name, v]) => ({ name, avg: Math.round((v.sum / v.n) * 10) / 10 })).sort((a, b) => a.name.localeCompare(b.name));
+
+  const bands = ["A1", "A2", "B1", "B2", "C1", "C2", "D", "E"];
+  const bandAgg = new Map<string, number>();
+  for (const r of dist ?? []) { if (subjectId && r.subject_id !== subjectId) continue; bandAgg.set(r.band!, (bandAgg.get(r.band!) ?? 0) + Number(r.n)); }
+  const distribution = bands.map((band) => ({ band, n: bandAgg.get(band) ?? 0 }));
+
+  const topPerformers = (top.data ?? []) as Array<{ student_name: string; section_name: string; avg_percent: number }>;
+  const needsSupport = (needs.data ?? []) as Array<{ student_name: string; section_name: string; avg_percent: number; recent_trend: number; reason: string }>;
+
+  // plain-language class conclusions from the computed metrics
+  const conclusions: string[] = [];
+  if (subjectAverages.length) conclusions.push(`${subjectAverages[0].subject} is the class's strongest subject, averaging ${subjectAverages[0].avg}%.`);
+  if (sectionComparison.length > 1) {
+    const best = [...sectionComparison].sort((a, b) => b.avg - a.avg)[0];
+    const worst = [...sectionComparison].sort((a, b) => a.avg - b.avg)[0];
+    conclusions.push(`Section ${best.name} leads (${best.avg}%) while ${worst.name} trails (${worst.avg}%)${subjectId ? " in this subject" : " overall"}.`);
+  }
+  if (needsSupport.length) conclusions.push(`${needsSupport.length} student(s) across the class need support — flag before the next exam.`);
+
+  return { subjectAverages, sectionComparison, distribution, topPerformers, needsSupport, conclusions };
+}
+
+// ---------------------------------------------------------------------------
 // Per-student continuous progress record (owner or staff-in-scope).
 // ---------------------------------------------------------------------------
 type TrendRow = {
