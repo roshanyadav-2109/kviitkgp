@@ -8,10 +8,11 @@ import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { StatusPill } from "@/components/ui/status";
 import { ScopeBar } from "@/components/scope-bar";
 import { AttendanceBoard } from "@/components/attendance/attendance-board";
+import { AttendanceOverview } from "@/components/attendance/attendance-overview";
 import { AttendanceIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
 import { getMyChildren } from "@/lib/data/analytics";
-import { getDateAttendance, getSectionAttendanceSummary, getStudentAttendance, getLatestAttendanceDate } from "@/lib/data/attendance";
+import { getDateAttendance, getSectionAttendanceSummary, getStudentAttendance, getLatestAttendanceDate, getLatestAttendanceDateAll, getAttendanceOverview } from "@/lib/data/attendance";
 import type { AttStatus } from "@/app/(app)/attendance/actions";
 
 import { numParam, strParam } from "@/lib/utils";
@@ -74,7 +75,21 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
     );
   }
 
-  // ---- Staff ----
+  // ---- Principal / Office: aggregate attendance (no per-pupil board) ----
+  if (session.isAdminScope) {
+    const year = await getCurrentYear();
+    if (!year) return (<div><PageHeader title={t("attendance.title")} /><EmptyState icon={AttendanceIcon} title={t("common.noData")} /></div>);
+    const date = str(sp.date) ?? (await getLatestAttendanceDateAll()) ?? new Date().toISOString().slice(0, 10);
+    const overview = await getAttendanceOverview(date, year.id);
+    return (
+      <div>
+        <PageHeader title={t("attendance.title")} description={t("x.attendanceOverview")} />
+        <AttendanceOverview overview={overview} date={date} />
+      </div>
+    );
+  }
+
+  // ---- Teachers: mark (own class) or read-only (subject sections) ----
   const scope = await getStaffScope();
   if (!scope.sections.length || !scope.currentYearId) {
     return (<div><PageHeader title={t("attendance.title")} /><EmptyState icon={AttendanceIcon} title={t("common.noData")} hint={t("x.attNoSections")} /></div>);

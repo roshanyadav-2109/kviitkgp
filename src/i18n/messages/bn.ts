@@ -232,6 +232,10 @@ const bn: Messages = {
     reportStudent: "ছাত্র প্রতিবেদন",
     reportPickStudent: "একজন ছাত্র বেছে নিন",
     download: "ডাউনলোড / প্রিন্ট",
+    attendanceOverview: "উপস্থিতি সারসংক্ষেপ",
+    schoolWide: "বিদ্যালয়-ব্যাপী",
+    classWise: "শ্রেণিভিত্তিক",
+    attended: "উপস্থিত",
   },
 };
 export default bn;

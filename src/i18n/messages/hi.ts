@@ -232,6 +232,10 @@ const hi: Messages = {
     reportStudent: "छात्र रिपोर्ट",
     reportPickStudent: "एक छात्र चुनें",
     download: "डाउनलोड / प्रिंट",
+    attendanceOverview: "उपस्थिति सारांश",
+    schoolWide: "विद्यालय-व्यापी",
+    classWise: "कक्षावार",
+    attended: "उपस्थित",
   },
 };
 export default hi;

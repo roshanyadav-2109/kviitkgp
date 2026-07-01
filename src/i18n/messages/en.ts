@@ -231,6 +231,10 @@ const en = {
     reportStudent: "Student report",
     reportPickStudent: "Select a student",
     download: "Download / Print",
+    attendanceOverview: "Attendance overview",
+    schoolWide: "School-wide",
+    classWise: "Class-wise",
+    attended: "attended",
   },
 } as const;
 export default en;

@@ -66,3 +66,37 @@ export async function getLatestAttendanceDate(sectionId: number) {
     .limit(1);
   return data?.[0]?.on_date ?? null;
 }
+
+// Most recent day with any attendance (admin overview default).
+export async function getLatestAttendanceDateAll() {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("attendance_record")
+    .select("on_date")
+    .order("on_date", { ascending: false })
+    .limit(1);
+  return data?.[0]?.on_date ?? null;
+}
+
+// Aggregate attendance for a date: students attended per section, rolled up to
+// class-wise and school-wide totals (principal/office overview).
+export async function getAttendanceOverview(date: string, yearId: number) {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc("attendance_overview", { p_date: date, p_year: yearId });
+  const rows = (data ?? []) as Array<{ class_id: number; class_name: string; class_level: number; section_id: number; section_name: string; present: number; total: number }>;
+
+  const classes = new Map<number, { id: number; name: string; level: number; present: number; total: number; sections: { name: string; present: number; total: number; pct: number | null }[] }>();
+  let schoolPresent = 0, schoolTotal = 0;
+  for (const r of rows) {
+    const p = Number(r.present), tot = Number(r.total);
+    const c = classes.get(r.class_id) ?? { id: r.class_id, name: r.class_name, level: r.class_level, present: 0, total: 0, sections: [] };
+    c.present += p; c.total += tot;
+    c.sections.push({ name: r.section_name, present: p, total: tot, pct: tot ? Math.round((p / tot) * 1000) / 10 : null });
+    classes.set(r.class_id, c);
+    schoolPresent += p; schoolTotal += tot;
+  }
+  return {
+    school: { present: schoolPresent, total: schoolTotal, pct: schoolTotal ? Math.round((schoolPresent / schoolTotal) * 1000) / 10 : null },
+    classes: [...classes.values()].sort((a, b) => a.level - b.level).map((c) => ({ ...c, pct: c.total ? Math.round((c.present / c.total) * 1000) / 10 : null })),
+  };
+}

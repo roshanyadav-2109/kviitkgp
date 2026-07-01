@@ -1574,6 +1574,18 @@ export type Database = {
       }
     }
     Functions: {
+      attendance_overview: {
+        Args: { p_date: string; p_year: number }
+        Returns: {
+          class_id: number
+          class_level: number
+          class_name: string
+          present: number
+          section_id: number
+          section_name: string
+          total: number
+        }[]
+      }
       auto_conclusions: {
         Args: { p_section: number; p_year: number }
         Returns: string[]
