@@ -36,6 +36,8 @@ import {
   Notebook01Icon,
   TestTube01Icon,
   CheckmarkCircle01Icon,
+  Add01Icon,
+  ArrowUpDoubleIcon,
 } from "@hugeicons/core-free-icons";
 
 export type IconProps = { className?: string; size?: number; strokeWidth?: number };
@@ -82,3 +84,5 @@ export const UserIconC = make(UserIcon);
 export const NotebookIcon = make(Notebook01Icon);
 export const TestTubeIcon = make(TestTube01Icon);
 export const CheckIcon = make(CheckmarkCircle01Icon);
+export const PlusIcon = make(Add01Icon);
+export const PromotionIcon = make(ArrowUpDoubleIcon);

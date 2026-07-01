@@ -1030,6 +1030,85 @@ export type Database = {
           },
         ]
       }
+      promotion: {
+        Row: {
+          created_at: string
+          decided_by: number | null
+          from_section_id: number | null
+          from_year_id: number | null
+          id: number
+          outcome: string
+          student_id: number
+          to_section_id: number | null
+          to_year_id: number
+        }
+        Insert: {
+          created_at?: string
+          decided_by?: number | null
+          from_section_id?: number | null
+          from_year_id?: number | null
+          id?: never
+          outcome: string
+          student_id: number
+          to_section_id?: number | null
+          to_year_id: number
+        }
+        Update: {
+          created_at?: string
+          decided_by?: number | null
+          from_section_id?: number | null
+          from_year_id?: number | null
+          id?: never
+          outcome?: string
+          student_id?: number
+          to_section_id?: number | null
+          to_year_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promotion_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promotion_from_section_id_fkey"
+            columns: ["from_section_id"]
+            isOneToOne: false
+            referencedRelation: "section"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promotion_from_year_id_fkey"
+            columns: ["from_year_id"]
+            isOneToOne: false
+            referencedRelation: "academic_year"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promotion_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "student"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promotion_to_section_id_fkey"
+            columns: ["to_section_id"]
+            isOneToOne: false
+            referencedRelation: "section"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promotion_to_year_id_fkey"
+            columns: ["to_year_id"]
+            isOneToOne: false
+            referencedRelation: "academic_year"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       school: {
         Row: {
           address: string | null
@@ -1192,30 +1271,39 @@ export type Database = {
           admission_no: string
           created_at: string
           dob: string | null
+          exit_remark: string | null
           full_name: string
           gender: Database["public"]["Enums"]["gender_type"] | null
           id: number
+          left_on: string | null
           photo_path: string | null
+          status: string
           updated_at: string
         }
         Insert: {
           admission_no: string
           created_at?: string
           dob?: string | null
+          exit_remark?: string | null
           full_name: string
           gender?: Database["public"]["Enums"]["gender_type"] | null
           id?: never
+          left_on?: string | null
           photo_path?: string | null
+          status?: string
           updated_at?: string
         }
         Update: {
           admission_no?: string
           created_at?: string
           dob?: string | null
+          exit_remark?: string | null
           full_name?: string
           gender?: Database["public"]["Enums"]["gender_type"] | null
           id?: never
+          left_on?: string | null
           photo_path?: string | null
+          status?: string
           updated_at?: string
         }
         Relationships: []
@@ -1622,6 +1710,23 @@ export type Database = {
           students: number
         }[]
       }
+      commit_promotion: {
+        Args: { p_from_year: number; p_rows: Json; p_to_year: number }
+        Returns: number
+      }
+      create_class_exam: {
+        Args: {
+          p_class: number
+          p_date: string
+          p_max: number
+          p_name: string
+          p_subject: number
+          p_term: number
+          p_type?: string
+          p_year: number
+        }
+        Returns: number
+      }
       grade_band: { Args: { pct: number }; Returns: string }
       needs_support: {
         Args: { p_section: number; p_threshold?: number; p_year: number }
@@ -1644,6 +1749,42 @@ export type Database = {
           student_id: number
           student_name: string
           weak_subjects: string
+        }[]
+      }
+      promotable_classes: {
+        Args: { p_from_year: number; p_to_year: number }
+        Returns: {
+          class_id: number
+          class_level: number
+          class_name: string
+          promoted: number
+          students: number
+        }[]
+      }
+      promotion_roster: {
+        Args: { p_class: number; p_from_year: number; p_to_year: number }
+        Returns: {
+          full_name: string
+          outcome: string
+          roll_no: number
+          section_id: number
+          section_name: string
+          status: string
+          student_id: number
+          to_section_id: number
+        }[]
+      }
+      promotion_summary: {
+        Args: { p_to_year: number }
+        Returns: {
+          class_id: number
+          class_level: number
+          class_name: string
+          graduated: number
+          promoted: number
+          retained: number
+          total: number
+          transferred: number
         }[]
       }
       refresh_slippage_flags: {

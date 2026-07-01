@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty";
 import { MarksScopeBar } from "@/components/marks/marks-scope-bar";
 import { MarksEntry } from "@/components/marks/marks-entry";
+import { NewExamButton } from "@/components/marks/new-exam-button";
 import { MarksIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
 import { getAssessments, getAssessmentMarks } from "@/lib/data/marks";
@@ -56,6 +57,7 @@ export default async function MarksPage({ searchParams }: { searchParams: SP }) 
       <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("marks.title")} />
       <MarksScopeBar years={scope.years} sectionMeta={scope.sectionMeta} assessments={assessments}
         yearId={yearId} sectionId={section.id} subjectId={subjectId} assessmentId={assessmentId} />
+      {subjectId ? <NewExamButton classId={section.class_id} subjectId={subjectId} yearId={yearId} className={section.class_name} /> : null}
       {assessment ? (
         <MarksEntry key={assessment.id} assessmentId={assessment.id} assessmentName={assessment.name} maxMarks={assessment.max_marks} roster={roster} initial={initial} published={assessment.is_published} />
       ) : (
