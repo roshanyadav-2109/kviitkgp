@@ -78,20 +78,21 @@ export async function getLatestAttendanceDateAll() {
   return data?.[0]?.on_date ?? null;
 }
 
-// Aggregate attendance for a date: students attended per section, rolled up to
-// class-wise and school-wide totals (principal/office overview).
-export async function getAttendanceOverview(date: string, yearId: number) {
+// Aggregate attendance over a date range: students attended per section, rolled
+// up to class-wise and school-wide totals (principal/office overview).
+// Day view passes start==end; month view passes the month bounds.
+export async function getAttendanceOverview(start: string, end: string, yearId: number) {
   const supabase = await createClient();
-  const { data } = await supabase.rpc("attendance_overview", { p_date: date, p_year: yearId });
+  const { data } = await supabase.rpc("attendance_overview_range", { p_start: start, p_end: end, p_year: yearId });
   const rows = (data ?? []) as Array<{ class_id: number; class_name: string; class_level: number; section_id: number; section_name: string; present: number; total: number }>;
 
-  const classes = new Map<number, { id: number; name: string; level: number; present: number; total: number; sections: { name: string; present: number; total: number; pct: number | null }[] }>();
+  const classes = new Map<number, { id: number; name: string; level: number; present: number; total: number; sections: { id: number; name: string; present: number; total: number; pct: number | null }[] }>();
   let schoolPresent = 0, schoolTotal = 0;
   for (const r of rows) {
     const p = Number(r.present), tot = Number(r.total);
     const c = classes.get(r.class_id) ?? { id: r.class_id, name: r.class_name, level: r.class_level, present: 0, total: 0, sections: [] };
     c.present += p; c.total += tot;
-    c.sections.push({ name: r.section_name, present: p, total: tot, pct: tot ? Math.round((p / tot) * 1000) / 10 : null });
+    c.sections.push({ id: r.section_id, name: r.section_name, present: p, total: tot, pct: tot ? Math.round((p / tot) * 1000) / 10 : null });
     classes.set(r.class_id, c);
     schoolPresent += p; schoolTotal += tot;
   }
@@ -99,4 +100,18 @@ export async function getAttendanceOverview(date: string, yearId: number) {
     school: { present: schoolPresent, total: schoolTotal, pct: schoolTotal ? Math.round((schoolPresent / schoolTotal) * 1000) / 10 : null },
     classes: [...classes.values()].sort((a, b) => a.level - b.level).map((c) => ({ ...c, pct: c.total ? Math.round((c.present / c.total) * 1000) / 10 : null })),
   };
+}
+
+// Per-student attendance over a range for the principal's detailed drill-down.
+export async function getSectionAttendanceRange(sectionId: number, start: string, end: string, yearId: number) {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc("section_attendance_range", { p_section: sectionId, p_start: start, p_end: end, p_year: yearId });
+  return ((data ?? []) as Array<{ student_id: number; full_name: string; roll_no: number; present: number; total: number }>).map((r) => ({
+    id: r.student_id,
+    name: r.full_name,
+    roll: r.roll_no,
+    present: Number(r.present),
+    total: Number(r.total),
+    pct: Number(r.total) ? Math.round((Number(r.present) / Number(r.total)) * 1000) / 10 : null,
+  }));
 }

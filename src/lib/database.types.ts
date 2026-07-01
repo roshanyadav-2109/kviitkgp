@@ -1586,6 +1586,18 @@ export type Database = {
           total: number
         }[]
       }
+      attendance_overview_range: {
+        Args: { p_end: string; p_start: string; p_year: number }
+        Returns: {
+          class_id: number
+          class_level: number
+          class_name: string
+          present: number
+          section_id: number
+          section_name: string
+          total: number
+        }[]
+      }
       auto_conclusions: {
         Args: { p_section: number; p_year: number }
         Returns: string[]
@@ -1645,6 +1657,21 @@ export type Database = {
           avg_percent: number
           slippage: number
           students: number
+        }[]
+      }
+      section_attendance_range: {
+        Args: {
+          p_end: string
+          p_section: number
+          p_start: string
+          p_year: number
+        }
+        Returns: {
+          full_name: string
+          present: number
+          roll_no: number
+          student_id: number
+          total: number
         }[]
       }
       section_comparison: {

@@ -236,6 +236,10 @@ const hi: Messages = {
     schoolWide: "विद्यालय-व्यापी",
     classWise: "कक्षावार",
     attended: "उपस्थित",
+    periodDay: "दिन",
+    periodMonth: "माह",
+    detailedFor: "विस्तृत — {section}",
+    tapClassForDetail: "प्रति-छात्र विवरण हेतु अनुभाग पर टैप करें।",
   },
 };
 export default hi;

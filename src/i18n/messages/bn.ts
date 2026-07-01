@@ -236,6 +236,10 @@ const bn: Messages = {
     schoolWide: "বিদ্যালয়-ব্যাপী",
     classWise: "শ্রেণিভিত্তিক",
     attended: "উপস্থিত",
+    periodDay: "দিন",
+    periodMonth: "মাস",
+    detailedFor: "বিস্তারিত — {section}",
+    tapClassForDetail: "প্রতি-ছাত্র বিবরণ দেখতে শাখায় ট্যাপ করুন।",
   },
 };
 export default bn;

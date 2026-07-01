@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getSession, getCurrentYear } from "@/lib/session";
 import { getT } from "@/i18n/server";
-import { fmtDate } from "@/i18n/format";
+import { fmtDate, fmtMonth } from "@/i18n/format";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
@@ -9,10 +9,12 @@ import { StatusPill } from "@/components/ui/status";
 import { ScopeBar } from "@/components/scope-bar";
 import { AttendanceBoard } from "@/components/attendance/attendance-board";
 import { AttendanceOverview } from "@/components/attendance/attendance-overview";
+import { AttendanceAdminControls } from "@/components/attendance/attendance-admin-controls";
+import { DetailedSectionAttendance } from "@/components/attendance/detailed-section-attendance";
 import { AttendanceIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
 import { getMyChildren } from "@/lib/data/analytics";
-import { getDateAttendance, getSectionAttendanceSummary, getStudentAttendance, getLatestAttendanceDate, getLatestAttendanceDateAll, getAttendanceOverview } from "@/lib/data/attendance";
+import { getDateAttendance, getSectionAttendanceSummary, getStudentAttendance, getLatestAttendanceDate, getLatestAttendanceDateAll, getAttendanceOverview, getSectionAttendanceRange } from "@/lib/data/attendance";
 import type { AttStatus } from "@/app/(app)/attendance/actions";
 
 import { numParam, strParam } from "@/lib/utils";
@@ -76,15 +78,53 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
   }
 
   // ---- Principal / Office: aggregate attendance (no per-pupil board) ----
+  // Both see the day/month overview; the PRINCIPAL can also drill into a
+  // section for per-student detail.
   if (session.isAdminScope) {
     const year = await getCurrentYear();
     if (!year) return (<div><PageHeader title={t("attendance.title")} /><EmptyState icon={AttendanceIcon} title={t("common.noData")} /></div>);
+
+    const period: "day" | "month" = str(sp.period) === "month" ? "month" : "day";
     const date = str(sp.date) ?? (await getLatestAttendanceDateAll()) ?? new Date().toISOString().slice(0, 10);
-    const overview = await getAttendanceOverview(date, year.id);
+    const month = str(sp.month) ?? date.slice(0, 7);
+
+    let start = date, end = date, label = fmtDate(locale, date);
+    if (period === "month") {
+      const [y, m] = month.split("-").map(Number);
+      start = `${month}-01`;
+      end = new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10);
+      label = fmtMonth(locale, `${month}-01`);
+    }
+
+    const overview = await getAttendanceOverview(start, end, year.id);
+    const isPrincipal = session.staffRole === "principal";
+    const selectedSection = isPrincipal ? num(sp.section) : null;
+
+    const hrefForSection = isPrincipal
+      ? (secId: number) => {
+          const qs = new URLSearchParams({ period });
+          if (period === "day") qs.set("date", date); else qs.set("month", month);
+          qs.set("section", String(secId));
+          return `/attendance?${qs.toString()}`;
+        }
+      : undefined;
+
+    let detail = null as Awaited<ReturnType<typeof getSectionAttendanceRange>> | null;
+    let sectionLabel = "";
+    if (isPrincipal && selectedSection) {
+      detail = await getSectionAttendanceRange(selectedSection, start, end, year.id);
+      for (const c of overview.classes) {
+        const sec = c.sections.find((x) => x.id === selectedSection);
+        if (sec) { sectionLabel = `${c.name}-${sec.name}`; break; }
+      }
+    }
+
     return (
       <div>
         <PageHeader title={t("attendance.title")} description={t("x.attendanceOverview")} />
-        <AttendanceOverview overview={overview} date={date} />
+        <AttendanceAdminControls period={period} date={date} month={month} />
+        <AttendanceOverview overview={overview} label={label} hrefForSection={hrefForSection} selectedSection={selectedSection} />
+        {isPrincipal && detail && <DetailedSectionAttendance students={detail} period={period} sectionLabel={sectionLabel} />}
       </div>
     );
   }

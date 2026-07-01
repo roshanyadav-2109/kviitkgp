@@ -235,6 +235,10 @@ const en = {
     schoolWide: "School-wide",
     classWise: "Class-wise",
     attended: "attended",
+    periodDay: "Day",
+    periodMonth: "Month",
+    detailedFor: "Detailed — {section}",
+    tapClassForDetail: "Tap a section to see per-student detail.",
   },
 } as const;
 export default en;
