@@ -22,7 +22,7 @@ export const NAV: NavItem[] = [
   { href: "/progress", icon: ProgressIcon, labelKey: "nav.childProgress", roles: ["guardian"] },
   { href: "/progress", icon: ProgressIcon, labelKey: "nav.progress", roles: STAFF },
   { href: "/attendance", icon: AttendanceIcon, labelKey: "nav.attendance", roles: ALL },
-  { href: "/marks", icon: MarksIcon, labelKey: "nav.marks", roles: ["subject_teacher", "class_teacher"] },
+  { href: "/marks", icon: MarksIcon, labelKey: "nav.marks", roles: ["subject_teacher", "class_teacher", "office"] },
   { href: "/students", icon: StudentsIcon, labelKey: "nav.students", roles: ["class_teacher", "principal", "office"] },
   { href: "/announcements", icon: AnnounceIcon, labelKey: "nav.announcements", roles: ALL },
   { href: "/calendar", icon: CalendarIcon, labelKey: "nav.calendar", roles: ALL },

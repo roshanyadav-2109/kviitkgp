@@ -140,6 +140,11 @@ const en = {
     absent: "Absent",
     saveMarks: "Save marks",
     pickAssessment: "Choose an assessment to enter marks.",
+    draft: "Draft — hidden from parents",
+    released: "Released to students & parents",
+    release: "Release results",
+    unpublish: "Move to draft",
+    releasedNote: "Results are now visible to students and parents.",
   },
   announce: {
     title: "Announcements",

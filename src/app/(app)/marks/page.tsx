@@ -16,13 +16,13 @@ export default async function MarksPage({ searchParams }: { searchParams: SP }) 
   const { t } = await getT();
   const session = await getSession();
 
-  // Principal / office do not enter marks (no teaching entry).
-  if (session?.isAdminScope) {
+  // The Principal is view-only for marks; office and teachers may enter/release.
+  if (session?.staffRole === "principal") {
     return (
       <div>
         <PageHeader title={t("marks.title")} />
-        <EmptyState icon={MarksIcon} title="Marks entry is for teachers"
-          hint="Principal and office can view analytics and attendance, but marks are entered by subject and class teachers." />
+        <EmptyState icon={MarksIcon} title="Marks entry is for teachers and office"
+          hint="The principal can view analytics and attendance; marks are entered by subject/class teachers and the office." />
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default async function MarksPage({ searchParams }: { searchParams: SP }) 
       <MarksScopeBar years={scope.years} sectionMeta={scope.sectionMeta} assessments={assessments}
         yearId={yearId} sectionId={section.id} subjectId={subjectId} assessmentId={assessmentId} />
       {assessment ? (
-        <MarksEntry assessmentId={assessment.id} assessmentName={assessment.name} maxMarks={assessment.max_marks} roster={roster} initial={initial} />
+        <MarksEntry assessmentId={assessment.id} assessmentName={assessment.name} maxMarks={assessment.max_marks} roster={roster} initial={initial} published={assessment.is_published} />
       ) : (
         <EmptyState icon={MarksIcon} title={t("marks.pickAssessment")} />
       )}

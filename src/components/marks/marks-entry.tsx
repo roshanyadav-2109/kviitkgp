@@ -2,11 +2,11 @@
 import { useState, useTransition } from "react";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BandChip } from "@/components/ui/status";
+import { BandChip, StatusPill } from "@/components/ui/status";
 import { CheckIcon } from "@/components/icons";
 import { useT } from "@/i18n/provider";
 import { cn } from "@/lib/utils";
-import { saveMarks } from "@/app/(app)/marks/actions";
+import { saveMarks, releaseAssessment } from "@/app/(app)/marks/actions";
 
 type Row = { id: number; name: string; roll: number | null };
 type Entry = { marks: number | null; absent: boolean };
@@ -18,15 +18,20 @@ function band(pct: number | null) {
 }
 
 export function MarksEntry({
-  assessmentId, assessmentName, maxMarks, roster, initial,
+  assessmentId, assessmentName, maxMarks, roster, initial, published,
 }: {
   assessmentId: number;
   assessmentName: string;
   maxMarks: number;
   roster: Row[];
   initial: Record<number, Entry>;
+  published: boolean;
 }) {
   const t = useT();
+  const [releasing, startRelease] = useTransition();
+  function toggleRelease() {
+    startRelease(async () => { await releaseAssessment(assessmentId, !published); });
+  }
   const [entries, setEntries] = useState<Record<number, Entry>>(() => {
     const seed: Record<number, Entry> = {};
     for (const r of roster) seed[r.id] = initial[r.id] ?? { marks: null, absent: false };
@@ -55,7 +60,15 @@ export function MarksEntry({
 
   return (
     <Card>
-      <CardHeader eyebrow={t("marks.enter")} title={`${assessmentName} · ${t("marks.maxMarks", { max: maxMarks })}`} />
+      <CardHeader eyebrow={t("marks.enter")} title={`${assessmentName} · ${t("marks.maxMarks", { max: maxMarks })}`}
+        action={
+          <div className="flex items-center gap-2">
+            <StatusPill status={published ? "up" : "watch"}>{published ? t("marks.released") : t("marks.draft")}</StatusPill>
+            <Button size="sm" variant={published ? "ghost" : "gold"} disabled={releasing} onClick={toggleRelease}>
+              {releasing ? t("common.saving") : published ? t("marks.unpublish") : t("marks.release")}
+            </Button>
+          </div>
+        } />
       <CardBody className="pt-2">
         <ul className="divide-y divide-hair">
           {roster.map((r) => {

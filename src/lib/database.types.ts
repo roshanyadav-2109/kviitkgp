@@ -185,8 +185,10 @@ export type Database = {
           created_at: string
           created_by: number | null
           id: number
+          is_published: boolean
           max_marks: number
           name: string
+          published_at: string | null
           section_id: number
           subject_id: number
           term: number | null
@@ -198,8 +200,10 @@ export type Database = {
           created_at?: string
           created_by?: number | null
           id?: never
+          is_published?: boolean
           max_marks?: number
           name: string
+          published_at?: string | null
           section_id: number
           subject_id: number
           term?: number | null
@@ -211,8 +215,10 @@ export type Database = {
           created_at?: string
           created_by?: number | null
           id?: never
+          is_published?: boolean
           max_marks?: number
           name?: string
+          published_at?: string | null
           section_id?: number
           subject_id?: number
           term?: number | null

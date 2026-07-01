@@ -24,3 +24,18 @@ export async function saveMarks(input: {
   revalidatePath("/progress");
   return { ok: true };
 }
+
+// Release (or unpublish) an assessment's results. Once released, students and
+// parents can see the marks; until then they stay a staff-only draft.
+export async function releaseAssessment(assessmentId: number, publish: boolean) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("assessment")
+    .update({ is_published: publish, published_at: publish ? new Date().toISOString() : null })
+    .eq("id", assessmentId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/marks");
+  revalidatePath("/progress");
+  revalidatePath("/reports");
+  return { ok: true };
+}

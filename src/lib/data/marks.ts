@@ -1,18 +1,19 @@
 import { createClient } from "@/lib/supabase/server";
 
-export type AssessmentOpt = { id: number; name: string; max_marks: number; assessed_on: string; type_code: string };
+export type AssessmentOpt = { id: number; name: string; max_marks: number; assessed_on: string; type_code: string; is_published: boolean };
 
 export async function getAssessments(sectionId: number, subjectId: number, yearId: number): Promise<AssessmentOpt[]> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("assessment")
-    .select("id, name, max_marks, assessed_on, assessment_type:assessment_type_id(code)")
+    .select("id, name, max_marks, assessed_on, is_published, assessment_type:assessment_type_id(code)")
     .eq("section_id", sectionId)
     .eq("subject_id", subjectId)
     .eq("academic_year_id", yearId)
     .order("assessed_on", { ascending: true });
   return (data ?? []).map((a) => ({
     id: a.id, name: a.name, max_marks: Number(a.max_marks), assessed_on: a.assessed_on,
+    is_published: !!a.is_published,
     type_code: (a.assessment_type as unknown as { code: string } | null)?.code ?? "",
   }));
 }
