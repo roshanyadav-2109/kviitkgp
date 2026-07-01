@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/database.types";
 
@@ -19,7 +20,9 @@ export type Session = {
 };
 
 // Load the signed-in user's profile (RLS: self-read). Returns null if signed out.
-export async function getSession(): Promise<Session | null> {
+// Cached per request so the auth.getUser() network call + profile query run once
+// even though layout, page and data helpers all ask for the session.
+export const getSession = cache(async (): Promise<Session | null> => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -49,10 +52,10 @@ export async function getSession(): Promise<Session | null> {
     effectiveRole,
     isAdminScope: staffRole === "principal" || staffRole === "office",
   };
-}
+});
 
-// Current academic year (readable by all authenticated users).
-export async function getCurrentYear() {
+// Current academic year (readable by all authenticated users). Cached per request.
+export const getCurrentYear = cache(async () => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("academic_year")
@@ -60,4 +63,4 @@ export async function getCurrentYear() {
     .eq("is_current", true)
     .single();
   return data;
-}
+});

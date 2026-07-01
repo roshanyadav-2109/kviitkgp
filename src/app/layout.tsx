@@ -17,6 +17,10 @@ export const metadata: Metadata = {
     "Continuous student progress and analytics for Kendriya Vidyalaya IIT Kharagpur.",
 };
 
+// Colocate server rendering with the Supabase project (ap-southeast-1 / Singapore)
+// so DB queries don't cross regions.
+export const preferredRegion = "sin1";
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
   return (

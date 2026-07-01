@@ -2,6 +2,7 @@
 import { useState, useTransition } from "react";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { StatusPill, type Status } from "@/components/ui/status";
 import { CheckIcon, AlertIcon } from "@/components/icons";
 import { useI18n } from "@/i18n/provider";
 import { fmtDate } from "@/i18n/format";
@@ -16,8 +17,10 @@ const STATUSES: { key: AttStatus; short: string; cls: string }[] = [
   { key: "leave", short: "Lv", cls: "bg-ink-500 text-white" },
 ];
 
+const statusStyle: Record<AttStatus, Status> = { present: "up", absent: "down", late: "watch", leave: "flat" };
+
 export function AttendanceBoard({
-  sectionId, yearId, date, roster, initial, summary,
+  sectionId, yearId, date, roster, initial, summary, readOnly = false,
 }: {
   sectionId: number;
   yearId: number;
@@ -25,6 +28,7 @@ export function AttendanceBoard({
   roster: Row[];
   initial: Record<number, AttStatus>;
   summary: Record<number, { pct: number; present: number; total: number }>;
+  readOnly?: boolean;
 }) {
   const { t, locale } = useI18n();
   const [marks, setMarks] = useState<Record<number, AttStatus>>(() => {
@@ -54,34 +58,44 @@ export function AttendanceBoard({
   return (
     <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
       <Card>
-        <CardHeader eyebrow={fmtDate(locale, date, { weekday: "long", day: "numeric", month: "long" })} title={t("attendance.markToday")}
-          action={<Button size="sm" variant="subtle" onClick={() => setAll("present")}>{t("attendance.markAllPresent")}</Button>} />
+        <CardHeader eyebrow={fmtDate(locale, date, { weekday: "long", day: "numeric", month: "long" })} title={readOnly ? t("attendance.title") : t("attendance.markToday")}
+          action={readOnly ? undefined : <Button size="sm" variant="subtle" onClick={() => setAll("present")}>{t("attendance.markAllPresent")}</Button>} />
         <CardBody className="pt-2">
           <ul className="divide-y divide-hair">
             {roster.map((r) => (
               <li key={r.id} className="flex items-center gap-3 py-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-panel text-[11px] font-semibold text-ink-700 tabular">{r.roll ?? "–"}</span>
                 <span className="flex-1 truncate text-[14px] text-ink-900">{r.name}</span>
-                <div className="flex gap-1">
-                  {STATUSES.map((s) => (
-                    <button key={s.key} onClick={() => setMarks((m) => ({ ...m, [r.id]: s.key }))}
-                      aria-pressed={marks[r.id] === s.key}
-                      className={cn("h-8 w-9 rounded-sm text-[12px] font-bold transition-colors",
-                        marks[r.id] === s.key ? s.cls : "bg-panel text-ink-500 hover:bg-gold-100")}>
-                      {s.short}
-                    </button>
-                  ))}
-                </div>
+                {readOnly ? (
+                  initial[r.id] ? (
+                    <StatusPill status={statusStyle[initial[r.id]]}>{t(`attendance.${initial[r.id]}`)}</StatusPill>
+                  ) : (
+                    <span className="text-[13px] text-muted">—</span>
+                  )
+                ) : (
+                  <div className="flex gap-1">
+                    {STATUSES.map((s) => (
+                      <button key={s.key} onClick={() => setMarks((m) => ({ ...m, [r.id]: s.key }))}
+                        aria-pressed={marks[r.id] === s.key}
+                        className={cn("h-8 w-9 rounded-sm text-[12px] font-bold transition-colors",
+                          marks[r.id] === s.key ? s.cls : "bg-panel text-ink-500 hover:bg-gold-100")}>
+                        {s.short}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </li>
             ))}
           </ul>
-          <div className="mt-4 flex items-center gap-3">
-            <Button onClick={save} disabled={pending}>
-              <CheckIcon size={16} />
-              {pending ? t("common.saving") : t("marks.saveMarks")}
-            </Button>
-            {saved && <span className="text-[13px] font-medium text-up">{t("attendance.savedFor", { date: fmtDate(locale, date) })}</span>}
-          </div>
+          {!readOnly && (
+            <div className="mt-4 flex items-center gap-3">
+              <Button onClick={save} disabled={pending}>
+                <CheckIcon size={16} />
+                {pending ? t("common.saving") : t("marks.saveMarks")}
+              </Button>
+              {saved && <span className="text-[13px] font-medium text-up">{t("attendance.savedFor", { date: fmtDate(locale, date) })}</span>}
+            </div>
+          )}
         </CardBody>
       </Card>
 

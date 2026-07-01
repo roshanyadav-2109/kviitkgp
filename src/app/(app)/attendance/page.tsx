@@ -72,13 +72,20 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
     );
   }
 
-  // ---- Staff: mark attendance ----
+  // ---- Staff ----
   const scope = await getStaffScope();
   if (!scope.sections.length || !scope.currentYearId) {
     return (<div><PageHeader title={t("attendance.title")} /><EmptyState icon={AttendanceIcon} title={t("common.noData")} hint="No allotted sections." /></div>);
   }
   const yearId = num(sp.year) ?? scope.currentYearId;
-  const section = scope.sections.find((s) => s.id === num(sp.section)) ?? scope.sections[0];
+
+  // Marking is a CLASS TEACHER duty — only for the section(s) they class-teach.
+  // Everyone else (subject teachers, principal, office) gets a read-only view.
+  const ctIds = new Set(scope.sectionMeta.filter((m) => m.isClassTeacher).map((m) => m.id));
+  const canMark = ctIds.size > 0;
+  const sections = canMark ? scope.sections.filter((s) => ctIds.has(s.id)) : scope.sections;
+
+  const section = sections.find((s) => s.id === num(sp.section)) ?? sections[0];
   const date = str(sp.date) ?? (await getLatestAttendanceDate(section.id)) ?? new Date().toISOString().slice(0, 10);
 
   const [roster, initialMap, summaryMap] = await Promise.all([
@@ -93,9 +100,10 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
 
   return (
     <div>
-      <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("attendance.title")} description={t("attendance.markToday")} />
-      <ScopeBar years={scope.years} sections={scope.sections} yearId={yearId} sectionId={section.id} date={date} />
-      <AttendanceBoard sectionId={section.id} yearId={yearId} date={date} roster={roster} initial={initial} summary={summary} />
+      <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("attendance.title")}
+        description={canMark ? t("attendance.markToday") : "View only — attendance is marked by the class teacher"} />
+      <ScopeBar years={scope.years} sections={sections} yearId={yearId} sectionId={section.id} date={date} />
+      <AttendanceBoard sectionId={section.id} yearId={yearId} date={date} roster={roster} initial={initial} summary={summary} readOnly={!canMark} />
     </div>
   );
 }
