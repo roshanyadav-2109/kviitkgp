@@ -85,7 +85,7 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
     if (!year) return (<div><PageHeader title={t("attendance.title")} /><EmptyState icon={AttendanceIcon} title={t("common.noData")} /></div>);
 
     const period: "day" | "month" = str(sp.period) === "month" ? "month" : "day";
-    const date = str(sp.date) ?? (await getLatestAttendanceDateAll()) ?? new Date().toISOString().slice(0, 10);
+    const date = str(sp.date) ?? (await getLatestAttendanceDateAll(year.id)) ?? new Date().toISOString().slice(0, 10);
     const month = str(sp.month) ?? date.slice(0, 7);
 
     let start = date, end = date, label = fmtDate(locale, date);

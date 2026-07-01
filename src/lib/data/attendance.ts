@@ -67,12 +67,15 @@ export async function getLatestAttendanceDate(sectionId: number) {
   return data?.[0]?.on_date ?? null;
 }
 
-// Most recent day with any attendance (admin overview default).
-export async function getLatestAttendanceDateAll() {
+// Most recent day with any attendance in the year (admin overview default).
+// Year-scoped so it can use idx_att_year_date (fast at full-school scale).
+export async function getLatestAttendanceDateAll(yearId: number) {
   const supabase = await createClient();
   const { data } = await supabase
     .from("attendance_record")
     .select("on_date")
+    .eq("academic_year_id", yearId)
+    .is("period", null)
     .order("on_date", { ascending: false })
     .limit(1);
   return data?.[0]?.on_date ?? null;
