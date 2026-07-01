@@ -72,7 +72,7 @@ export function AppShell({
   );
 
   const brandHeader = (
-    <div className={cn("flex h-16 items-center gap-2.5 px-4", dark ? "border-b border-white/10" : "border-b border-hair")}>
+    <div className={cn("flex h-16 items-center gap-2.5 px-4", dark ? "" : "border-b border-hair")}>
       <KVEmblem size={36} />
       <div className="leading-tight">
         <div className={cn("text-[13px] font-bold", dark ? "text-gold-100" : "text-ink-900")}>Kendriya Vidyalaya No 1</div>
@@ -81,11 +81,19 @@ export function AppShell({
     </div>
   );
 
-  // Dark rail footer: vendor wordmark ("hebrew technologies"), no user card.
+  // Dark rail footer: vendor wordmark ("hebrew" over "technologies"). "hebrew"
+  // sets the width; "technologies" spreads its letters to fill that exact width.
   const brandFooter = (
-    <div className="border-t border-white/10 px-4 py-4">
-      <div className="text-[20px] font-semibold lowercase leading-none tracking-tight text-gold-100">hebrew</div>
-      <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold-100/50">technologies</div>
+    <div className="px-4 py-4 text-center">
+      <div className="inline-block">
+        <div className="text-[22px] font-semibold lowercase leading-none tracking-tight text-gold-100">hebrew</div>
+        <div className="mt-1 flex justify-between text-[9px] font-medium lowercase leading-none text-gold-100/55" aria-hidden>
+          {"technologies".split("").map((ch, i) => (
+            <span key={i}>{ch}</span>
+          ))}
+        </div>
+        <span className="sr-only">technologies</span>
+      </div>
     </div>
   );
 
@@ -100,7 +108,6 @@ export function AppShell({
             : "top-0 h-dvh border-r border-hair bg-surface",
         )}
       >
-        {dark && <div className="h-1 shrink-0 bg-gradient-to-r from-gold-500 to-gold-300" />}
         {brandHeader}
         <div className="flex-1 overflow-y-auto">
           {navList}
@@ -141,7 +148,7 @@ export function AppShell({
 
       <div className="flex min-w-0 flex-col">
         {/* Top bar */}
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-hair bg-paper/85 px-4 backdrop-blur sm:px-6">
+        <header className={cn("sticky top-0 z-30 flex h-16 items-center gap-3 bg-paper/85 px-4 backdrop-blur sm:px-6", !dark && "border-b border-hair")}>
           <button aria-label="Menu" onClick={() => setOpen(true)} className="rounded-sm p-1.5 text-ink-700 hover:bg-panel lg:hidden">
             <MenuIcon size={20} />
           </button>
