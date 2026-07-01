@@ -81,11 +81,11 @@ export function AppShell({
     </div>
   );
 
-  // Dark rail footer: vendor wordmark (Hebrew word + "technologies"), no user card.
+  // Dark rail footer: vendor wordmark ("hebrew technologies"), no user card.
   const brandFooter = (
     <div className="border-t border-white/10 px-4 py-4">
-      <div dir="rtl" lang="he" className="text-[19px] font-bold leading-none text-gold-100">עֲבָרִית</div>
-      <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold-100/50">technologies</div>
+      <div className="text-[20px] font-semibold lowercase leading-none tracking-tight text-gold-100">hebrew</div>
+      <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold-100/50">technologies</div>
     </div>
   );
 
