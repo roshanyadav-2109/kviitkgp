@@ -8,15 +8,18 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty";
 import { navFor } from "@/lib/nav";
+import { KVEmblem } from "@/components/brand";
 import { AnnounceIcon, CalendarIcon, ArrowRightIcon } from "@/components/icons";
-import { DashHeader, StatCard } from "@/components/dashboards/parts";
+import { StatCard } from "@/components/dashboards/parts";
 import { cn } from "@/lib/utils";
 
-// Student's own snapshot: average, standing, attendance — then a composed band
-// of a dark section rail, a professional announcements feed, and a quick-links +
-// this-month events column (outer columns share the same width).
+type Att = Awaited<ReturnType<typeof getStudentAttendance>>;
+type Standing = Awaited<ReturnType<typeof getStudentStanding>>;
+
+// Three-column shell: a dark section rail (with KV lockup pinned bottom-left),
+// the student's overview as the largest main-content area, and a right column
+// stacking Announcements → Quick Links → Event Calendar.
 export async function StudentDashboard({ session }: { session: Session }) {
-  const { t, locale } = await getT();
   const year = await getCurrentYear();
   const studentId = session.studentId!;
   const [standing, att] = await Promise.all([
@@ -25,34 +28,26 @@ export async function StudentDashboard({ session }: { session: Session }) {
   ]);
 
   return (
-    <div>
-      <DashHeader name={session.fullName} />
-      <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label={`${t("progress.overall")} ${t("progress.average")}`} value={fmtPercent(locale, standing?.studentAvg ?? null, 1)} tone="gold" />
-        <StatCard label={t("progress.sectionStanding")} value={standing?.sectionRank ? `${standing.sectionRank}/${standing.sectionSize}` : "—"} sub={standing ? `${t("progress.sectionAvg")} ${fmtPercent(locale, standing.sectionAvg, 1)}` : undefined} />
-        <StatCard label={t("progress.classStanding")} value={standing?.classRank ? `${standing.classRank}/${standing.classSize}` : "—"} sub={standing ? `${t("progress.classAvg")} ${fmtPercent(locale, standing.classAvg, 1)}` : undefined} />
-        <StatCard label={t("attendance.percent")} value={att ? `${att.pct}%` : "—"} tone={att && att.pct < 75 ? "down" : "up"} sub={att ? `${att.present}/${att.total}` : undefined} />
-      </div>
-
-      {/* Outer columns (rail + quick column) share one width; announcements flex between. */}
-      <div className="grid items-start gap-5 lg:grid-cols-[15rem_minmax(0,1fr)_15rem]">
-        <SectionRail />
-        <StudentAnnouncements />
-        <QuickColumn />
+    <div className="grid items-start gap-5 lg:grid-cols-[13.5rem_minmax(0,1fr)_18.5rem]">
+      <SectionRail />
+      <MainContent name={session.fullName} standing={standing} att={att} />
+      <div className="flex flex-col gap-5">
+        <AnnouncementsCard />
+        <QuickLinksCard />
+        <EventCalendarCard />
       </div>
     </div>
   );
 }
 
-// Dark floating rail — the KV ink palette, gently rounded, listing the student's
-// sections as a compact vertical tab strip.
+// ── Left: dark floating section rail, KV lockup at the bottom ────────────────
 async function SectionRail() {
   const { t } = await getT();
   const items = navFor("student");
   return (
-    <aside className="sticky top-6 overflow-hidden rounded-lg bg-gradient-to-b from-ink-900 to-ink-700 shadow-[var(--shadow-pop)] ring-1 ring-ink-900/60">
+    <aside className="sticky top-6 flex flex-col overflow-hidden rounded-lg bg-gradient-to-b from-ink-900 to-ink-700 shadow-[var(--shadow-pop)] ring-1 ring-ink-900/60">
       <div className="h-1 bg-gradient-to-r from-gold-500 to-gold-300" />
-      <div className="p-4">
+      <div className="flex flex-1 flex-col p-4">
         <div className="mb-3 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-gold-300">
           {t("dashboard.sections")}
         </div>
@@ -78,25 +73,65 @@ async function SectionRail() {
             );
           })}
         </nav>
+
+        {/* KV lockup — pinned at the bottom, lowercase Inter wordmark */}
+        <div className="mt-6 flex items-center gap-2.5 border-t border-white/10 pt-4">
+          <KVEmblem size={30} />
+          <div className="leading-tight lowercase">
+            <div className="text-[12.5px] font-normal text-gold-100">kendriya vidyalaya no.1</div>
+            <div className="text-[11px] font-normal text-gold-100/50">iit kharagpur</div>
+          </div>
+        </div>
       </div>
     </aside>
   );
 }
 
-// Professional announcements feed: a featured lead item, then a tidy list.
-async function StudentAnnouncements() {
+// ── Middle: the largest area — greeting + performance overview ───────────────
+async function MainContent({ name, standing, att }: { name: string; standing: Standing | null; att: Att | null }) {
+  const { t, locale } = await getT();
+  const firstName = name.split(" ").slice(-1)[0];
+  return (
+    <section className="flex flex-col gap-5">
+      <div>
+        <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
+        <p className="mt-1 text-[14px] text-ink-500">{t("dashboard.overview")}</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <StatCard label={`${t("progress.overall")} ${t("progress.average")}`} value={fmtPercent(locale, standing?.studentAvg ?? null, 1)} tone="gold" />
+        <StatCard label={t("attendance.percent")} value={att ? `${att.pct}%` : "—"} tone={att && att.pct < 75 ? "down" : "up"} sub={att ? `${att.present}/${att.total}` : undefined} />
+        <StatCard label={t("progress.sectionStanding")} value={standing?.sectionRank ? `${standing.sectionRank}/${standing.sectionSize}` : "—"} sub={standing ? `${t("progress.sectionAvg")} ${fmtPercent(locale, standing.sectionAvg, 1)}` : undefined} />
+        <StatCard label={t("progress.classStanding")} value={standing?.classRank ? `${standing.classRank}/${standing.classSize}` : "—"} sub={standing ? `${t("progress.classAvg")} ${fmtPercent(locale, standing.classAvg, 1)}` : undefined} />
+      </div>
+
+      {/* Larger canvas below the stats — progress call-to-action */}
+      <Card className="flex-1">
+        <CardHeader eyebrow={t("nav.myProgress")} title={t("progress.title")} />
+        <CardBody className="pt-2">
+          <p className="text-[14px] leading-relaxed text-ink-500">{t("dashboard.progressCta")}</p>
+          <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-ink-900 px-3.5 py-2 text-[13px] font-semibold text-gold-100 transition-colors hover:bg-ink-700">
+            {t("nav.myProgress")}
+            <ArrowRightIcon size={14} />
+          </Link>
+        </CardBody>
+      </Card>
+    </section>
+  );
+}
+
+// ── Right column: Announcements ──────────────────────────────────────────────
+async function AnnouncementsCard() {
   const supabase = await createClient();
   const { t, locale } = await getT();
   const { data } = await supabase
     .from("announcement")
     .select("id, title, body, published_at")
     .order("published_at", { ascending: false })
-    .limit(5);
+    .limit(4);
   const rows = data ?? [];
-  const [lead, ...rest] = rows;
-
   return (
-    <Card className="flex min-h-full flex-col">
+    <Card>
       <CardHeader
         eyebrow={t("dashboard.recentAnnouncements")}
         title={t("announce.title")}
@@ -107,37 +142,20 @@ async function StudentAnnouncements() {
           </Link>
         }
       />
-      <CardBody className="flex-1 pt-2">
-        {lead ? (
-          <div className="flex flex-col gap-4">
-            {/* Featured lead */}
-            <Link href="/announcements" className="group relative block rounded-md border border-hair bg-panel/40 p-4 pl-5 transition-colors hover:border-gold-300 hover:bg-gold-100/40">
-              <span className="absolute inset-y-3 left-0 w-1 rounded-full bg-gold-500" />
-              <div className="mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-gold-700">
-                <AnnounceIcon size={13} />
-                {fmtDate(locale, lead.published_at)}
-              </div>
-              <div className="text-[15px] font-bold leading-snug text-ink-900 group-hover:text-gold-700">{lead.title}</div>
-              <div className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-ink-500">{lead.body}</div>
-            </Link>
-
-            {rest.length > 0 && (
-              <ul className="divide-y divide-hair">
-                {rest.map((a) => (
-                  <li key={a.id} className="flex gap-3 py-3 first:pt-0">
-                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-gold-100 text-gold-700">
-                      <AnnounceIcon size={15} />
-                    </span>
-                    <div className="min-w-0">
-                      <div className="truncate text-[14px] font-semibold text-ink-900">{a.title}</div>
-                      <div className="line-clamp-1 text-[13px] text-ink-500">{a.body}</div>
-                      <div className="mt-0.5 text-[12px] text-muted">{fmtDate(locale, a.published_at)}</div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+      <CardBody className="pt-2">
+        {rows.length ? (
+          <ul className="divide-y divide-hair">
+            {rows.map((a) => (
+              <li key={a.id} className="flex gap-3 py-3 first:pt-0">
+                <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-gold-700" />
+                <div className="min-w-0">
+                  <div className="text-[14px] font-semibold text-ink-900">{a.title}</div>
+                  <div className="line-clamp-1 text-[13px] text-ink-500">{a.body}</div>
+                  <div className="mt-0.5 text-[12px] text-muted">{fmtDate(locale, a.published_at)}</div>
+                </div>
+              </li>
+            ))}
+          </ul>
         ) : (
           <EmptyState icon={AnnounceIcon} title={t("common.noData")} />
         )}
@@ -146,23 +164,12 @@ async function StudentAnnouncements() {
   );
 }
 
-// Quick links (two-column) with this-month's events stacked in the same card.
-async function QuickColumn() {
-  const { t, locale } = await getT();
-  const supabase = await createClient();
+// ── Right column: Quick Links (two columns) ──────────────────────────────────
+async function QuickLinksCard() {
+  const { t } = await getT();
   const links = navFor("student").filter((l) => l.href !== "/");
-
-  const now = new Date();
-  const today = now.toISOString().slice(0, 10);
-  const monthEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0)).toISOString().slice(0, 10);
-  const [{ data: inMonth }, { data: future }] = await Promise.all([
-    supabase.from("event").select("id, title, event_type, start_date").gte("start_date", today).lte("start_date", monthEnd).order("start_date", { ascending: true }).limit(5),
-    supabase.from("event").select("id, title, event_type, start_date").gte("start_date", today).order("start_date", { ascending: true }).limit(4),
-  ]);
-  const events = (inMonth && inMonth.length ? inMonth : future ?? []).slice(0, 5);
-
   return (
-    <Card className="flex min-h-full flex-col">
+    <Card>
       <CardHeader eyebrow={t("dashboard.quickLinks")} />
       <CardBody className="pt-2">
         <div className="grid grid-cols-2 gap-2.5">
@@ -183,13 +190,36 @@ async function QuickColumn() {
           })}
         </div>
       </CardBody>
+    </Card>
+  );
+}
 
-      {/* This-month events, same card, below quick links */}
-      <div className="border-t border-hair px-4 pb-4 pt-3">
-        <div className="mb-2 flex items-center justify-between">
-          <div className="t-label">{t("dashboard.thisMonth")}</div>
-          <Link href="/calendar" className="text-[12px] font-semibold text-gold-700 hover:text-ink-900">{t("dashboard.viewAll")}</Link>
-        </div>
+// ── Right column: Event Calendar (this month's upcoming events) ──────────────
+async function EventCalendarCard() {
+  const { t, locale } = await getT();
+  const supabase = await createClient();
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  const monthEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0)).toISOString().slice(0, 10);
+  const [{ data: inMonth }, { data: future }] = await Promise.all([
+    supabase.from("event").select("id, title, event_type, start_date").gte("start_date", today).lte("start_date", monthEnd).order("start_date", { ascending: true }).limit(5),
+    supabase.from("event").select("id, title, event_type, start_date").gte("start_date", today).order("start_date", { ascending: true }).limit(4),
+  ]);
+  const events = (inMonth && inMonth.length ? inMonth : future ?? []).slice(0, 5);
+
+  return (
+    <Card>
+      <CardHeader
+        eyebrow={t("dashboard.thisMonth")}
+        title={t("announce.events")}
+        action={
+          <Link href="/calendar" className="inline-flex items-center gap-1 text-[12px] font-semibold text-gold-700 hover:text-ink-900">
+            {t("dashboard.viewAll")}
+            <ArrowRightIcon size={13} />
+          </Link>
+        }
+      />
+      <CardBody className="pt-2">
         {events.length ? (
           <ul className="space-y-1.5">
             {events.map((e) => {
@@ -216,7 +246,7 @@ async function QuickColumn() {
             {t("dashboard.noEventsMonth")}
           </div>
         )}
-      </div>
+      </CardBody>
     </Card>
   );
 }

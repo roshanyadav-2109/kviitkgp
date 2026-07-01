@@ -81,6 +81,7 @@ const en = {
     thisMonth: "This month",
     viewAll: "View all",
     noEventsMonth: "No events this month",
+    progressCta: "Track your subject-wise performance and assessment timeline.",
     needsAttention: "Needs attention",
     myClass: "My class",
     fullAccess: "Full access · all subjects",

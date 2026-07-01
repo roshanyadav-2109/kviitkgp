@@ -82,6 +82,7 @@ const hi: Messages = {
     thisMonth: "इस माह",
     viewAll: "सभी देखें",
     noEventsMonth: "इस माह कोई कार्यक्रम नहीं",
+    progressCta: "अपने विषयवार प्रदर्शन और मूल्यांकन समयरेखा को देखें।",
     needsAttention: "ध्यान देने योग्य",
     myClass: "मेरी कक्षा",
     fullAccess: "पूर्ण पहुँच · सभी विषय",

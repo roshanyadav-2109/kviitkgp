@@ -82,6 +82,7 @@ const bn: Messages = {
     thisMonth: "এই মাসে",
     viewAll: "সব দেখুন",
     noEventsMonth: "এই মাসে কোনো ইভেন্ট নেই",
+    progressCta: "আপনার বিষয়ভিত্তিক পারফরম্যান্স ও মূল্যায়ন টাইমলাইন দেখুন।",
     needsAttention: "মনোযোগ প্রয়োজন",
     myClass: "আমার শ্রেণি",
     fullAccess: "সম্পূর্ণ প্রবেশ · সব বিষয়",
