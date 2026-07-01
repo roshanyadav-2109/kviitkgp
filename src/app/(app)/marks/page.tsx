@@ -8,8 +8,10 @@ import { MarksIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
 import { getAssessments, getAssessmentMarks } from "@/lib/data/marks";
 
+import { numParam } from "@/lib/utils";
+
 type SP = Promise<Record<string, string | string[] | undefined>>;
-const num = (v: string | string[] | undefined) => (typeof v === "string" && v ? Number(v) : null);
+const num = numParam;
 
 export default async function MarksPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
@@ -21,8 +23,7 @@ export default async function MarksPage({ searchParams }: { searchParams: SP }) 
     return (
       <div>
         <PageHeader title={t("marks.title")} />
-        <EmptyState icon={MarksIcon} title="Marks entry is for teachers and office"
-          hint="The principal can view analytics and attendance; marks are entered by subject/class teachers and the office." />
+        <EmptyState icon={MarksIcon} title={t("x.marksPrincipalTitle")} hint={t("x.marksPrincipalHint")} />
       </div>
     );
   }
@@ -30,7 +31,7 @@ export default async function MarksPage({ searchParams }: { searchParams: SP }) 
   const scope = await getStaffScope();
 
   if (!scope.sections.length || !scope.subjects.length || !scope.currentYearId) {
-    return (<div><PageHeader title={t("marks.title")} /><EmptyState icon={MarksIcon} title={t("common.noData")} hint="No allotted subjects." /></div>);
+    return (<div><PageHeader title={t("marks.title")} /><EmptyState icon={MarksIcon} title={t("common.noData")} hint={t("x.marksNoSubjects")} /></div>);
   }
 
   const yearId = num(sp.year) ?? scope.currentYearId;
@@ -39,7 +40,8 @@ export default async function MarksPage({ searchParams }: { searchParams: SP }) 
   const subjectId = num(sp.subject) ?? meta?.subjects[0]?.id ?? scope.subjects[0]?.id ?? 0;
 
   const assessments = await getAssessments(section.id, subjectId, yearId);
-  const assessmentId = num(sp.assessment) ?? assessments[0]?.id ?? null;
+  // assessments are ordered chronologically; default to the most recent.
+  const assessmentId = num(sp.assessment) ?? assessments.at(-1)?.id ?? null;
   const assessment = assessments.find((a) => a.id === assessmentId) ?? null;
 
   const [roster, marksMap] = await Promise.all([
@@ -55,7 +57,7 @@ export default async function MarksPage({ searchParams }: { searchParams: SP }) 
       <MarksScopeBar years={scope.years} sectionMeta={scope.sectionMeta} assessments={assessments}
         yearId={yearId} sectionId={section.id} subjectId={subjectId} assessmentId={assessmentId} />
       {assessment ? (
-        <MarksEntry assessmentId={assessment.id} assessmentName={assessment.name} maxMarks={assessment.max_marks} roster={roster} initial={initial} published={assessment.is_published} />
+        <MarksEntry key={assessment.id} assessmentId={assessment.id} assessmentName={assessment.name} maxMarks={assessment.max_marks} roster={roster} initial={initial} published={assessment.is_published} />
       ) : (
         <EmptyState icon={MarksIcon} title={t("marks.pickAssessment")} />
       )}

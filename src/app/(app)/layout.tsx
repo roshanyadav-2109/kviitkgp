@@ -8,9 +8,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const session = await getSession();
   if (!session) redirect("/login");
   const { t } = await getT();
-  const roleLabel = t(`roles.${session.effectiveRole}`);
+  const roleLabel = t(`roles.${session.navRole}`);
   return (
-    <AppShell name={session.fullName} role={session.effectiveRole as NavRole} roleLabel={roleLabel}>
+    <AppShell name={session.fullName} role={session.navRole as NavRole} roleLabel={roleLabel}>
       {children}
     </AppShell>
   );

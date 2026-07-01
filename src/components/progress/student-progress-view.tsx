@@ -82,7 +82,7 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
       <Card>
         <CardHeader eyebrow={t("progress.allSessions")} title={t("progress.timeline")} />
         <CardBody className="pt-2">
-          <SessionDetail sessions={data.sessions} />
+          <SessionDetail key={data.student?.id ?? 0} sessions={data.sessions} />
         </CardBody>
       </Card>
 
@@ -96,7 +96,7 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
 
       {/* Observations */}
       <Card>
-        <CardHeader eyebrow={t("progress.timeline")} title="Teacher observations" />
+        <CardHeader eyebrow={t("progress.timeline")} title={t("x.progObservations")} />
         <CardBody className="pt-2">
           {data.observations.length ? (
             <ul className="space-y-3">

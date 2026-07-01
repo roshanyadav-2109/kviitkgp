@@ -11,8 +11,10 @@ import { ProgressIcon, ArrowRightIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
 import { getSectionAnalytics, getClassAnalytics, getStudentProgress, getStudentStanding, getMyChildren } from "@/lib/data/analytics";
 
+import { numParam } from "@/lib/utils";
+
 type SP = Promise<Record<string, string | string[] | undefined>>;
-const num = (v: string | string[] | undefined) => (typeof v === "string" && v ? Number(v) : null);
+const num = numParam;
 
 export default async function ProgressPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
@@ -60,7 +62,7 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
     return (
       <div>
         <PageHeader title={t("progress.title")} />
-        <EmptyState icon={ProgressIcon} title={t("progress.noMarks")} hint="You have no allotted sections in the current year." />
+        <EmptyState icon={ProgressIcon} title={t("progress.noMarks")} hint={t("x.progNoSections")} />
       </div>
     );
   }
@@ -126,7 +128,7 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
   return (
     <div>
       <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("progress.title")}
-        description={`${scope.isAdmin ? "School-wide scope" : "Your allotted scope"} · ${scope.sections.length} ${t("common.section").toLowerCase()}(s)`} />
+        description={`${scope.isAdmin ? t("x.progSchoolScope") : t("x.progAllottedScope")} · ${t("x.scopeSections", { n: scope.sections.length })}`} />
       {filters}
       <SectionAnalyticsView data={analytics} roster={roster} subjectName={subjectName} />
     </div>

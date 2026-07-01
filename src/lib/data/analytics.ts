@@ -1,5 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 
+// Insight lines are returned as translation key + params so the UI renders them
+// with t() in the active locale (not pre-formatted English).
+export type Insight = { key: string; vars?: Record<string, string | number> };
+
 // ---------------------------------------------------------------------------
 // Section / class analytics for staff (all RLS-scoped by the caller).
 // ---------------------------------------------------------------------------
@@ -11,7 +15,7 @@ export async function getSectionAnalytics(
 ) {
   const supabase = await createClient();
 
-  const [{ data: summary }, { data: dist }, top, needs, concl, comparison] = await Promise.all([
+  const [{ data: summary }, { data: dist }, top, needs, comparison] = await Promise.all([
     supabase.from("v_section_subject_summary")
       .select("subject_id, subject_name, term, avg_percent, n_students")
       .eq("section_id", sectionId).eq("academic_year_id", yearId),
@@ -20,21 +24,23 @@ export async function getSectionAnalytics(
       .eq("section_id", sectionId).eq("academic_year_id", yearId),
     supabase.rpc("top_performers", { p_section: sectionId, p_year: yearId, p_subject: subjectId ?? undefined, p_limit: 5 }),
     supabase.rpc("needs_support", { p_section: sectionId, p_year: yearId, p_threshold: 40 }),
-    supabase.rpc("auto_conclusions", { p_section: sectionId, p_year: yearId }),
     subjectId
       ? supabase.rpc("section_comparison", { p_class: classId, p_subject: subjectId, p_year: yearId })
       : Promise.resolve({ data: [] }),
   ]);
 
-  // subject vs subject (average across terms)
+  // subject vs subject (average across terms) + per-subject term series
   const subjAgg = new Map<string, { sum: number; n: number }>();
   const termAgg = new Map<number, { sum: number; n: number }>();
+  const subjTerm = new Map<string, Map<number, number>>();
   for (const r of summary ?? []) {
     const s = subjAgg.get(r.subject_name!) ?? { sum: 0, n: 0 };
     s.sum += Number(r.avg_percent); s.n += 1; subjAgg.set(r.subject_name!, s);
     if (r.term != null) {
       const t = termAgg.get(r.term) ?? { sum: 0, n: 0 };
       t.sum += Number(r.avg_percent); t.n += 1; termAgg.set(r.term, t);
+      const m = subjTerm.get(r.subject_name!) ?? new Map<number, number>();
+      m.set(r.term, Number(r.avg_percent)); subjTerm.set(r.subject_name!, m);
     }
   }
   const subjectAverages = [...subjAgg.entries()]
@@ -44,7 +50,16 @@ export async function getSectionAnalytics(
     .sort((a, b) => a[0] - b[0])
     .map(([term, v]) => ({ term: `Term ${term}`, avg: Math.round((v.sum / v.n) * 10) / 10 }));
 
-  // distribution (filtered to subject if chosen, else overall)
+  // steepest term-over-term subject drop
+  let biggestDrop: { subject: string; drop: number } | null = null;
+  for (const [subject, m] of subjTerm) {
+    const terms = [...m.keys()].sort((a, b) => a - b);
+    for (let i = 1; i < terms.length; i++) {
+      const d = m.get(terms[i])! - m.get(terms[i - 1])!;
+      if (d < 0 && (!biggestDrop || d < biggestDrop.drop)) biggestDrop = { subject, drop: d };
+    }
+  }
+
   const bands = ["A1", "A2", "B1", "B2", "C1", "C2", "D", "E"];
   const bandAgg = new Map<string, number>();
   for (const r of dist ?? []) {
@@ -53,13 +68,20 @@ export async function getSectionAnalytics(
   }
   const distribution = bands.map((band) => ({ band, n: bandAgg.get(band) ?? 0 }));
 
+  const needsSupport = (needs.data ?? []) as Array<{ student_name: string; avg_percent: number; weak_subjects: string | null; recent_trend: number }>;
+
+  const conclusions: Insight[] = [];
+  if (subjectAverages.length) conclusions.push({ key: "x.insightStrongest", vars: { subject: subjectAverages[0].subject, avg: subjectAverages[0].avg } });
+  if (biggestDrop && biggestDrop.drop <= -3) conclusions.push({ key: "x.insightTermDrop", vars: { subject: biggestDrop.subject, pts: Math.abs(Math.round(biggestDrop.drop * 10) / 10) } });
+  if (needsSupport.length) conclusions.push({ key: "x.insightNeedSupport", vars: { n: needsSupport.length } });
+
   return {
     subjectAverages,
     termTrend,
     distribution,
     topPerformers: (top.data ?? []) as Array<{ student_name: string; avg_percent: number; n_marks: number }>,
-    needsSupport: (needs.data ?? []) as Array<{ student_name: string; avg_percent: number; weak_subjects: string | null; recent_trend: number; reason: string }>,
-    conclusions: (concl.data ?? []) as unknown as string[],
+    needsSupport,
+    conclusions,
     sectionComparison: (comparison.data ?? []) as Array<{ section_name: string; avg_percent: number; n_students: number }>,
   };
 }
@@ -105,17 +127,17 @@ export async function getClassAnalytics(
   const distribution = bands.map((band) => ({ band, n: bandAgg.get(band) ?? 0 }));
 
   const topPerformers = (top.data ?? []) as Array<{ student_name: string; section_name: string; avg_percent: number }>;
-  const needsSupport = (needs.data ?? []) as Array<{ student_name: string; section_name: string; avg_percent: number; recent_trend: number; reason: string }>;
+  const needsSupport = (needs.data ?? []) as Array<{ student_name: string; section_name: string; avg_percent: number; weak_subjects: string | null; recent_trend: number }>;
 
-  // plain-language class conclusions from the computed metrics
-  const conclusions: string[] = [];
-  if (subjectAverages.length) conclusions.push(`${subjectAverages[0].subject} is the class's strongest subject, averaging ${subjectAverages[0].avg}%.`);
+  // structured class conclusions (rendered via t() in the active locale)
+  const conclusions: Insight[] = [];
+  if (subjectAverages.length) conclusions.push({ key: "x.insightStrongest", vars: { subject: subjectAverages[0].subject, avg: subjectAverages[0].avg } });
   if (sectionComparison.length > 1) {
     const best = [...sectionComparison].sort((a, b) => b.avg - a.avg)[0];
     const worst = [...sectionComparison].sort((a, b) => a.avg - b.avg)[0];
-    conclusions.push(`Section ${best.name} leads (${best.avg}%) while ${worst.name} trails (${worst.avg}%)${subjectId ? " in this subject" : " overall"}.`);
+    conclusions.push({ key: "x.insightLeadTrail", vars: { best: best.name, bestAvg: best.avg, worst: worst.name, worstAvg: worst.avg } });
   }
-  if (needsSupport.length) conclusions.push(`${needsSupport.length} student(s) across the class need support — flag before the next exam.`);
+  if (needsSupport.length) conclusions.push({ key: "x.insightNeedSupport", vars: { n: needsSupport.length } });
 
   return { subjectAverages, sectionComparison, distribution, topPerformers, needsSupport, conclusions };
 }

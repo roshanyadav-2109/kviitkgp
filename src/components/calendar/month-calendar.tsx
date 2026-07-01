@@ -54,8 +54,8 @@ export function MonthCalendar({ items, defaultMonth }: { items: CalItem[]; defau
       <div className="flex items-center justify-between border-b border-hair px-4 py-3">
         <h2 className="t-h3 text-ink-900">{monthLabel}</h2>
         <div className="flex gap-1.5">
-          <Button size="sm" variant="subtle" onClick={() => move(-1)} aria-label="Previous month"><ArrowRightIcon size={15} className="rotate-180" /></Button>
-          <Button size="sm" variant="subtle" onClick={() => move(1)} aria-label="Next month"><ArrowRightIcon size={15} /></Button>
+          <Button size="sm" variant="subtle" onClick={() => move(-1)} aria-label={t("x.prevMonth")}><ArrowRightIcon size={15} className="rotate-180" /></Button>
+          <Button size="sm" variant="subtle" onClick={() => move(1)} aria-label={t("x.nextMonth")}><ArrowRightIcon size={15} /></Button>
         </div>
       </div>
       <CardBody className="p-2 sm:p-3">
@@ -85,7 +85,7 @@ export function MonthCalendar({ items, defaultMonth }: { items: CalItem[]; defau
 
         {/* Legend */}
         <div className="mt-3 flex flex-wrap gap-2 border-t border-hair pt-3 text-[11px]">
-          {[["exam", t("marks.assessment")], ["holiday", t("attendance.holiday")], ["ptm", "PTM"], ["activity", t("announce.events")]].map(([k, lbl]) => (
+          {[["exam", t("marks.assessment")], ["holiday", t("attendance.holiday")], ["ptm", t("x.ptm")], ["activity", t("announce.events")]].map(([k, lbl]) => (
             <span key={k} className="inline-flex items-center gap-1">
               <span className={cn("h-2.5 w-2.5 rounded-[3px]", kindStyle[k].split(" ")[0])} />
               <span className="text-ink-500">{lbl}</span>

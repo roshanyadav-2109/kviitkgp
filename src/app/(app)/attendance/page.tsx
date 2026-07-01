@@ -14,9 +14,11 @@ import { getMyChildren } from "@/lib/data/analytics";
 import { getDateAttendance, getSectionAttendanceSummary, getStudentAttendance, getLatestAttendanceDate } from "@/lib/data/attendance";
 import type { AttStatus } from "@/app/(app)/attendance/actions";
 
+import { numParam, strParam } from "@/lib/utils";
+
 type SP = Promise<Record<string, string | string[] | undefined>>;
-const num = (v: string | string[] | undefined) => (typeof v === "string" && v ? Number(v) : null);
-const str = (v: string | string[] | undefined) => (typeof v === "string" && v ? v : null);
+const num = numParam;
+const str = strParam;
 const statusStyle: Record<string, "up" | "down" | "watch" | "flat"> = { present: "up", absent: "down", late: "watch", leave: "flat", holiday: "flat" };
 
 export default async function AttendancePage({ searchParams }: { searchParams: SP }) {
@@ -75,17 +77,17 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
   // ---- Staff ----
   const scope = await getStaffScope();
   if (!scope.sections.length || !scope.currentYearId) {
-    return (<div><PageHeader title={t("attendance.title")} /><EmptyState icon={AttendanceIcon} title={t("common.noData")} hint="No allotted sections." /></div>);
+    return (<div><PageHeader title={t("attendance.title")} /><EmptyState icon={AttendanceIcon} title={t("common.noData")} hint={t("x.attNoSections")} /></div>);
   }
   const yearId = num(sp.year) ?? scope.currentYearId;
 
-  // Marking is a CLASS TEACHER duty — only for the section(s) they class-teach.
-  // Everyone else (subject teachers, principal, office) gets a read-only view.
+  // Show ALL of the teacher's sections. Marking is a CLASS TEACHER duty, decided
+  // PER selected section: they may mark only the section(s) they class-teach;
+  // every other section (subject-only, or for principal/office) is read-only.
   const ctIds = new Set(scope.sectionMeta.filter((m) => m.isClassTeacher).map((m) => m.id));
-  const canMark = ctIds.size > 0;
-  const sections = canMark ? scope.sections.filter((s) => ctIds.has(s.id)) : scope.sections;
-
+  const sections = scope.sections;
   const section = sections.find((s) => s.id === num(sp.section)) ?? sections[0];
+  const canMark = ctIds.has(section.id);
   const date = str(sp.date) ?? (await getLatestAttendanceDate(section.id)) ?? new Date().toISOString().slice(0, 10);
 
   const [roster, initialMap, summaryMap] = await Promise.all([
@@ -101,9 +103,9 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
   return (
     <div>
       <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("attendance.title")}
-        description={canMark ? t("attendance.markToday") : "View only — attendance is marked by the class teacher"} />
+        description={canMark ? t("attendance.markToday") : t("x.attViewOnly")} />
       <ScopeBar years={scope.years} sections={sections} yearId={yearId} sectionId={section.id} date={date} />
-      <AttendanceBoard sectionId={section.id} yearId={yearId} date={date} roster={roster} initial={initial} summary={summary} readOnly={!canMark} />
+      <AttendanceBoard key={`${section.id}-${date}`} sectionId={section.id} yearId={yearId} date={date} roster={roster} initial={initial} summary={summary} readOnly={!canMark} />
     </div>
   );
 }

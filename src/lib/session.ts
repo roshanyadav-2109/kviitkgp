@@ -4,6 +4,7 @@ import type { Database } from "@/lib/database.types";
 
 export type StaffRole = Database["public"]["Enums"]["staff_role"];
 export type ProfileRole = Database["public"]["Enums"]["profile_role"];
+export type NavRole = "student" | "guardian" | "subject_teacher" | "class_teacher" | "principal" | "office";
 
 export type Session = {
   userId: string;
@@ -14,9 +15,13 @@ export type Session = {
   guardianId: number | null;
   studentId: number | null;
   staffRole: StaffRole | null;
-  // effective role for nav/labels
+  // effective role for labels (from staff.role)
   effectiveRole: StaffRole | "student" | "guardian";
   isAdminScope: boolean; // principal or office
+  isClassTeacher: boolean; // holds a class-teacher allotment this year (dynamic)
+  // role used to build nav/quick-links: a staff member who class-teaches a
+  // section is treated as class_teacher regardless of their static staff.role.
+  navRole: NavRole;
 };
 
 // Load the signed-in user's profile (RLS: self-read). Returns null if signed out.
@@ -40,6 +45,23 @@ export const getSession = cache(async (): Promise<Session | null> => {
   const effectiveRole: Session["effectiveRole"] =
     data.role === "staff" ? (staffRole ?? "office") : data.role;
 
+  // Is this staff member a class teacher of any section in the current year?
+  let isClassTeacher = false;
+  if (data.staff_id) {
+    const { data: cy } = await supabase.from("academic_year").select("id").eq("is_current", true).single();
+    if (cy) {
+      const { count } = await supabase
+        .from("teacher_allotment")
+        .select("id", { count: "exact", head: true })
+        .eq("staff_id", data.staff_id)
+        .eq("is_class_teacher", true)
+        .eq("academic_year_id", cy.id);
+      isClassTeacher = (count ?? 0) > 0;
+    }
+  }
+
+  const navRole: NavRole = isClassTeacher ? "class_teacher" : (effectiveRole as NavRole);
+
   return {
     userId: data.id,
     role: data.role,
@@ -51,6 +73,8 @@ export const getSession = cache(async (): Promise<Session | null> => {
     staffRole,
     effectiveRole,
     isAdminScope: staffRole === "principal" || staffRole === "office",
+    isClassTeacher,
+    navRole,
   };
 });
 

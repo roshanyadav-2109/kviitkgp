@@ -1588,6 +1588,16 @@ export type Database = {
           n_students: number
         }[]
       }
+      class_overview: {
+        Args: { p_year: number }
+        Returns: {
+          avg_percent: number
+          class_id: number
+          class_level: number
+          class_name: string
+          students: number
+        }[]
+      }
       grade_band: { Args: { pct: number }; Returns: string }
       needs_support: {
         Args: { p_section: number; p_threshold?: number; p_year: number }
@@ -1615,6 +1625,15 @@ export type Database = {
       refresh_slippage_flags: {
         Args: { p_threshold?: number; p_window?: number }
         Returns: number
+      }
+      school_overview: {
+        Args: { p_year: number }
+        Returns: {
+          attendance_pct: number
+          avg_percent: number
+          slippage: number
+          students: number
+        }[]
       }
       section_comparison: {
         Args: { p_class: number; p_subject: number; p_year: number }

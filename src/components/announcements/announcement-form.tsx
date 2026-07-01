@@ -29,7 +29,7 @@ export function AnnouncementForm({ sections, allowSchool }: { sections: SectionO
       <CardHeader eyebrow={t("announce.new")} title="" />
       <CardBody className="space-y-3 pt-1">
         <Field label={t("common.subject")}>
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("x.announceTitle")} />
         </Field>
         <Field label={t("feedback.message")}>
           <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={3} />

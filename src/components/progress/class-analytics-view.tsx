@@ -6,6 +6,7 @@ import { KVBarChart } from "@/components/charts";
 import { TrophyIcon, AlertIcon, ProgressIcon } from "@/components/icons";
 import { useI18n } from "@/i18n/provider";
 import { fmtPercent } from "@/i18n/format";
+import { supportReason } from "@/components/progress/insight";
 
 type Analytics = Awaited<ReturnType<typeof import("@/lib/data/analytics").getClassAnalytics>>;
 
@@ -23,7 +24,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
           <CardBody className="pt-1">
             <ul className="space-y-2">
               {data.conclusions.map((c, i) => (
-                <li key={i} className="flex gap-2.5 text-[14px] text-ink-900"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-700" />{c}</li>
+                <li key={i} className="flex gap-2.5 text-[14px] text-ink-900"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-700" />{t(c.key, c.vars)}</li>
               ))}
             </ul>
           </CardBody>
@@ -94,7 +95,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
                       <DeltaBadge value={Math.round(Number(s.recent_trend))} />
                     </span>
                   </div>
-                  <div className="mt-0.5 text-[12px] text-ink-500">{s.reason}</div>
+                  <div className="mt-0.5 text-[12px] text-ink-500">{supportReason(t, s)}</div>
                 </div>
               ))}
             </div>

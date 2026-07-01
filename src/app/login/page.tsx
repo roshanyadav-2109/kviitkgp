@@ -48,14 +48,11 @@ export default function LoginPage() {
         </div>
         <div className="max-w-md">
           <h1 className="t-display text-gold-100">{t("common.appTagline")}</h1>
-          <p className="mt-4 text-[15px] leading-relaxed text-gold-100/75">
-            One continuous record for every child — trends, not just marks. Attendance,
-            reports and analytics, each scoped to what a teacher is allotted.
-          </p>
+          <p className="mt-4 text-[15px] leading-relaxed text-gold-100/75">{t("x.authBlurb")}</p>
         </div>
         <div className="flex items-center gap-2 text-[12px] text-gold-100/50">
           <GradCapIcon size={16} />
-          Classes I–XII · Foundational to Senior · CBSE / NEP aligned
+          {t("x.authClasses")}
         </div>
         {/* warm gold sunrise accent, no generic gradient/swoosh */}
         <div className="pointer-events-none absolute -right-24 top-1/3 h-64 w-64 rounded-full bg-gold-500/15 blur-3xl" />

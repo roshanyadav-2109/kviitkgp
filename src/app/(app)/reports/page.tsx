@@ -14,9 +14,11 @@ import { getMyChildren } from "@/lib/data/analytics";
 import { getStaffScope } from "@/lib/data/scope";
 import { getStudentMonthly, getClassMonthly } from "@/lib/data/report";
 
+import { numParam, strParam } from "@/lib/utils";
+
 type SP = Promise<Record<string, string | string[] | undefined>>;
-const num = (v: string | string[] | undefined) => (typeof v === "string" && v ? Number(v) : null);
-const str = (v: string | string[] | undefined) => (typeof v === "string" && v ? v : null);
+const num = numParam;
+const str = strParam;
 const DEFAULT_MONTH = "2026-02";
 
 export default async function ReportsPage({ searchParams }: { searchParams: SP }) {

@@ -7,8 +7,10 @@ import { ScopeBar } from "@/components/scope-bar";
 import { StudentsIcon, ArrowRightIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
 
+import { numParam } from "@/lib/utils";
+
 type SP = Promise<Record<string, string | string[] | undefined>>;
-const num = (v: string | string[] | undefined) => (typeof v === "string" && v ? Number(v) : null);
+const num = numParam;
 
 export default async function StudentsPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
