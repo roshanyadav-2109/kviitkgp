@@ -26,9 +26,12 @@ export function AppShell({
   const [open, setOpen] = useState(false);
   const items = navFor(role);
 
+  // Students get a dark, floating KV rail; other roles keep the light sidebar.
+  const dark = role === "student";
+
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
-  const NavList = () => (
+  const navList = (
     <nav className="flex flex-col gap-0.5 p-3">
       {items.map((item) => {
         const active = isActive(item.href);
@@ -41,12 +44,23 @@ export function AppShell({
             aria-current={active ? "page" : undefined}
             className={cn(
               "flex items-center gap-3 rounded-sm px-3 py-2 text-[14px] font-medium transition-colors",
-              active
-                ? "bg-gold-100 text-ink-900 ring-1 ring-gold-300"
-                : "text-ink-500 hover:bg-panel hover:text-ink-900",
+              dark
+                ? active
+                  ? "bg-gold-500 text-ink-900"
+                  : "text-gold-100/80 hover:bg-white/10 hover:text-gold-100"
+                : active
+                  ? "bg-gold-100 text-ink-900 ring-1 ring-gold-300"
+                  : "text-ink-500 hover:bg-panel hover:text-ink-900",
             )}
           >
-            <Icon size={18} className={active ? "text-gold-700" : "text-muted"} />
+            <Icon
+              size={18}
+              className={cn(
+                active
+                  ? dark ? "text-ink-900" : "text-gold-700"
+                  : dark ? "text-gold-500" : "text-muted",
+              )}
+            />
             {t(item.labelKey)}
           </Link>
         );
@@ -54,41 +68,62 @@ export function AppShell({
     </nav>
   );
 
+  const brandHeader = (
+    <div className={cn("flex h-16 items-center gap-2.5 px-4", dark ? "border-b border-white/10" : "border-b border-hair")}>
+      <KVEmblem size={36} />
+      <div className="leading-tight">
+        <div className={cn("text-[13px] font-bold", dark ? "text-gold-100" : "text-ink-900")}>Kendriya Vidyalaya No 1</div>
+        <div className={cn("text-[11px]", dark ? "text-gold-100/50" : "text-muted")}>IIT Kharagpur</div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[264px_1fr]">
       {/* Desktop sidebar */}
-      <aside className="sticky top-0 hidden h-dvh flex-col border-r border-hair bg-surface lg:flex">
-        <div className="flex h-16 items-center gap-2.5 border-b border-hair px-4">
-          <KVEmblem size={36} />
-          <div className="leading-tight">
-            <div className="text-[13px] font-bold text-ink-900">Kendriya Vidyalaya No 1</div>
-            <div className="text-[11px] text-muted">IIT Kharagpur</div>
-          </div>
-        </div>
+      <aside
+        className={cn(
+          "sticky hidden flex-col lg:flex",
+          dark
+            ? "top-3 m-3 h-[calc(100dvh-1.5rem)] overflow-hidden rounded-lg bg-gradient-to-b from-ink-900 to-ink-700 shadow-[var(--shadow-pop)] ring-1 ring-ink-900/60"
+            : "top-0 h-dvh border-r border-hair bg-surface",
+        )}
+      >
+        {dark && <div className="h-1 shrink-0 bg-gradient-to-r from-gold-500 to-gold-300" />}
+        {brandHeader}
         <div className="flex-1 overflow-y-auto">
-          <NavList />
+          {navList}
         </div>
-        <UserCard name={name} roleLabel={roleLabel} />
+        <UserCard name={name} roleLabel={roleLabel} dark={dark} />
       </aside>
 
       {/* Mobile drawer */}
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-ink-900/30" onClick={() => setOpen(false)} />
-          <aside className="absolute left-0 top-0 flex h-full w-72 flex-col bg-surface shadow-[var(--shadow-pop)]">
-            <div className="flex h-16 items-center justify-between border-b border-hair px-4">
+          <aside
+            className={cn(
+              "absolute left-0 top-0 flex h-full w-72 flex-col shadow-[var(--shadow-pop)]",
+              dark ? "bg-gradient-to-b from-ink-900 to-ink-700" : "bg-surface",
+            )}
+          >
+            <div className={cn("flex h-16 items-center justify-between px-4", dark ? "border-b border-white/10" : "border-b border-hair")}>
               <div className="flex items-center gap-2.5">
                 <KVEmblem size={32} />
-                <span className="text-[13px] font-bold text-ink-900">Kendriya Vidyalaya No 1</span>
+                <span className={cn("text-[13px] font-bold", dark ? "text-gold-100" : "text-ink-900")}>Kendriya Vidyalaya No 1</span>
               </div>
-              <button aria-label={t("common.close")} onClick={() => setOpen(false)} className="rounded-sm p-1.5 text-ink-500 hover:bg-panel">
+              <button
+                aria-label={t("common.close")}
+                onClick={() => setOpen(false)}
+                className={cn("rounded-sm p-1.5", dark ? "text-gold-100/70 hover:bg-white/10" : "text-ink-500 hover:bg-panel")}
+              >
                 <CloseIcon size={20} />
               </button>
             </div>
             <div className="flex-1 overflow-y-auto">
-              <NavList />
+              {navList}
             </div>
-            <UserCard name={name} roleLabel={roleLabel} />
+            <UserCard name={name} roleLabel={roleLabel} dark={dark} />
           </aside>
         </div>
       )}
@@ -119,16 +154,21 @@ export function AppShell({
   );
 }
 
-function UserCard({ name, roleLabel }: { name: string; roleLabel: string }) {
+function UserCard({ name, roleLabel, dark }: { name: string; roleLabel: string; dark?: boolean }) {
   const initials = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
   return (
-    <div className="flex items-center gap-3 border-t border-hair p-4">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink-900 text-[13px] font-semibold text-gold-100">
+    <div className={cn("flex items-center gap-3 p-4", dark ? "border-t border-white/10" : "border-t border-hair")}>
+      <div
+        className={cn(
+          "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold",
+          dark ? "bg-gold-500 text-ink-900" : "bg-ink-900 text-gold-100",
+        )}
+      >
         {initials}
       </div>
       <div className="min-w-0 leading-tight">
-        <div className="truncate text-[13px] font-semibold text-ink-900">{name}</div>
-        <div className="truncate text-[12px] text-ink-500">{roleLabel}</div>
+        <div className={cn("truncate text-[13px] font-semibold", dark ? "text-gold-100" : "text-ink-900")}>{name}</div>
+        <div className={cn("truncate text-[12px]", dark ? "text-gold-100/60" : "text-ink-500")}>{roleLabel}</div>
       </div>
     </div>
   );
