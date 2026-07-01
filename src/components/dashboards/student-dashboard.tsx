@@ -11,14 +11,14 @@ import { navFor } from "@/lib/nav";
 import { KVEmblem } from "@/components/brand";
 import { AnnounceIcon, CalendarIcon, ArrowRightIcon } from "@/components/icons";
 import { StatCard } from "@/components/dashboards/parts";
-import { cn } from "@/lib/utils";
 
 type Att = Awaited<ReturnType<typeof getStudentAttendance>>;
 type Standing = Awaited<ReturnType<typeof getStudentStanding>>;
 
-// Three-column shell: a dark section rail (with KV lockup pinned bottom-left),
-// the student's overview as the largest main-content area, and a right column
-// stacking Announcements → Quick Links → Event Calendar.
+// The app's own left sidebar is the page's navigation rail, so the dashboard
+// itself is just a centered KV brand header over two columns: the student's
+// overview (main content) and a right column stacking Announcements → Quick
+// Links → Event Calendar.
 export async function StudentDashboard({ session }: { session: Session }) {
   const year = await getCurrentYear();
   const studentId = session.studentId!;
@@ -28,62 +28,23 @@ export async function StudentDashboard({ session }: { session: Session }) {
   ]);
 
   return (
-    <div className="grid items-start gap-5 lg:grid-cols-[13.5rem_minmax(0,1fr)_18.5rem]">
-      <SectionRail />
-      <MainContent name={session.fullName} standing={standing} att={att} />
-      <div className="flex flex-col gap-5">
-        <AnnouncementsCard />
-        <QuickLinksCard />
-        <EventCalendarCard />
+    <div>
+      {/* Centered brand header */}
+      <div className="mb-7 flex flex-col items-center text-center">
+        <KVEmblem size={52} />
+        <h1 className="t-h2 mt-2.5 text-ink-900">Kendriya Vidyalaya No 1</h1>
+        <p className="mt-0.5 text-[13px] font-medium uppercase tracking-[0.12em] text-gold-700">IIT Kharagpur</p>
+      </div>
+
+      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
+        <MainContent name={session.fullName} standing={standing} att={att} />
+        <div className="flex flex-col gap-5">
+          <AnnouncementsCard />
+          <QuickLinksCard />
+          <EventCalendarCard />
+        </div>
       </div>
     </div>
-  );
-}
-
-// ── Left: dark floating section rail, KV lockup at the bottom ────────────────
-async function SectionRail() {
-  const { t } = await getT();
-  const items = navFor("student");
-  return (
-    <aside className="sticky top-6 flex flex-col overflow-hidden rounded-lg bg-gradient-to-b from-ink-900 to-ink-700 shadow-[var(--shadow-pop)] ring-1 ring-ink-900/60">
-      <div className="h-1 bg-gradient-to-r from-gold-500 to-gold-300" />
-      <div className="flex flex-1 flex-col p-4">
-        <div className="mb-3 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-gold-300">
-          {t("dashboard.sections")}
-        </div>
-        <nav className="flex flex-col gap-0.5">
-          {items.map((item) => {
-            const Icon = item.icon;
-            const isHome = item.href === "/";
-            return (
-              <Link
-                key={item.href + item.labelKey}
-                href={item.href}
-                aria-current={isHome ? "page" : undefined}
-                className={cn(
-                  "group flex items-center gap-2.5 rounded-sm px-2.5 py-2 text-[13.5px] font-medium transition-colors",
-                  isHome
-                    ? "bg-gold-500 text-ink-900"
-                    : "text-gold-100/80 hover:bg-white/10 hover:text-gold-100",
-                )}
-              >
-                <Icon size={17} className={isHome ? "text-ink-900" : "text-gold-500 group-hover:text-gold-300"} />
-                <span className="truncate">{t(item.labelKey)}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* KV lockup — pinned at the bottom, lowercase Inter wordmark */}
-        <div className="mt-6 flex items-center gap-2.5 border-t border-white/10 pt-4">
-          <KVEmblem size={30} />
-          <div className="leading-tight lowercase">
-            <div className="text-[12.5px] font-normal text-gold-100">kendriya vidyalaya no.1</div>
-            <div className="text-[11px] font-normal text-gold-100/50">iit kharagpur</div>
-          </div>
-        </div>
-      </div>
-    </aside>
   );
 }
 
