@@ -26,8 +26,8 @@ export function ScopeBar({
       if (v) next.set(k, v);
       else next.delete(k);
     }
-    // A new section has its own attendance history — don't carry the old date.
-    if ("section" in patch) next.delete("date");
+    // A new section has its own roster/history — drop section-specific params.
+    if ("section" in patch) { next.delete("date"); next.delete("student"); }
     router.push(`${pathname}?${next.toString()}`);
   }
 

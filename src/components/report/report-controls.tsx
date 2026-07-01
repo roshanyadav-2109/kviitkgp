@@ -25,7 +25,7 @@ export function ReportControls({ month, extra }: { month: string; extra?: React.
       </div>
       {extra}
       <Button variant="subtle" onClick={() => window.print()} className="ml-auto">
-        <ReportIcon size={16} /> {t("common.print")}
+        <ReportIcon size={16} /> {t("x.download")}
       </Button>
     </div>
   );

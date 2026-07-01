@@ -227,6 +227,11 @@ const hi: Messages = {
     reasonOverall: "कुल {avg}%",
     reasonWeak: "{subjects} में कमज़ोर",
     reasonTrend: "{pts} अंक गिर रहा",
+    reportWhat: "क्या देखें",
+    reportOverview: "कक्षा सारांश",
+    reportStudent: "छात्र रिपोर्ट",
+    reportPickStudent: "एक छात्र चुनें",
+    download: "डाउनलोड / प्रिंट",
   },
 };
 export default hi;

@@ -14,13 +14,12 @@ export type NavItem = {
 };
 
 const ALL: NavRole[] = ["student", "guardian", "subject_teacher", "class_teacher", "principal", "office"];
-const STAFF: NavRole[] = ["subject_teacher", "class_teacher", "principal", "office"];
 
 export const NAV: NavItem[] = [
   { href: "/", icon: DashboardIcon, labelKey: "nav.dashboard", roles: ALL },
   { href: "/progress", icon: ProgressIcon, labelKey: "nav.myProgress", roles: ["student"] },
   { href: "/progress", icon: ProgressIcon, labelKey: "nav.childProgress", roles: ["guardian"] },
-  { href: "/progress", icon: ProgressIcon, labelKey: "nav.progress", roles: STAFF },
+  { href: "/progress", icon: ProgressIcon, labelKey: "nav.progress", roles: ["subject_teacher", "class_teacher", "principal"] },
   { href: "/attendance", icon: AttendanceIcon, labelKey: "nav.attendance", roles: ALL },
   { href: "/marks", icon: MarksIcon, labelKey: "nav.marks", roles: ["subject_teacher", "class_teacher", "office"] },
   { href: "/students", icon: StudentsIcon, labelKey: "nav.students", roles: ["class_teacher", "principal", "office"] },
@@ -28,7 +27,7 @@ export const NAV: NavItem[] = [
   { href: "/calendar", icon: CalendarIcon, labelKey: "nav.calendar", roles: ALL },
   { href: "/reports", icon: ReportIcon, labelKey: "nav.reports", roles: ["student", "guardian", "class_teacher", "principal", "office"] },
   { href: "/leave", icon: LeaveIcon, labelKey: "nav.leave", roles: ["student", "guardian", "class_teacher"] },
-  { href: "/feedback", icon: FeedbackIcon, labelKey: "nav.feedback", roles: ["guardian", "class_teacher", "principal", "office"] },
+  { href: "/feedback", icon: FeedbackIcon, labelKey: "nav.feedback", roles: ["guardian", "class_teacher", "principal"] },
   { href: "/allotments", icon: AllotmentIcon, labelKey: "nav.allotments", roles: ["principal", "office"] },
 ];
 

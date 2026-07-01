@@ -226,6 +226,11 @@ const en = {
     reasonOverall: "overall {avg}%",
     reasonWeak: "weak in {subjects}",
     reasonTrend: "trending down {pts} pts",
+    reportWhat: "What to view",
+    reportOverview: "Class overview",
+    reportStudent: "Student report",
+    reportPickStudent: "Select a student",
+    download: "Download / Print",
   },
 } as const;
 export default en;

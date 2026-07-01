@@ -227,6 +227,11 @@ const bn: Messages = {
     reasonOverall: "সার্বিক {avg}%",
     reasonWeak: "{subjects}-এ দুর্বল",
     reasonTrend: "{pts} পয়েন্ট কমছে",
+    reportWhat: "কী দেখবেন",
+    reportOverview: "শ্রেণি সারসংক্ষেপ",
+    reportStudent: "ছাত্র প্রতিবেদন",
+    reportPickStudent: "একজন ছাত্র বেছে নিন",
+    download: "ডাউনলোড / প্রিন্ট",
   },
 };
 export default bn;
