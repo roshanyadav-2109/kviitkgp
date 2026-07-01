@@ -14,16 +14,19 @@ export function AppShell({
   name,
   role,
   roleLabel,
+  subLabel,
   children,
 }: {
   name: string;
   role: NavRole;
   roleLabel: string;
+  subLabel?: string;
   children: React.ReactNode;
 }) {
   const t = useT();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const items = navFor(role);
 
   // Students get a dark, floating KV rail; other roles keep the light sidebar.
@@ -78,6 +81,14 @@ export function AppShell({
     </div>
   );
 
+  // Dark rail footer: vendor wordmark (Hebrew word + "technologies"), no user card.
+  const brandFooter = (
+    <div className="border-t border-white/10 px-4 py-4">
+      <div dir="rtl" lang="he" className="text-[19px] font-bold leading-none text-gold-100">עֲבָרִית</div>
+      <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold-100/50">technologies</div>
+    </div>
+  );
+
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[264px_1fr]">
       {/* Desktop sidebar */}
@@ -94,7 +105,7 @@ export function AppShell({
         <div className="flex-1 overflow-y-auto">
           {navList}
         </div>
-        <UserCard name={name} roleLabel={roleLabel} dark={dark} />
+        {dark ? brandFooter : <UserCard name={name} roleLabel={roleLabel} dark={dark} />}
       </aside>
 
       {/* Mobile drawer */}
@@ -123,7 +134,7 @@ export function AppShell({
             <div className="flex-1 overflow-y-auto">
               {navList}
             </div>
-            <UserCard name={name} roleLabel={roleLabel} dark={dark} />
+            {dark ? brandFooter : <UserCard name={name} roleLabel={roleLabel} dark={dark} />}
           </aside>
         </div>
       )}
@@ -137,14 +148,41 @@ export function AppShell({
           <div className="lg:hidden">
             <KVEmblem size={30} />
           </div>
-          <div className="ml-auto flex items-center gap-2">
-            <LocaleSwitcher />
-            <form action={signOut}>
-              <button className="inline-flex items-center gap-1.5 rounded-sm border border-hair bg-surface px-2.5 py-1.5 text-[13px] font-medium text-ink-700 hover:bg-panel" title={t("common.signOut")}>
-                <LogoutIcon size={16} className="text-muted" />
-                <span className="hidden sm:inline">{t("common.signOut")}</span>
-              </button>
-            </form>
+          <div className="relative ml-auto">
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              className="flex items-center gap-2.5 rounded-sm px-2 py-1.5 hover:bg-panel"
+            >
+              <span className="text-right leading-tight">
+                <span className="block text-[13px] font-semibold text-ink-900">{name}</span>
+                <span className="block text-[12px] text-ink-500">{subLabel ?? roleLabel}</span>
+              </span>
+              <span className="flex items-center gap-0.5 pl-0.5 text-ink-500" aria-hidden>
+                <span className="h-1 w-1 rounded-full bg-current" />
+                <span className="h-1 w-1 rounded-full bg-current" />
+                <span className="h-1 w-1 rounded-full bg-current" />
+              </span>
+            </button>
+
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-30" onClick={() => setMenuOpen(false)} />
+                <div role="menu" className="absolute right-0 top-full z-40 mt-1.5 w-52 rounded-md border border-hair bg-surface p-1.5 shadow-[var(--shadow-pop)]">
+                  <div className="px-1.5 pb-1.5">
+                    <LocaleSwitcher />
+                  </div>
+                  <div className="my-1 border-t border-hair" />
+                  <form action={signOut}>
+                    <button className="flex w-full items-center gap-2 rounded-sm px-2 py-2 text-left text-[13px] font-medium text-ink-700 hover:bg-panel">
+                      <LogoutIcon size={16} className="text-muted" />
+                      {t("common.signOut")}
+                    </button>
+                  </form>
+                </div>
+              </>
+            )}
           </div>
         </header>
 

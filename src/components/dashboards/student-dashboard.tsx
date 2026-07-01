@@ -8,7 +8,6 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty";
 import { navFor } from "@/lib/nav";
-import { KVEmblem } from "@/components/brand";
 import { AnnounceIcon, CalendarIcon, ArrowRightIcon } from "@/components/icons";
 import { StatCard } from "@/components/dashboards/parts";
 
@@ -29,13 +28,6 @@ export async function StudentDashboard({ session }: { session: Session }) {
 
   return (
     <div>
-      {/* Centered brand header */}
-      <div className="mb-7 flex flex-col items-center text-center">
-        <KVEmblem size={52} />
-        <h1 className="t-h2 mt-2.5 text-ink-900">Kendriya Vidyalaya No 1</h1>
-        <p className="mt-0.5 text-[13px] font-medium uppercase tracking-[0.12em] text-gold-700">IIT Kharagpur</p>
-      </div>
-
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
         <MainContent name={session.fullName} standing={standing} att={att} />
         <div className="flex flex-col gap-5">
