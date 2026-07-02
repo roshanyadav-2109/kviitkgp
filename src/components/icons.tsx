@@ -38,6 +38,12 @@ import {
   CheckmarkCircle01Icon,
   Add01Icon,
   ArrowUpDoubleIcon,
+  Comment01Icon,
+  RepeatIcon,
+  FavouriteIcon,
+  Analytics01Icon,
+  Share08Icon,
+  MoreHorizontalIcon,
 } from "@hugeicons/core-free-icons";
 
 export type IconProps = { className?: string; size?: number; strokeWidth?: number };
@@ -86,3 +92,11 @@ export const TestTubeIcon = make(TestTube01Icon);
 export const CheckIcon = make(CheckmarkCircle01Icon);
 export const PlusIcon = make(Add01Icon);
 export const PromotionIcon = make(ArrowUpDoubleIcon);
+
+// X-style post action bar
+export const ReplyIcon = make(Comment01Icon);
+export const RepostIcon = make(RepeatIcon);
+export const LikeIcon = make(FavouriteIcon);
+export const ViewsIcon = make(Analytics01Icon);
+export const ShareIcon = make(Share08Icon);
+export const MoreIcon = make(MoreHorizontalIcon);

@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getT } from "@/i18n/server";
 import { fmtDate } from "@/i18n/format";
 import { EmptyState } from "@/components/ui/empty";
-import { AnnounceIcon, CheckIcon } from "@/components/icons";
+import { AnnounceIcon, CheckIcon, ReplyIcon, RepostIcon, LikeIcon, ViewsIcon, ShareIcon, MoreIcon } from "@/components/icons";
 import { AnnouncementForm } from "@/components/announcements/announcement-form";
 import { getStaffScope } from "@/lib/data/scope";
 
@@ -43,15 +43,26 @@ export default async function AnnouncementsPage() {
             const meta = posterMeta[role] ?? posterMeta.subject_teacher;
             return (
               <article key={a.id} className="px-4 py-3 transition-colors hover:bg-panel/40">
-                <div className="flex items-center gap-1 text-[14px] leading-tight">
-                  <span className="truncate font-bold text-ink-900">{t(meta.key)}</span>
-                  {meta.verified && <CheckIcon size={15} className="shrink-0 text-gold-500" />}
-                  <span className="truncate text-muted">@{meta.handle}</span>
-                  <span className="shrink-0 text-muted">·</span>
-                  <span className="shrink-0 whitespace-nowrap text-muted">{fmtDate(locale, a.published_at, { day: "numeric", month: "short", year: "2-digit" })}</span>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-1 text-[14px] leading-tight">
+                    <span className="truncate font-bold text-ink-900">{t(meta.key)}</span>
+                    {meta.verified && <CheckIcon size={15} className="shrink-0 text-gold-500" />}
+                    <span className="truncate text-muted">@{meta.handle}</span>
+                    <span className="shrink-0 text-muted">·</span>
+                    <span className="shrink-0 whitespace-nowrap text-muted">{fmtDate(locale, a.published_at, { day: "numeric", month: "short", year: "2-digit" })}</span>
+                  </div>
+                  <MoreIcon size={16} className="mt-0.5 shrink-0 text-muted" />
                 </div>
                 <h2 className="mt-1 text-[15px] font-semibold text-ink-900">{a.title}</h2>
                 <p className="mt-0.5 whitespace-pre-wrap text-[14px] leading-relaxed text-ink-700">{a.body}</p>
+                {/* X-style action bar */}
+                <div className="mt-2.5 flex max-w-sm items-center justify-between text-muted">
+                  <ReplyIcon size={16} className="transition-colors hover:text-ink-700" />
+                  <RepostIcon size={16} className="transition-colors hover:text-up" />
+                  <LikeIcon size={16} className="transition-colors hover:text-down" />
+                  <ViewsIcon size={16} className="transition-colors hover:text-ink-700" />
+                  <ShareIcon size={16} className="transition-colors hover:text-ink-700" />
+                </div>
               </article>
             );
           })
