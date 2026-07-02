@@ -6,9 +6,9 @@ import { Field, Input, Textarea, Select } from "@/components/ui/field";
 import { useT } from "@/i18n/provider";
 import { applyLeave, decideLeave } from "@/app/(app)/leave/actions";
 
-export function LeaveForm({ children }: { children: { id: number; full_name: string }[] }) {
+export function LeaveForm({ students }: { students: { id: number; full_name: string }[] }) {
   const t = useT();
-  const [studentId, setStudentId] = useState<number | "">(children[0]?.id ?? "");
+  const [studentId, setStudentId] = useState<number | "">(students[0]?.id ?? "");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [reason, setReason] = useState("");
@@ -25,12 +25,12 @@ export function LeaveForm({ children }: { children: { id: number; full_name: str
 
   return (
     <Card>
-      <CardHeader eyebrow={t("leave.apply")} title="" />
+      <CardHeader title={t("leave.apply")} />
       <CardBody className="space-y-3 pt-1">
-        {children.length > 1 && (
+        {students.length > 1 && (
           <Field label={t("common.student")}>
             <Select value={studentId} onChange={(e) => setStudentId(Number(e.target.value))}>
-              {children.map((c) => (<option key={c.id} value={c.id}>{c.full_name}</option>))}
+              {students.map((c) => (<option key={c.id} value={c.id}>{c.full_name}</option>))}
             </Select>
           </Field>
         )}

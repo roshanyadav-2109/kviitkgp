@@ -36,7 +36,7 @@ export default async function LeavePage() {
         <div className="space-y-5">
           {/* Absence notices — auto-created when a class teacher marks a pupil absent */}
           <Card>
-            <CardHeader eyebrow={t("leave.absence")} title="" />
+            <CardHeader title={t("leave.absence")} />
             <CardBody className="pt-1">
               <AbsenceList notices={notices} canExplain={isOwner} />
             </CardBody>
@@ -45,7 +45,7 @@ export default async function LeavePage() {
           {/* Leave applications (guardian applies; class teacher decides) */}
           {!(session.role === "student") && (
             <Card>
-              <CardHeader eyebrow={t("leave.title")} title="" />
+              <CardHeader title={t("leave.title")} />
               <CardBody className="space-y-3 pt-1">
                 {rows && rows.length ? (
                   rows.map((l) => {
@@ -73,7 +73,7 @@ export default async function LeavePage() {
             </Card>
           )}
         </div>
-        {isGuardian && children.length > 0 && <LeaveForm children={children} />}
+        {isGuardian && children.length > 0 && <LeaveForm students={children} />}
       </div>
     </div>
   );
