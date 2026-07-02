@@ -4,12 +4,6 @@ import { useT } from "@/i18n/provider";
 
 type Sessions = Awaited<ReturnType<typeof import("@/lib/data/analytics").getStudentProgress>>["sessions"];
 
-const bandCell: Record<string, string> = {
-  A1: "bg-up-soft text-up", A2: "bg-up-soft text-up", B1: "bg-gold-100 text-gold-700",
-  B2: "bg-gold-100 text-gold-700", C1: "bg-watch-soft text-watch", C2: "bg-watch-soft text-watch",
-  D: "bg-down-soft text-down", E: "bg-down-soft text-down",
-};
-
 export function SessionDetail({ sessions }: { sessions: Sessions }) {
   const t = useT();
   const [yearId, setYearId] = useState<number>(sessions[0]?.yearId ?? 0);
@@ -48,7 +42,7 @@ export function SessionDetail({ sessions }: { sessions: Sessions }) {
                   return (
                     <td key={a} className="px-1 py-1.5 text-center">
                       {c ? (
-                        <span className={`inline-block min-w-[38px] rounded-xs px-1.5 py-1 font-semibold tabular ${bandCell[c.band ?? "flat"] ?? "bg-panel text-ink-500"}`}>{c.percent}</span>
+                        <span className={`tabular ${c.percent < 33 ? "text-down" : "text-ink-900"}`}>{c.percent}</span>
                       ) : (
                         <span className="text-muted">—</span>
                       )}

@@ -58,7 +58,7 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
 
       {/* Per-subject latest with delta */}
       <Card>
-        <CardHeader eyebrow={t("progress.subjectTrends")} title={t("common.subject")} />
+        <CardHeader title={t("common.subject")} />
         <CardBody className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {data.subjects.map((s) => (
             <div key={s.code} className="rounded-md border border-hair bg-panel/40 p-3">
@@ -87,14 +87,14 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
       {/* Year-on-year overall */}
       {data.yearOnYear.length > 1 && (
         <Card>
-          <CardHeader eyebrow={t("progress.yearOnYear")} title={t("progress.overall")} />
+          <CardHeader title={t("progress.yearOnYear")} />
           <CardBody className="pt-2"><KVBarChart data={data.yearOnYear} xKey="year" valueKey="avg" height={200} /></CardBody>
         </Card>
       )}
 
       {/* Observations */}
       <Card>
-        <CardHeader eyebrow={t("progress.timeline")} title={t("x.progObservations")} />
+        <CardHeader title={t("x.progObservations")} />
         <CardBody className="pt-2">
           {data.observations.length ? (
             <ul className="space-y-3">

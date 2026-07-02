@@ -52,26 +52,33 @@ export function KVLineChart({
   yDomain?: [number, number];
 }) {
   const Chart = area ? AreaChart : LineChart;
+  // When the x-axis has many points, give the plot a min width and let it scroll
+  // horizontally rather than cramming every label together.
+  const minWidth = data.length > 6 ? data.length * 60 : undefined;
   return (
-    <ResponsiveContainer width="100%" height={height}>
-      <Chart data={data} margin={{ top: 8, right: 12, left: -12, bottom: 4 }}>
-        <CartesianGrid stroke={C.hair} strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey={xKey} {...axis} interval="preserveStartEnd" />
-        <YAxis domain={yDomain} {...axis} width={40} />
-        <Tooltip content={<TooltipBox />} cursor={{ stroke: C.gold300 }} />
-        {lines.map((l, i) =>
-          area ? (
-            <Area key={l.key} type="monotone" dataKey={l.key} name={l.name}
-              stroke={l.color ?? SERIES[i % SERIES.length]} fill={l.color ?? SERIES[i % SERIES.length]}
-              fillOpacity={0.12} strokeWidth={2} dot={{ r: 2.5 }} activeDot={{ r: 4 }} />
-          ) : (
-            <Line key={l.key} type="monotone" dataKey={l.key} name={l.name}
-              stroke={l.color ?? SERIES[i % SERIES.length]} strokeWidth={2}
-              dot={{ r: 2.5, strokeWidth: 0, fill: l.color ?? SERIES[i % SERIES.length] }} activeDot={{ r: 4 }} />
-          ),
-        )}
-      </Chart>
-    </ResponsiveContainer>
+    <div className="overflow-x-auto">
+      <div style={minWidth ? { minWidth } : undefined}>
+        <ResponsiveContainer width="100%" height={height}>
+          <Chart data={data} margin={{ top: 8, right: 12, left: -12, bottom: 4 }}>
+            <CartesianGrid stroke={C.hair} strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey={xKey} {...axis} interval={minWidth ? 0 : "preserveStartEnd"} />
+            <YAxis domain={yDomain} {...axis} width={40} />
+            <Tooltip content={<TooltipBox />} cursor={{ stroke: C.gold300 }} />
+            {lines.map((l, i) =>
+              area ? (
+                <Area key={l.key} type="monotone" dataKey={l.key} name={l.name}
+                  stroke={l.color ?? SERIES[i % SERIES.length]} fill={l.color ?? SERIES[i % SERIES.length]}
+                  fillOpacity={0.12} strokeWidth={2} dot={{ r: 2.5 }} activeDot={{ r: 4 }} />
+              ) : (
+                <Line key={l.key} type="monotone" dataKey={l.key} name={l.name}
+                  stroke={l.color ?? SERIES[i % SERIES.length]} strokeWidth={2}
+                  dot={{ r: 2.5, strokeWidth: 0, fill: l.color ?? SERIES[i % SERIES.length] }} activeDot={{ r: 4 }} />
+              ),
+            )}
+          </Chart>
+        </ResponsiveContainer>
+      </div>
+    </div>
   );
 }
 
@@ -88,7 +95,9 @@ export function KVBarChart({
   maxDomain?: number;
 }) {
   const bandColor: Record<string, string> = { A1: C.up, A2: C.up, B1: C.gold, B2: C.gold, C1: C.watch, C2: C.watch, D: C.down, E: C.down };
-  return (
+  // Vertical bars with many categories scroll horizontally instead of squashing.
+  const minWidth = !horizontal && data.length > 8 ? data.length * 52 : undefined;
+  const chart = (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} layout={horizontal ? "vertical" : "horizontal"} margin={{ top: 8, right: 16, left: horizontal ? 8 : -12, bottom: 4 }}>
         <CartesianGrid stroke={C.hair} strokeDasharray="3 3" horizontal={!horizontal} vertical={horizontal} />
@@ -116,4 +125,7 @@ export function KVBarChart({
       </BarChart>
     </ResponsiveContainer>
   );
+  return minWidth ? (
+    <div className="overflow-x-auto"><div style={{ minWidth }}>{chart}</div></div>
+  ) : chart;
 }
