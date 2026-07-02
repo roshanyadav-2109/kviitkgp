@@ -94,6 +94,15 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
   const { t, locale } = await getT();
   const firstName = name.split(" ").slice(-1)[0];
   const links = navFor("student").filter((l) => l.href !== "/");
+  // A distinct, lively colour per quick link.
+  const linkColor: Record<string, string> = {
+    "/progress": "text-[rgb(79,70,229)]",
+    "/attendance": "text-[rgb(22,163,74)]",
+    "/announcements": "text-[rgb(217,119,6)]",
+    "/calendar": "text-[rgb(219,39,119)]",
+    "/reports": "text-[rgb(124,58,237)]",
+    "/leave": "text-[rgb(13,148,136)]",
+  };
   return (
     <Panel className="flex flex-col p-6">
       <div className="flex items-start justify-between gap-3">
@@ -114,19 +123,17 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
       {/* Quick links — horizontal scroll, above My Progress */}
       <div className="mt-5">
         <div className="t-label mb-2">{t("dashboard.quickLinks")}</div>
-        <div className="flex gap-3 overflow-x-auto pb-1">
+        <div className="flex gap-2.5 overflow-x-auto pb-1">
           {links.map((l) => {
             const Icon = l.icon;
             return (
               <Link
                 key={l.href + l.labelKey}
                 href={l.href}
-                className="group flex w-[92px] shrink-0 flex-col items-center gap-1.5 rounded-sm bg-surface px-2 py-3 text-center transition-colors hover:bg-gold-100"
+                className="group flex shrink-0 items-center gap-2 rounded-sm border border-hair bg-surface px-3 py-2 transition-colors hover:bg-panel"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-gold-100 text-gold-700 transition-colors group-hover:bg-surface">
-                  <Icon size={18} />
-                </span>
-                <span className="text-[12px] font-semibold leading-tight text-ink-900">{t(l.labelKey)}</span>
+                <Icon size={18} className={linkColor[l.href] ?? "text-ink-700"} />
+                <span className="whitespace-nowrap text-[13px] font-semibold text-ink-900">{t(l.labelKey)}</span>
               </Link>
             );
           })}
