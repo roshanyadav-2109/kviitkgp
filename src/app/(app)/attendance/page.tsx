@@ -5,7 +5,6 @@ import { fmtDate, fmtMonth } from "@/i18n/format";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
-import { StatusPill } from "@/components/ui/status";
 import { ScopeBar } from "@/components/scope-bar";
 import { AttendanceBoard } from "@/components/attendance/attendance-board";
 import { AttendanceOverview } from "@/components/attendance/attendance-overview";
@@ -23,6 +22,7 @@ type SP = Promise<Record<string, string | string[] | undefined>>;
 const num = numParam;
 const str = strParam;
 const statusStyle: Record<string, "up" | "down" | "watch" | "flat"> = { present: "up", absent: "down", late: "watch", leave: "flat", holiday: "flat" };
+const statusText: Record<"up" | "down" | "watch" | "flat", string> = { up: "text-up", down: "text-down", watch: "text-watch", flat: "text-muted" };
 
 export default async function AttendancePage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
@@ -56,7 +56,7 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
               <div className="t-label">{t("attendance.percent")}</div>
               <div className={`mt-1 text-[38px] font-bold leading-none tabular ${att.pct < 75 ? "text-down" : "text-ink-900"}`}>{att.pct}%</div>
               <div className="mt-1 text-[13px] text-ink-500">{att.present} / {att.total} {t("attendance.present").toLowerCase()}</div>
-              {att.pct < 75 && <div className="mt-3 rounded-sm bg-down-soft px-2.5 py-1.5 text-[12px] font-medium text-down">{t("attendance.belowThreshold")}</div>}
+              {att.pct < 75 && <div className="mt-3 text-[12px] font-medium text-down">{t("attendance.belowThreshold")}</div>}
             </CardBody>
           </Card>
           <Card>
@@ -66,7 +66,7 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
                 {att.recent.map((r, i) => (
                   <li key={i} className="flex items-center justify-between rounded-sm border border-hair px-2.5 py-1.5">
                     <span className="text-[13px] tabular text-ink-700">{fmtDate(locale, r.on_date, { day: "numeric", month: "short" })}</span>
-                    <StatusPill status={statusStyle[r.status]}>{t(`attendance.${r.status}`)}</StatusPill>
+                    <span className={`text-[12px] font-medium ${statusText[statusStyle[r.status]]}`}>{t(`attendance.${r.status}`)}</span>
                   </li>
                 ))}
               </ul>
