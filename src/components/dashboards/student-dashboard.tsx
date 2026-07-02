@@ -5,20 +5,34 @@ import { fmtPercent, fmtDate } from "@/i18n/format";
 import { getStudentStanding } from "@/lib/data/analytics";
 import { getStudentAttendance } from "@/lib/data/attendance";
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardBody, CardHeader } from "@/components/ui/card";
+import { CardBody, CardHeader } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty";
 import { navFor } from "@/lib/nav";
 import { AnnounceIcon, CalendarIcon, ArrowRightIcon } from "@/components/icons";
-import { StatCard } from "@/components/dashboards/parts";
 import { ProfileMenu } from "@/components/dashboards/profile-menu";
+import { cn } from "@/lib/utils";
 
 type Att = Awaited<ReturnType<typeof getStudentAttendance>>;
 type Standing = Awaited<ReturnType<typeof getStudentStanding>>;
 
-// The app's own left sidebar is the page's navigation rail, so the dashboard
-// itself is just a centered KV brand header over two columns: the student's
-// overview (main content) and a right column stacking Announcements → Quick
-// Links → Event Calendar.
+// Flat, borderless section on the white page — separated by fill + spacing only.
+function Panel({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <div className={cn("rounded-sm bg-panel/50", className)}>{children}</div>;
+}
+
+function Stat({ label, value, sub, tone = "ink" }: { label: string; value: React.ReactNode; sub?: string; tone?: "ink" | "up" | "down" | "gold" }) {
+  const toneCls = { ink: "text-ink-900", up: "text-up", down: "text-down", gold: "text-gold-700" }[tone];
+  return (
+    <div className="rounded-sm bg-surface p-4">
+      <div className="t-label">{label}</div>
+      <div className={cn("mt-1 text-[28px] font-bold leading-none tabular", toneCls)}>{value}</div>
+      {sub && <div className="mt-1.5 text-[12px] text-muted">{sub}</div>}
+    </div>
+  );
+}
+
+// Two columns: the student's overview (main) and a right column stacking the
+// profile card, Announcements, Quick Links and the Event Calendar.
 export async function StudentDashboard({ session }: { session: Session }) {
   const year = await getCurrentYear();
   const studentId = session.studentId!;
@@ -28,9 +42,9 @@ export async function StudentDashboard({ session }: { session: Session }) {
   ]);
 
   return (
-    <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
+    <div className="grid items-start gap-3 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
       <MainContent name={session.fullName} standing={standing} att={att} />
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-3">
         <ProfileCard name={session.fullName} studentId={studentId} />
         <AnnouncementsCard />
         <QuickLinksCard />
@@ -50,7 +64,7 @@ async function ProfileCard({ name, studentId }: { name: string; studentId: numbe
     [t("dashboard.classTeacher"), card?.classTeacher ?? "—"],
   ];
   return (
-    <Card>
+    <Panel>
       <CardBody>
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 text-[20px] font-normal leading-tight text-ink-900">{name}</div>
@@ -65,7 +79,7 @@ async function ProfileCard({ name, studentId }: { name: string; studentId: numbe
           ))}
         </dl>
       </CardBody>
-    </Card>
+    </Panel>
   );
 }
 
@@ -74,30 +88,30 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
   const { t, locale } = await getT();
   const firstName = name.split(" ").slice(-1)[0];
   return (
-    <Card className="flex flex-col p-6">
+    <Panel className="flex flex-col p-6">
       <div>
         <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
         <p className="mt-1 text-[14px] text-ink-500">{t("dashboard.overview")}</p>
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
-        <StatCard label={`${t("progress.overall")} ${t("progress.average")}`} value={fmtPercent(locale, standing?.studentAvg ?? null, 1)} tone="gold" />
-        <StatCard label={t("attendance.percent")} value={att ? `${att.pct}%` : "—"} tone={att && att.pct < 75 ? "down" : "up"} sub={att ? `${att.present}/${att.total}` : undefined} />
-        <StatCard label={t("progress.sectionStanding")} value={standing?.sectionRank ? `${standing.sectionRank}/${standing.sectionSize}` : "—"} sub={standing ? `${t("progress.sectionAvg")} ${fmtPercent(locale, standing.sectionAvg, 1)}` : undefined} />
-        <StatCard label={t("progress.classStanding")} value={standing?.classRank ? `${standing.classRank}/${standing.classSize}` : "—"} sub={standing ? `${t("progress.classAvg")} ${fmtPercent(locale, standing.classAvg, 1)}` : undefined} />
+        <Stat label={`${t("progress.overall")} ${t("progress.average")}`} value={fmtPercent(locale, standing?.studentAvg ?? null, 1)} tone="gold" />
+        <Stat label={t("attendance.percent")} value={att ? `${att.pct}%` : "—"} tone={att && att.pct < 75 ? "down" : "up"} sub={att ? `${att.present}/${att.total}` : undefined} />
+        <Stat label={t("progress.sectionStanding")} value={standing?.sectionRank ? `${standing.sectionRank}/${standing.sectionSize}` : "—"} sub={standing ? `${t("progress.sectionAvg")} ${fmtPercent(locale, standing.sectionAvg, 1)}` : undefined} />
+        <Stat label={t("progress.classStanding")} value={standing?.classRank ? `${standing.classRank}/${standing.classSize}` : "—"} sub={standing ? `${t("progress.classAvg")} ${fmtPercent(locale, standing.classAvg, 1)}` : undefined} />
       </div>
 
       {/* Progress call-to-action */}
-      <div className="mt-5 rounded-lg border border-hair bg-panel/40 p-5">
+      <div className="mt-5 rounded-sm bg-surface p-5">
         <div className="t-label mb-1">{t("nav.myProgress")}</div>
         <h3 className="t-h3 text-ink-900">{t("progress.title")}</h3>
         <p className="mt-1.5 text-[14px] leading-relaxed text-ink-500">{t("dashboard.progressCta")}</p>
-        <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-ink-900 px-3.5 py-2 text-[13px] font-semibold text-gold-100 transition-colors hover:bg-ink-700">
+        <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-ink-900 px-3.5 py-2 text-[13px] font-semibold text-gold-100 transition-colors hover:bg-ink-700">
           {t("nav.myProgress")}
           <ArrowRightIcon size={14} />
         </Link>
       </div>
-    </Card>
+    </Panel>
   );
 }
 
@@ -112,7 +126,7 @@ async function AnnouncementsCard() {
     .limit(4);
   const rows = data ?? [];
   return (
-    <Card>
+    <Panel>
       <CardHeader
         eyebrow={t("dashboard.recentAnnouncements")}
         title={t("announce.title")}
@@ -141,7 +155,7 @@ async function AnnouncementsCard() {
           <EmptyState icon={AnnounceIcon} title={t("common.noData")} />
         )}
       </CardBody>
-    </Card>
+    </Panel>
   );
 }
 
@@ -150,7 +164,7 @@ async function QuickLinksCard() {
   const { t } = await getT();
   const links = navFor("student").filter((l) => l.href !== "/");
   return (
-    <Card>
+    <Panel>
       <CardHeader eyebrow={t("dashboard.quickLinks")} />
       <CardBody className="pt-2">
         <div className="grid grid-cols-2 gap-2.5">
@@ -160,7 +174,7 @@ async function QuickLinksCard() {
               <Link
                 key={l.href + l.labelKey}
                 href={l.href}
-                className="group flex flex-col items-center gap-1.5 rounded-md border border-hair bg-surface px-2 py-3 text-center shadow-[var(--shadow-card)] transition-colors hover:border-gold-500 hover:bg-gold-100"
+                className="group flex flex-col items-center gap-1.5 rounded-sm bg-surface px-2 py-3 text-center transition-colors hover:bg-gold-100"
               >
                 <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-gold-100 text-gold-700 transition-colors group-hover:bg-surface">
                   <Icon size={18} />
@@ -171,7 +185,7 @@ async function QuickLinksCard() {
           })}
         </div>
       </CardBody>
-    </Card>
+    </Panel>
   );
 }
 
@@ -189,7 +203,7 @@ async function EventCalendarCard() {
   const events = (inMonth && inMonth.length ? inMonth : future ?? []).slice(0, 5);
 
   return (
-    <Card>
+    <Panel>
       <CardHeader
         eyebrow={t("dashboard.thisMonth")}
         title={t("announce.events")}
@@ -207,7 +221,7 @@ async function EventCalendarCard() {
               const d = new Date(e.start_date);
               return (
                 <li key={e.id}>
-                  <Link href="/calendar" className="group flex items-center gap-2.5 rounded-sm p-1 transition-colors hover:bg-panel">
+                  <Link href="/calendar" className="group flex items-center gap-2.5 rounded-sm p-1 transition-colors hover:bg-surface">
                     <span className="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-sm bg-ink-900 leading-none text-gold-100">
                       <span className="text-[15px] font-bold tabular">{fmtDate(locale, d, { day: "2-digit" })}</span>
                       <span className="text-[9px] font-semibold uppercase tracking-wide text-gold-300">{fmtDate(locale, d, { month: "short" })}</span>
@@ -222,12 +236,12 @@ async function EventCalendarCard() {
             })}
           </ul>
         ) : (
-          <div className="flex items-center gap-2 rounded-sm bg-panel/50 px-3 py-4 text-[13px] text-muted">
+          <div className="flex items-center gap-2 rounded-sm bg-surface px-3 py-4 text-[13px] text-muted">
             <CalendarIcon size={16} className="text-muted" />
             {t("dashboard.noEventsMonth")}
           </div>
         )}
       </CardBody>
-    </Card>
+    </Panel>
   );
 }

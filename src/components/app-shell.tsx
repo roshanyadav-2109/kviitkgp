@@ -44,7 +44,7 @@ export function AppShell({
             onClick={() => setOpen(false)}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2 text-[14px] font-medium transition-colors",
+              "flex items-center gap-3 rounded-sm px-3 py-2 text-[14px] font-medium transition-colors",
               dark
                 ? active
                   ? "bg-gold-500 text-ink-900"
@@ -96,13 +96,13 @@ export function AppShell({
   );
 
   return (
-    <div className="min-h-dvh lg:grid lg:grid-cols-[264px_1fr]">
+    <div className={cn("min-h-dvh lg:grid lg:grid-cols-[264px_1fr]", dark && "bg-white")}>
       {/* Desktop sidebar */}
       <aside
         className={cn(
           "sticky hidden flex-col lg:flex",
           dark
-            ? "top-3 m-3 h-[calc(100dvh-1.5rem)] overflow-hidden rounded-lg bg-gradient-to-b from-ink-900 to-ink-700 shadow-[var(--shadow-pop)] ring-1 ring-ink-900/60"
+            ? "top-3 m-3 h-[calc(100dvh-1.5rem)] overflow-hidden rounded-md bg-gradient-to-b from-ink-900 to-ink-700 ring-1 ring-ink-900/60"
             : "top-0 h-dvh border-r border-hair bg-surface",
         )}
       >
@@ -146,7 +146,7 @@ export function AppShell({
 
       <div className="flex min-w-0 flex-col">
         {/* Top bar */}
-        <header className={cn("sticky top-0 z-30 flex h-16 items-center gap-3 bg-paper/85 px-4 backdrop-blur sm:px-6", !dark && "border-b border-hair")}>
+        <header className={cn("sticky top-0 z-30 flex h-16 items-center gap-3 bg-paper/85 px-4 backdrop-blur sm:px-6", dark ? "lg:hidden" : "border-b border-hair")}>
           <button aria-label="Menu" onClick={() => setOpen(true)} className="rounded-sm p-1.5 text-ink-700 hover:bg-panel lg:hidden">
             <MenuIcon size={20} />
           </button>
@@ -194,7 +194,7 @@ export function AppShell({
           )}
         </header>
 
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6">{children}</main>
+        <main className={cn("w-full flex-1", dark ? "p-4 lg:py-3 lg:pl-0 lg:pr-4" : "mx-auto max-w-6xl px-4 py-6 sm:px-6")}>{children}</main>
       </div>
     </div>
   );
