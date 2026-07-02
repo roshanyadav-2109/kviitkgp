@@ -96,7 +96,7 @@ export function AppShell({
   );
 
   return (
-    <div className={cn("min-h-dvh lg:grid lg:grid-cols-[264px_1fr]", dark && "bg-white")}>
+    <div className={cn("min-h-dvh lg:grid lg:grid-cols-[264px_1fr]", dark && "bg-paper")}>
       {/* Desktop sidebar */}
       <aside
         className={cn(
@@ -194,7 +194,14 @@ export function AppShell({
           )}
         </header>
 
-        <main className={cn("w-full flex-1", dark ? "p-4 lg:py-3 lg:pl-0 lg:pr-4" : "mx-auto max-w-6xl px-4 py-6 sm:px-6")}>{children}</main>
+        {/* Every tab's content sits in one common block beside the sidebar. */}
+        <main className={cn("w-full flex-1", dark ? "p-3 lg:py-3 lg:pl-0 lg:pr-3" : "mx-auto max-w-6xl px-4 py-6 sm:px-6")}>
+          {dark ? (
+            <div className="rounded-md bg-surface p-4 lg:min-h-[calc(100dvh-1.5rem)] lg:p-6">{children}</div>
+          ) : (
+            children
+          )}
+        </main>
       </div>
     </div>
   );
