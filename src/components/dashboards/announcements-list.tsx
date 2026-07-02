@@ -13,12 +13,12 @@ export function AnnouncementsList({ items, emptyLabel }: { items: AnnItem[]; emp
 
   return (
     <>
-      <ul className="divide-y divide-hair">
+      <ul className="space-y-1">
         {items.map((a) => (
           <li key={a.id}>
             <button
               onClick={() => setSel(a)}
-              className="flex w-full gap-3 rounded-sm py-3 text-left transition-colors first:pt-0 hover:bg-surface"
+              className="flex w-full gap-3 rounded-md p-2.5 text-left transition-colors hover:bg-surface"
             >
               <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-gold-700" />
               <div className="min-w-0">

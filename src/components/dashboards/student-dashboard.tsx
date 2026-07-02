@@ -10,6 +10,8 @@ import { navFor } from "@/lib/nav";
 import { CalendarIcon, ArrowRightIcon } from "@/components/icons";
 import { ProfileMenu } from "@/components/dashboards/profile-menu";
 import { AnnouncementsList } from "@/components/dashboards/announcements-list";
+import { StudentAvatar } from "@/components/dashboards/avatar";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { cn } from "@/lib/utils";
 
 type Att = Awaited<ReturnType<typeof getStudentAttendance>>;
@@ -42,13 +44,18 @@ export async function StudentDashboard({ session }: { session: Session }) {
   ]);
 
   return (
-    <div className="grid items-start gap-3 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
-      <MainContent name={session.fullName} standing={standing} att={att} />
-      <div className="flex flex-col gap-3">
-        <ProfileCard name={session.fullName} studentId={studentId} />
-        <AnnouncementsCard />
-        <QuickLinksCard />
-        <EventCalendarCard />
+    <div>
+      <div className="mb-3 flex justify-end">
+        <LocaleSwitcher />
+      </div>
+      <div className="grid items-start gap-3 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
+        <MainContent name={session.fullName} standing={standing} att={att} />
+        <div className="flex flex-col gap-3">
+          <ProfileCard name={session.fullName} studentId={studentId} />
+          <AnnouncementsCard />
+          <QuickLinksCard />
+          <EventCalendarCard />
+        </div>
       </div>
     </div>
   );
@@ -67,8 +74,17 @@ async function ProfileCard({ name, studentId }: { name: string; studentId: numbe
     <Panel>
       <CardBody>
         <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 text-[20px] font-normal leading-tight text-ink-900">{name}</div>
-          <ProfileMenu signOutLabel={t("common.signOut")} />
+          <div className="flex min-w-0 items-center gap-3">
+            <StudentAvatar name={name} gender={card?.gender ?? null} size={40} />
+            <div className="min-w-0 truncate text-[20px] font-normal leading-tight text-ink-900">{name}</div>
+          </div>
+          <ProfileMenu
+            name={name}
+            gender={card?.gender ?? null}
+            promptLabel={t("dashboard.logoutPrompt")}
+            confirmLabel={t("dashboard.confirmSignOut")}
+            cancelLabel={t("dashboard.cancel")}
+          />
         </div>
         <dl className="mt-3.5 space-y-2 border-t border-hair pt-3">
           {rows.map(([label, value]) => (

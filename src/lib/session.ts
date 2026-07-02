@@ -78,22 +78,24 @@ export const getSession = cache(async (): Promise<Session | null> => {
   };
 });
 
-// A student's identity card: roll no, class-section label (e.g. "VIII-A") and
-// the section's class teacher. Cached per request. Null if not enrolled.
-export type StudentCard = { roll: number | null; classSection: string | null; classTeacher: string | null };
+// A student's identity card: gender, roll no, class-section label (e.g. "VIII-A")
+// and the section's class teacher. Cached per request. Null if not enrolled.
+export type Gender = Database["public"]["Enums"]["gender_type"];
+export type StudentCard = { gender: Gender | null; roll: number | null; classSection: string | null; classTeacher: string | null };
 export const getStudentCard = cache(async (studentId: number): Promise<StudentCard | null> => {
   const supabase = await createClient();
   const { data: year } = await supabase.from("academic_year").select("id").eq("is_current", true).single();
   if (!year) return null;
   const { data: enr } = await supabase
     .from("student_enrollment")
-    .select("roll_no, section_id, section:section_id(name, class:class_id(name))")
+    .select("roll_no, section_id, section:section_id(name, class:class_id(name)), student:student_id(gender)")
     .eq("student_id", studentId)
     .eq("academic_year_id", year.id)
     .single();
   if (!enr) return null;
   const sec = enr.section as unknown as { name: string; class: { name: string } | null } | null;
   const classSection = sec ? (sec.class ? `${sec.class.name}-${sec.name}` : sec.name) : null;
+  const gender = (enr.student as unknown as { gender: Gender | null } | null)?.gender ?? null;
 
   let classTeacher: string | null = null;
   if (enr.section_id) {
@@ -107,7 +109,7 @@ export const getStudentCard = cache(async (studentId: number): Promise<StudentCa
       .maybeSingle();
     classTeacher = (ct?.staff as unknown as { full_name: string } | null)?.full_name ?? null;
   }
-  return { roll: enr.roll_no, classSection, classTeacher };
+  return { gender, roll: enr.roll_no, classSection, classTeacher };
 });
 
 // Current academic year (readable by all authenticated users). Cached per request.
