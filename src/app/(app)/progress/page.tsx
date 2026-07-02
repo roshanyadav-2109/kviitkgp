@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty";
 import { FilterBar } from "@/components/progress/filter-bar";
 import { StudentProgressView } from "@/components/progress/student-progress-view";
+import { SessionChooser } from "@/components/progress/session-chooser";
 import { SectionAnalyticsView } from "@/components/progress/section-analytics-view";
 import { ClassAnalyticsView } from "@/components/progress/class-analytics-view";
 import { ProgressIcon, ArrowRightIcon } from "@/components/icons";
@@ -31,13 +32,17 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
     }
     if (!studentId) return <EmptyState icon={ProgressIcon} title={t("progress.noMarks")} />;
     const curYear = await getCurrentYear();
+    // Session chooser: "lifetime" (full history), or a specific academic year.
+    const sessionParam = typeof sp.session === "string" ? sp.session : undefined;
+    const lifetime = sessionParam === "lifetime";
+    const selectedYearId = lifetime ? null : (num(sessionParam) ?? curYear?.id ?? null);
+    const standingYearId = selectedYearId ?? curYear?.id ?? null;
     const [data, standing] = await Promise.all([
-      getStudentProgress(studentId),
-      curYear ? getStudentStanding(studentId, curYear.id) : Promise.resolve(null),
+      getStudentProgress(studentId, selectedYearId),
+      standingYearId ? getStudentStanding(studentId, standingYearId) : Promise.resolve(null),
     ]);
     return (
       <div>
-        <PageHeader eyebrow={t(session.role === "guardian" ? "nav.childProgress" : "nav.myProgress")} title={t("progress.title")} description={data.student?.admission_no ? `${data.student.full_name} · ${data.student.admission_no}` : undefined} />
         {session.role === "guardian" && children.length > 1 && (
           <div className="mb-5 flex flex-wrap gap-2">
             {children.map((c) => {
@@ -51,7 +56,13 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
             })}
           </div>
         )}
-        <StudentProgressView data={data} standing={standing} />
+        <SessionChooser
+          years={data.years}
+          active={lifetime ? "lifetime" : String(selectedYearId ?? "lifetime")}
+          lifetimeLabel={t("progress.lifetime")}
+          childId={session.role === "guardian" ? studentId : undefined}
+        />
+        <StudentProgressView data={data} standing={standing} hideIdentity />
       </div>
     );
   }

@@ -130,6 +130,8 @@ const bn: Messages = {
     classAvg: "শ্রেণি গড়",
     allSessions: "সব সেশন — প্রতিটি মূল্যায়ন",
     rank: "স্থান",
+    lifetime: "আজীবন",
+    session: "সেশন",
   },
   attendance: {
     title: "উপস্থিতি",

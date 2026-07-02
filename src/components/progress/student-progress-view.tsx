@@ -11,7 +11,7 @@ import { fmtDate, fmtPercent } from "@/i18n/format";
 type Progress = Awaited<ReturnType<typeof import("@/lib/data/analytics").getStudentProgress>>;
 type Standing = Awaited<ReturnType<typeof import("@/lib/data/analytics").getStudentStanding>>;
 
-export function StudentProgressView({ data, standing }: { data: Progress; standing?: Standing }) {
+export function StudentProgressView({ data, standing, hideIdentity }: { data: Progress; standing?: Standing; hideIdentity?: boolean }) {
   const { t, locale } = useI18n();
   if (!data.hasData || !data.student) {
     return <EmptyState icon={ProgressIcon} title={t("progress.noMarks")} hint={t("progress.pickStudent")} />;
@@ -53,7 +53,7 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
 
       {/* Subject trend lines */}
       <Card>
-        <CardHeader eyebrow={t("progress.subjectTrends")} title={data.student.full_name} />
+        <CardHeader eyebrow={t("progress.subjectTrends")} title={hideIdentity ? undefined : data.student.full_name} />
         <CardBody className="pt-2"><KVLineChart data={data.chartData} xKey="label" lines={lines} height={240} /></CardBody>
       </Card>
 

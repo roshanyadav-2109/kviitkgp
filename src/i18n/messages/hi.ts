@@ -130,6 +130,8 @@ const hi: Messages = {
     classAvg: "कक्षा औसत",
     allSessions: "सभी सत्र — प्रत्येक मूल्यांकन",
     rank: "स्थान",
+    lifetime: "आजीवन",
+    session: "सत्र",
   },
   attendance: {
     title: "उपस्थिति",

@@ -129,6 +129,8 @@ const en = {
     classAvg: "Class avg",
     allSessions: "All sessions — every assessment",
     rank: "Rank",
+    lifetime: "Lifetime",
+    session: "Session",
   },
   attendance: {
     title: "Attendance",

@@ -152,7 +152,7 @@ type TrendRow = {
   is_current: boolean; term: number | null;
 };
 
-export async function getStudentProgress(studentId: number) {
+export async function getStudentProgress(studentId: number, yearId?: number | null) {
   const supabase = await createClient();
 
   const [{ data: student }, { data: rows }, { data: obs }] = await Promise.all([
@@ -168,7 +168,15 @@ export async function getStudentProgress(studentId: number) {
       .limit(12),
   ]);
 
-  const trend = (rows ?? []) as TrendRow[];
+  const allTrend = (rows ?? []) as TrendRow[];
+
+  // All sessions (years) the pupil has records for — drives the session chooser.
+  const yearsMap = new Map<number, { yearId: number; yearName: string; isCurrent: boolean }>();
+  for (const r of allTrend) if (!yearsMap.has(r.academic_year_id)) yearsMap.set(r.academic_year_id, { yearId: r.academic_year_id, yearName: r.year_name, isCurrent: r.is_current });
+  const years = [...yearsMap.values()].sort((a, b) => b.yearId - a.yearId);
+
+  // Scope to one session, or keep the full lifetime history (yearId omitted/null).
+  const trend = yearId ? allTrend.filter((r) => r.academic_year_id === yearId) : allTrend;
 
   // Per-subject summary (latest result + delta + full point list)
   const bySubject = new Map<number, { name: string; code: string; points: { label: string; percent: number }[]; latest: number; delta: number | null; prev: number | null; band: string | null }>();
@@ -199,9 +207,11 @@ export async function getStudentProgress(studentId: number) {
   }
   const yearOnYear = [...yearAgg.entries()].map(([year, v]) => ({ year, avg: Math.round((v.sum / v.n) * 10) / 10 }));
   const currentAvg = (() => {
-    const cur = trend.filter((r) => r.is_current);
-    if (!cur.length) return null;
-    return Math.round((cur.reduce((a, r) => a + Number(r.percent), 0) / cur.length) * 10) / 10;
+    // A specific session → that session's mean; lifetime → the current year's mean.
+    const base = yearId ? trend : trend.filter((r) => r.is_current);
+    const rowsForAvg = base.length ? base : trend;
+    if (!rowsForAvg.length) return null;
+    return Math.round((rowsForAvg.reduce((a, r) => a + Number(r.percent), 0) / rowsForAvg.length) * 10) / 10;
   })();
 
   // Every session (year) in detail: subjects × assessments grid.
@@ -234,7 +244,7 @@ export async function getStudentProgress(studentId: number) {
 
   return {
     student: student as { id: number; full_name: string; admission_no: string } | null,
-    subjects, chartData, seriesSubjects, yearOnYear, currentAvg, observations, sessions,
+    subjects, chartData, seriesSubjects, yearOnYear, currentAvg, observations, sessions, years,
     hasData: trend.length > 0,
   };
 }
