@@ -36,8 +36,7 @@ export default async function LeavePage() {
         <div className="space-y-5">
           {/* Absence notices — auto-created when a class teacher marks a pupil absent */}
           <Card>
-            <CardHeader title={t("leave.absence")} />
-            <CardBody className="pt-1">
+            <CardBody>
               <AbsenceList notices={notices} canExplain={isOwner} />
             </CardBody>
           </Card>

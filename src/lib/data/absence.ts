@@ -8,14 +8,18 @@ export type AbsenceNotice = {
   studentName: string;
 };
 
-// Absence notices visible to the caller (RLS: own children, or staff sections).
+// Absence notices for the CURRENT session only (RLS: own children, or staff
+// sections). Nothing from past years — a notice is valid per session.
 export async function getAbsenceNotices(): Promise<AbsenceNotice[]> {
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data: year } = await supabase.from("academic_year").select("id").eq("is_current", true).single();
+  let query = supabase
     .from("absence_notice")
     .select("id, on_date, reason, status, student:student_id(full_name)")
     .order("on_date", { ascending: false })
     .limit(80);
+  if (year) query = query.eq("academic_year_id", year.id);
+  const { data } = await query;
   return (data ?? []).map((n) => ({
     id: n.id,
     on_date: n.on_date,

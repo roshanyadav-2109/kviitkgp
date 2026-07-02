@@ -45,14 +45,19 @@ function OwnerAbsence({ notices }: { notices: AbsenceNotice[] }) {
             <h3 className="text-[15px] font-semibold text-ink-900">{t("leave.selectDays")}</h3>
             <button onClick={selectAll} className="text-[13px] text-ink-500 underline-offset-2 hover:text-ink-900 hover:underline">{t("leave.selectAll")}</button>
           </div>
-          <div className="divide-y divide-hair border-y border-hair">
+          <div className="flex flex-wrap gap-2">
             {pending.map((n) => {
               const on = selected.has(n.id);
               return (
-                <label key={n.id} className="flex cursor-pointer items-center gap-3 py-2.5">
+                <label
+                  key={n.id}
+                  className={cn(
+                    "flex cursor-pointer items-center gap-2 rounded-sm border px-3 py-2 text-[13px] transition-colors",
+                    on ? "border-ink-900 bg-panel" : "border-hair hover:bg-panel",
+                  )}
+                >
                   <input type="checkbox" checked={on} onChange={() => toggle(n.id)} className="h-4 w-4 accent-[var(--color-ink-900)]" />
-                  <span className={cn("text-[14px] tabular", on ? "font-semibold text-ink-900" : "text-ink-700")}>{fmtDate(locale, n.on_date)}</span>
-                  <span className="ml-auto truncate text-[12px] text-muted">{n.studentName}</span>
+                  <span className={cn("tabular", on ? "font-semibold text-ink-900" : "text-ink-700")}>{fmtDate(locale, n.on_date, { day: "numeric", month: "short" })}</span>
                 </label>
               );
             })}
