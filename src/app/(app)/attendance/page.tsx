@@ -63,12 +63,15 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
             <CardHeader title={year.name} />
             <CardBody className="pt-2">
               <ul className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-                {att.recent.map((r, i) => (
-                  <li key={i} className="flex items-center justify-between rounded-sm border border-hair px-2.5 py-1.5">
-                    <span className="text-[13px] tabular text-ink-700">{fmtDate(locale, r.on_date, { day: "numeric", month: "short" })}</span>
-                    <span className={`text-[12px] font-medium ${statusText[statusStyle[r.status]]}`}>{t(`attendance.${r.status}`)}</span>
-                  </li>
-                ))}
+                {att.recent.map((r, i) => {
+                  const st = r.status === "late" ? "present" : r.status; // only present / absent
+                  return (
+                    <li key={i} className="flex items-center justify-between rounded-sm border border-hair px-2.5 py-1.5">
+                      <span className="text-[13px] tabular text-ink-700">{fmtDate(locale, r.on_date, { day: "numeric", month: "short" })}</span>
+                      <span className={`text-[12px] font-medium ${statusText[statusStyle[st]]}`}>{t(`attendance.${st}`)}</span>
+                    </li>
+                  );
+                })}
               </ul>
             </CardBody>
           </Card>
