@@ -172,6 +172,10 @@ const hi: Messages = {
     scopeClass: "कक्षा",
     scopeSection: "अनुभाग",
     postedBy: "{name} द्वारा",
+    byPrincipal: "प्राचार्य कार्यालय",
+    byOffice: "विद्यालय कार्यालय",
+    byClassTeacher: "कक्षा अध्यापक",
+    byTeacher: "अध्यापक",
   },
   leave: {
     title: "अवकाश आवेदन",

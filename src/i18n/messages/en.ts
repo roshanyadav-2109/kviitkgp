@@ -171,6 +171,10 @@ const en = {
     scopeClass: "Class",
     scopeSection: "Section",
     postedBy: "Posted by {name}",
+    byPrincipal: "Principal's Desk",
+    byOffice: "School Office",
+    byClassTeacher: "Class Teacher",
+    byTeacher: "Teacher",
   },
   leave: {
     title: "Leave applications",

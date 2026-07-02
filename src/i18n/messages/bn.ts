@@ -172,6 +172,10 @@ const bn: Messages = {
     scopeClass: "শ্রেণি",
     scopeSection: "শাখা",
     postedBy: "{name} কর্তৃক",
+    byPrincipal: "প্রধান শিক্ষকের দপ্তর",
+    byOffice: "বিদ্যালয় কার্যালয়",
+    byClassTeacher: "শ্রেণি শিক্ষক",
+    byTeacher: "শিক্ষক",
   },
   leave: {
     title: "ছুটির আবেদন",
