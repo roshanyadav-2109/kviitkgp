@@ -84,8 +84,8 @@ export function AppShell({
   const brandFooter = (
     <div className="px-4 py-4 text-center">
       <div className="inline-block">
-        <div className="text-[22px] font-normal lowercase leading-none text-gold-100">hebrew</div>
-        <div className="mt-1.5 flex justify-between text-[12px] font-normal lowercase leading-none text-gold-100/55" aria-hidden>
+        <div className="text-[22px] font-normal lowercase leading-none text-white">hebrew</div>
+        <div className="mt-1.5 flex justify-between text-[12px] font-normal lowercase leading-none text-white/70" aria-hidden>
           {"technologies".split("").map((ch, i) => (
             <span key={i}>{ch}</span>
           ))}
