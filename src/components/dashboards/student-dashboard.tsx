@@ -123,7 +123,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
       {/* Quick links — horizontal scroll, above My Progress */}
       <div className="mt-5">
         <div className="t-label mb-2">{t("dashboard.quickLinks")}</div>
-        <div className="flex gap-2.5 overflow-x-auto pb-1">
+        <div className="flex gap-2.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {links.map((l) => {
             const Icon = l.icon;
             return (
