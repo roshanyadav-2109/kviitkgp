@@ -120,9 +120,9 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
         <Stat label={t("progress.classStanding")} value={standing?.classRank ? `${standing.classRank}/${standing.classSize}` : "—"} sub={standing ? `${t("progress.classAvg")} ${fmtPercent(locale, standing.classAvg, 1)}` : undefined} />
       </div>
 
-      {/* Quick links — horizontal scroll, above My Progress */}
-      <div className="mt-5">
-        <div className="t-label mb-2">{t("dashboard.quickLinks")}</div>
+      {/* Quick links — one section, horizontal scroll, above My Progress */}
+      <div className="mt-5 rounded-md border border-hair p-4">
+        <div className="mb-2.5 text-[13px] font-semibold text-ink-900">{t("dashboard.quickLinks")}</div>
         <div className="flex gap-2.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {links.map((l) => {
             const Icon = l.icon;
