@@ -30,7 +30,7 @@ export default async function AnnouncementsPage() {
         items.map((a) => {
           const staff = a.staff as unknown as { full_name: string; role: string } | null;
           return (
-            <article key={a.id} className="rounded-xl border border-hair bg-surface p-5 shadow-[var(--shadow-card)]">
+            <article key={a.id} className="rounded-md border border-hair bg-surface p-5">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="font-bold text-ink-900">{t(posterKey[staff?.role ?? ""] ?? "announce.byOffice")}</div>
@@ -38,8 +38,8 @@ export default async function AnnouncementsPage() {
                 </div>
                 <span
                   className={cn(
-                    "shrink-0 rounded-full px-3 py-1 text-[11px] font-semibold",
-                    a.scope === "school" ? "bg-gold-500 text-ink-900" : "bg-panel text-ink-600",
+                    "shrink-0 rounded-sm border px-2.5 py-0.5 text-[11px] font-semibold",
+                    a.scope === "school" ? "border-gold-500 text-gold-700" : "border-hair text-ink-500",
                   )}
                 >
                   {t(scopeKey[a.scope] ?? "announce.scopeSchool")}
