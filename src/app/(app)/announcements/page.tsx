@@ -8,13 +8,8 @@ import { AnnouncementForm } from "@/components/announcements/announcement-form";
 import { getStaffScope } from "@/lib/data/scope";
 import { cn } from "@/lib/utils";
 
-const roleShort: Record<string, string> = { principal: "Principal", office: "Office", class_teacher: "Class Teacher", subject_teacher: "Teacher" };
+const posterKey: Record<string, string> = { principal: "announce.byPrincipal", office: "announce.byOffice", class_teacher: "announce.byClassTeacher", subject_teacher: "announce.byTeacher" };
 const scopeKey: Record<string, string> = { school: "announce.scopeSchool", class: "announce.scopeClass", section: "announce.scopeSection" };
-
-function initialsOf(name: string) {
-  const clean = name.replace(/^(Dr|Mr|Mrs|Ms|Prof)\.?\s+/i, "").trim();
-  return clean.split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase() || "KV";
-}
 
 export default async function AnnouncementsPage() {
   const session = (await getSession())!;
@@ -34,19 +29,11 @@ export default async function AnnouncementsPage() {
       {items && items.length ? (
         items.map((a) => {
           const staff = a.staff as unknown as { full_name: string; role: string } | null;
-          const name = staff?.full_name ?? "KV No.1";
-          const role = roleShort[staff?.role ?? ""] ?? "Staff";
           return (
             <article key={a.id} className="rounded-xl border border-hair bg-surface p-5 shadow-[var(--shadow-card)]">
-              <div className="flex items-start gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-panel text-[13px] font-semibold text-ink-700">
-                  {initialsOf(name)}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-baseline gap-x-1.5">
-                    <span className="font-bold text-ink-900">{name}</span>
-                    <span className="text-[12px] font-semibold uppercase tracking-wide text-muted">| {role}</span>
-                  </div>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="font-bold text-ink-900">{t(posterKey[staff?.role ?? ""] ?? "announce.byOffice")}</div>
                   <div className="mt-0.5 text-[12px] text-muted">{fmtRelative(locale, a.published_at)}</div>
                 </div>
                 <span
