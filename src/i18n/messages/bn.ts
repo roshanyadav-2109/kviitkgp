@@ -85,6 +85,7 @@ const bn: Messages = {
     progressCta: "আপনার বিষয়ভিত্তিক পারফরম্যান্স ও মূল্যায়ন টাইমলাইন দেখুন।",
     rollNo: "রোল নং",
     classLabel: "শ্রেণি",
+    gender: "লিঙ্গ",
     classTeacher: "শ্রেণি শিক্ষক",
     logoutPrompt: "আপনি কি নিশ্চিতভাবে লগ আউট করতে চান?",
     confirmSignOut: "লগ আউট নিশ্চিত করুন",

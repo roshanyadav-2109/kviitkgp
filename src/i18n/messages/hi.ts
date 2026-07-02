@@ -85,6 +85,7 @@ const hi: Messages = {
     progressCta: "अपने विषयवार प्रदर्शन और मूल्यांकन समयरेखा को देखें।",
     rollNo: "क्रमांक",
     classLabel: "कक्षा",
+    gender: "लिंग",
     classTeacher: "कक्षा अध्यापक",
     logoutPrompt: "क्या आप वाकई लॉग आउट करना चाहते हैं?",
     confirmSignOut: "लॉग आउट की पुष्टि करें",

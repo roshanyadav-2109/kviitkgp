@@ -10,7 +10,6 @@ import { navFor } from "@/lib/nav";
 import { CalendarIcon, ArrowRightIcon } from "@/components/icons";
 import { ProfileMenu } from "@/components/dashboards/profile-menu";
 import { AnnouncementsList } from "@/components/dashboards/announcements-list";
-import { StudentAvatar } from "@/components/dashboards/avatar";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { cn } from "@/lib/utils";
 
@@ -44,18 +43,13 @@ export async function StudentDashboard({ session }: { session: Session }) {
   ]);
 
   return (
-    <div>
-      <div className="mb-3 flex justify-end">
-        <LocaleSwitcher />
-      </div>
-      <div className="grid items-start gap-3 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
-        <MainContent name={session.fullName} standing={standing} att={att} />
-        <div className="flex flex-col gap-3">
-          <ProfileCard name={session.fullName} studentId={studentId} />
-          <AnnouncementsCard />
-          <QuickLinksCard />
-          <EventCalendarCard />
-        </div>
+    <div className="grid items-start gap-3 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
+      <MainContent name={session.fullName} standing={standing} att={att} />
+      <div className="flex flex-col gap-3">
+        <ProfileCard name={session.fullName} studentId={studentId} />
+        <AnnouncementsCard />
+        <QuickLinksCard />
+        <EventCalendarCard />
       </div>
     </div>
   );
@@ -65,22 +59,19 @@ export async function StudentDashboard({ session }: { session: Session }) {
 async function ProfileCard({ name, studentId }: { name: string; studentId: number }) {
   const { t } = await getT();
   const card = await getStudentCard(studentId);
+  const genderLabel = card?.gender ? card.gender[0].toUpperCase() + card.gender.slice(1) : "—";
   const rows: [string, React.ReactNode][] = [
     [t("dashboard.rollNo"), card?.roll ?? "—"],
     [t("dashboard.classLabel"), card?.classSection ?? "—"],
+    [t("dashboard.gender"), genderLabel],
     [t("dashboard.classTeacher"), card?.classTeacher ?? "—"],
   ];
   return (
     <Panel>
       <CardBody>
         <div className="flex items-start justify-between gap-2">
-          <div className="flex min-w-0 items-center gap-3">
-            <StudentAvatar name={name} gender={card?.gender ?? null} size={40} />
-            <div className="min-w-0 truncate text-[20px] font-normal leading-tight text-ink-900">{name}</div>
-          </div>
+          <div className="min-w-0 truncate text-[20px] font-normal leading-tight text-ink-900">{name}</div>
           <ProfileMenu
-            name={name}
-            gender={card?.gender ?? null}
             promptLabel={t("dashboard.logoutPrompt")}
             confirmLabel={t("dashboard.confirmSignOut")}
             cancelLabel={t("dashboard.cancel")}
@@ -105,9 +96,12 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
   const firstName = name.split(" ").slice(-1)[0];
   return (
     <Panel className="flex flex-col p-6">
-      <div>
-        <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
-        <p className="mt-1 text-[14px] text-ink-500">{t("dashboard.overview")}</p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
+          <p className="mt-1 text-[14px] text-ink-500">{t("dashboard.overview")}</p>
+        </div>
+        <LocaleSwitcher />
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">

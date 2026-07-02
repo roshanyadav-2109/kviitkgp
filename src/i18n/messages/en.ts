@@ -84,6 +84,7 @@ const en = {
     progressCta: "Track your subject-wise performance and assessment timeline.",
     rollNo: "Roll No",
     classLabel: "Class",
+    gender: "Gender",
     classTeacher: "Class Teacher",
     logoutPrompt: "Are you sure you want to log out?",
     confirmSignOut: "Confirm sign out",

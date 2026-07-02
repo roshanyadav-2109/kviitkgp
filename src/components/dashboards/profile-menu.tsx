@@ -1,20 +1,31 @@
 "use client";
 import { useState } from "react";
 import { signOut } from "@/lib/actions";
-import { StudentAvatar } from "@/components/dashboards/avatar";
-import type { Gender } from "@/lib/session";
+
+// A simple human figure (waving goodbye) — the logout "artifact".
+function LogoutHuman() {
+  return (
+    <svg viewBox="0 0 128 128" className="h-28 w-28" fill="none" stroke="currentColor" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="58" cy="118" rx="32" ry="5" className="fill-ink-900/10" stroke="none" />
+      <circle cx="56" cy="30" r="14" className="text-ink-700" />
+      <path d="M56 44 v34" className="text-ink-700" />
+      <path d="M56 54 l-16 16" className="text-ink-700" />
+      <path d="M56 54 l20 -16" className="text-ink-700" />
+      <path d="M56 78 l-12 28" className="text-ink-700" />
+      <path d="M56 78 l12 28" className="text-ink-700" />
+      <path d="M84 28 q7 5 0 12" className="text-gold-500" strokeWidth={3.5} />
+      <path d="M92 21 q12 9 0 22" className="text-gold-500" strokeWidth={3.5} />
+    </svg>
+  );
+}
 
 // Vertical three-dot button beside the student's name. Opens a rectangular
-// (~60% of screen) logout-confirmation modal showing the student's avatar.
+// (~60% of screen) logout-confirmation modal with a human artifact.
 export function ProfileMenu({
-  name,
-  gender,
   promptLabel,
   confirmLabel,
   cancelLabel,
 }: {
-  name: string;
-  gender: Gender | null;
   promptLabel: string;
   confirmLabel: string;
   cancelLabel: string;
@@ -36,9 +47,8 @@ export function ProfileMenu({
         <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-ink-900/40" onClick={() => setOpen(false)} />
           <div className="relative z-10 flex h-[70vh] w-[92vw] flex-col items-center justify-center rounded-sm bg-surface p-8 text-center shadow-[var(--shadow-pop)] sm:h-[60vh] sm:w-[60vw]">
-            <StudentAvatar name={name} gender={gender} size={96} />
-            <div className="mt-4 text-[16px] font-medium text-ink-900">{name}</div>
-            <p className="mt-5 t-h3 text-ink-900">{promptLabel}</p>
+            <LogoutHuman />
+            <p className="mt-6 t-h3 text-ink-900">{promptLabel}</p>
             <div className="mt-7 flex gap-3">
               <form action={signOut}>
                 <button className="rounded-sm bg-ink-900 px-5 py-2.5 text-[13px] font-normal text-gold-100 transition-colors hover:bg-ink-700">
