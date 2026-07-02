@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getCurrentYear, type Session } from "@/lib/session";
+import { getCurrentYear, getStudentCard, type Session } from "@/lib/session";
 import { getT } from "@/i18n/server";
 import { fmtPercent, fmtDate } from "@/i18n/format";
 import { getStudentStanding } from "@/lib/data/analytics";
@@ -10,6 +10,7 @@ import { EmptyState } from "@/components/ui/empty";
 import { navFor } from "@/lib/nav";
 import { AnnounceIcon, CalendarIcon, ArrowRightIcon } from "@/components/icons";
 import { StatCard } from "@/components/dashboards/parts";
+import { ProfileMenu } from "@/components/dashboards/profile-menu";
 
 type Att = Awaited<ReturnType<typeof getStudentAttendance>>;
 type Standing = Awaited<ReturnType<typeof getStudentStanding>>;
@@ -27,16 +28,44 @@ export async function StudentDashboard({ session }: { session: Session }) {
   ]);
 
   return (
-    <div>
-      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
-        <MainContent name={session.fullName} standing={standing} att={att} />
-        <div className="flex flex-col gap-5">
-          <AnnouncementsCard />
-          <QuickLinksCard />
-          <EventCalendarCard />
-        </div>
+    <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
+      <MainContent name={session.fullName} standing={standing} att={att} />
+      <div className="flex flex-col gap-5">
+        <ProfileCard name={session.fullName} studentId={studentId} />
+        <AnnouncementsCard />
+        <QuickLinksCard />
+        <EventCalendarCard />
       </div>
     </div>
+  );
+}
+
+// ── Right column: student profile card, with a vertical ⋮ menu by the name ───
+async function ProfileCard({ name, studentId }: { name: string; studentId: number }) {
+  const { t } = await getT();
+  const card = await getStudentCard(studentId);
+  const rows: [string, React.ReactNode][] = [
+    [t("dashboard.rollNo"), card?.roll ?? "—"],
+    [t("dashboard.classLabel"), card?.classSection ?? "—"],
+    [t("dashboard.classTeacher"), card?.classTeacher ?? "—"],
+  ];
+  return (
+    <Card>
+      <CardBody>
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0 text-[20px] font-normal leading-tight text-ink-900">{name}</div>
+          <ProfileMenu signOutLabel={t("common.signOut")} />
+        </div>
+        <dl className="mt-3.5 space-y-2 border-t border-hair pt-3">
+          {rows.map(([label, value]) => (
+            <div key={label} className="flex items-baseline justify-between gap-3">
+              <dt className="text-[12px] text-muted">{label}</dt>
+              <dd className="min-w-0 truncate text-right text-[13px] font-medium text-ink-900 tabular">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </CardBody>
+    </Card>
   );
 }
 
@@ -45,31 +74,30 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
   const { t, locale } = await getT();
   const firstName = name.split(" ").slice(-1)[0];
   return (
-    <section className="flex flex-col gap-5">
+    <Card className="flex flex-col p-6">
       <div>
         <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
         <p className="mt-1 text-[14px] text-ink-500">{t("dashboard.overview")}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="mt-5 grid grid-cols-2 gap-3">
         <StatCard label={`${t("progress.overall")} ${t("progress.average")}`} value={fmtPercent(locale, standing?.studentAvg ?? null, 1)} tone="gold" />
         <StatCard label={t("attendance.percent")} value={att ? `${att.pct}%` : "—"} tone={att && att.pct < 75 ? "down" : "up"} sub={att ? `${att.present}/${att.total}` : undefined} />
         <StatCard label={t("progress.sectionStanding")} value={standing?.sectionRank ? `${standing.sectionRank}/${standing.sectionSize}` : "—"} sub={standing ? `${t("progress.sectionAvg")} ${fmtPercent(locale, standing.sectionAvg, 1)}` : undefined} />
         <StatCard label={t("progress.classStanding")} value={standing?.classRank ? `${standing.classRank}/${standing.classSize}` : "—"} sub={standing ? `${t("progress.classAvg")} ${fmtPercent(locale, standing.classAvg, 1)}` : undefined} />
       </div>
 
-      {/* Larger canvas below the stats — progress call-to-action */}
-      <Card className="flex-1">
-        <CardHeader eyebrow={t("nav.myProgress")} title={t("progress.title")} />
-        <CardBody className="pt-2">
-          <p className="text-[14px] leading-relaxed text-ink-500">{t("dashboard.progressCta")}</p>
-          <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-ink-900 px-3.5 py-2 text-[13px] font-semibold text-gold-100 transition-colors hover:bg-ink-700">
-            {t("nav.myProgress")}
-            <ArrowRightIcon size={14} />
-          </Link>
-        </CardBody>
-      </Card>
-    </section>
+      {/* Progress call-to-action */}
+      <div className="mt-5 rounded-lg border border-hair bg-panel/40 p-5">
+        <div className="t-label mb-1">{t("nav.myProgress")}</div>
+        <h3 className="t-h3 text-ink-900">{t("progress.title")}</h3>
+        <p className="mt-1.5 text-[14px] leading-relaxed text-ink-500">{t("dashboard.progressCta")}</p>
+        <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-ink-900 px-3.5 py-2 text-[13px] font-semibold text-gold-100 transition-colors hover:bg-ink-700">
+          {t("nav.myProgress")}
+          <ArrowRightIcon size={14} />
+        </Link>
+      </div>
+    </Card>
   );
 }
 
