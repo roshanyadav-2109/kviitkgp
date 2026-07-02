@@ -28,3 +28,15 @@ export function fmtMonth(locale: Locale, d: string | Date) {
   const date = typeof d === "string" ? new Date(d) : d;
   return new Intl.DateTimeFormat(intlTag[locale], { month: "long", year: "numeric" }).format(date);
 }
+
+// "2 days ago", "3 months ago", … (locale-aware).
+export function fmtRelative(locale: Locale, d: string | Date) {
+  const date = typeof d === "string" ? new Date(d) : d;
+  const diff = Math.round((date.getTime() - Date.now()) / 1000); // negative = past
+  const rtf = new Intl.RelativeTimeFormat(intlTag[locale], { numeric: "auto" });
+  const units: [Intl.RelativeTimeFormatUnit, number][] = [
+    ["year", 31536000], ["month", 2592000], ["week", 604800], ["day", 86400], ["hour", 3600], ["minute", 60],
+  ];
+  for (const [unit, sec] of units) if (Math.abs(diff) >= sec) return rtf.format(Math.round(diff / sec), unit);
+  return rtf.format(0, "minute");
+}
