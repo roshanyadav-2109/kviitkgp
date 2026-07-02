@@ -30,7 +30,7 @@ export function ProfileMenu({ signOutLabel }: { signOutLabel: string }) {
             </div>
             <div className="my-1 border-t border-hair" />
             <form action={signOut}>
-              <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-[13px] font-medium text-ink-700 hover:bg-panel">
+              <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-[13px] font-normal text-ink-700 hover:bg-panel">
                 <LogoutIcon size={16} className="text-muted" />
                 {signOutLabel}
               </button>

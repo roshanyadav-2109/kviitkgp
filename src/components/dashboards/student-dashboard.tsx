@@ -6,10 +6,10 @@ import { getStudentStanding } from "@/lib/data/analytics";
 import { getStudentAttendance } from "@/lib/data/attendance";
 import { createClient } from "@/lib/supabase/server";
 import { CardBody, CardHeader } from "@/components/ui/card";
-import { EmptyState } from "@/components/ui/empty";
 import { navFor } from "@/lib/nav";
-import { AnnounceIcon, CalendarIcon, ArrowRightIcon } from "@/components/icons";
+import { CalendarIcon, ArrowRightIcon } from "@/components/icons";
 import { ProfileMenu } from "@/components/dashboards/profile-menu";
+import { AnnouncementsList } from "@/components/dashboards/announcements-list";
 import { cn } from "@/lib/utils";
 
 type Att = Awaited<ReturnType<typeof getStudentAttendance>>;
@@ -106,7 +106,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
         <div className="t-label mb-1">{t("nav.myProgress")}</div>
         <h3 className="t-h3 text-ink-900">{t("progress.title")}</h3>
         <p className="mt-1.5 text-[14px] leading-relaxed text-ink-500">{t("dashboard.progressCta")}</p>
-        <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-ink-900 px-3.5 py-2 text-[13px] font-semibold text-gold-100 transition-colors hover:bg-ink-700">
+        <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-ink-900 px-3.5 py-2 text-[13px] font-normal text-gold-100 transition-colors hover:bg-ink-700">
           {t("nav.myProgress")}
           <ArrowRightIcon size={14} />
         </Link>
@@ -124,36 +124,20 @@ async function AnnouncementsCard() {
     .select("id, title, body, published_at")
     .order("published_at", { ascending: false })
     .limit(4);
-  const rows = data ?? [];
+  const items = (data ?? []).map((a) => ({ id: a.id, title: a.title, body: a.body, date: fmtDate(locale, a.published_at) }));
   return (
     <Panel>
       <CardHeader
-        eyebrow={t("dashboard.recentAnnouncements")}
         title={t("announce.title")}
         action={
-          <Link href="/announcements" className="inline-flex items-center gap-1 text-[12px] font-semibold text-gold-700 hover:text-ink-900">
+          <Link href="/announcements" className="inline-flex items-center gap-1 text-[12px] font-normal text-gold-700 hover:text-ink-900">
             {t("dashboard.viewAll")}
             <ArrowRightIcon size={13} />
           </Link>
         }
       />
       <CardBody className="pt-2">
-        {rows.length ? (
-          <ul className="divide-y divide-hair">
-            {rows.map((a) => (
-              <li key={a.id} className="flex gap-3 py-3 first:pt-0">
-                <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-gold-700" />
-                <div className="min-w-0">
-                  <div className="text-[14px] font-semibold text-ink-900">{a.title}</div>
-                  <div className="line-clamp-1 text-[13px] text-ink-500">{a.body}</div>
-                  <div className="mt-0.5 text-[12px] text-muted">{fmtDate(locale, a.published_at)}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <EmptyState icon={AnnounceIcon} title={t("common.noData")} />
-        )}
+        <AnnouncementsList items={items} emptyLabel={t("common.noData")} />
       </CardBody>
     </Panel>
   );
@@ -179,7 +163,7 @@ async function QuickLinksCard() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-gold-100 text-gold-700 transition-colors group-hover:bg-surface">
                   <Icon size={18} />
                 </span>
-                <span className="text-[12px] font-semibold leading-tight text-ink-900">{t(l.labelKey)}</span>
+                <span className="text-[12px] font-normal leading-tight text-ink-900">{t(l.labelKey)}</span>
               </Link>
             );
           })}
@@ -208,7 +192,7 @@ async function EventCalendarCard() {
         eyebrow={t("dashboard.thisMonth")}
         title={t("announce.events")}
         action={
-          <Link href="/calendar" className="inline-flex items-center gap-1 text-[12px] font-semibold text-gold-700 hover:text-ink-900">
+          <Link href="/calendar" className="inline-flex items-center gap-1 text-[12px] font-normal text-gold-700 hover:text-ink-900">
             {t("dashboard.viewAll")}
             <ArrowRightIcon size={13} />
           </Link>
