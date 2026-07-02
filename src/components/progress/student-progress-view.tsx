@@ -11,7 +11,7 @@ import { fmtDate, fmtPercent } from "@/i18n/format";
 type Progress = Awaited<ReturnType<typeof import("@/lib/data/analytics").getStudentProgress>>;
 type Standing = Awaited<ReturnType<typeof import("@/lib/data/analytics").getStudentStanding>>;
 
-export function StudentProgressView({ data, standing, hideIdentity }: { data: Progress; standing?: Standing; hideIdentity?: boolean }) {
+export function StudentProgressView({ data, standing }: { data: Progress; standing?: Standing }) {
   const { t, locale } = useI18n();
   if (!data.hasData || !data.student) {
     return <EmptyState icon={ProgressIcon} title={t("progress.noMarks")} hint={t("progress.pickStudent")} />;
@@ -46,15 +46,14 @@ export function StudentProgressView({ data, standing, hideIdentity }: { data: Pr
         </Card>
 
         <StandingCard label={t("progress.sectionStanding")} rank={standing?.sectionRank} size={standing?.sectionSize}
-          avg={standing?.studentAvg} groupAvg={standing?.sectionAvg} groupLabel={t("progress.sectionAvg")} locale={locale} t={t} />
+          groupAvg={standing?.sectionAvg} groupLabel={t("progress.sectionAvg")} locale={locale} t={t} />
         <StandingCard label={t("progress.classStanding")} rank={standing?.classRank} size={standing?.classSize}
-          avg={standing?.studentAvg} groupAvg={standing?.classAvg} groupLabel={t("progress.classAvg")} locale={locale} t={t} />
+          groupAvg={standing?.classAvg} groupLabel={t("progress.classAvg")} locale={locale} t={t} />
       </div>
 
       {/* Subject trend lines */}
       <Card>
-        <CardHeader eyebrow={t("progress.subjectTrends")} title={hideIdentity ? undefined : data.student.full_name} />
-        <CardBody className="pt-2"><KVLineChart data={data.chartData} xKey="label" lines={lines} height={240} /></CardBody>
+        <CardBody><KVLineChart data={data.chartData} xKey="label" lines={lines} height={240} /></CardBody>
       </Card>
 
       {/* Per-subject latest with delta */}
@@ -80,8 +79,7 @@ export function StudentProgressView({ data, standing, hideIdentity }: { data: Pr
 
       {/* Every session in detail — filter by session */}
       <Card>
-        <CardHeader eyebrow={t("progress.allSessions")} title={t("progress.timeline")} />
-        <CardBody className="pt-2">
+        <CardBody>
           <SessionDetail key={data.student?.id ?? 0} sessions={data.sessions} />
         </CardBody>
       </Card>
@@ -119,8 +117,8 @@ export function StudentProgressView({ data, standing, hideIdentity }: { data: Pr
   );
 }
 
-function StandingCard({ label, rank, size, avg, groupAvg, groupLabel, locale, t }: {
-  label: string; rank?: number; size?: number; avg?: number | null; groupAvg?: number | null; groupLabel: string;
+function StandingCard({ label, rank, size, groupAvg, groupLabel, locale, t }: {
+  label: string; rank?: number; size?: number; groupAvg?: number | null; groupLabel: string;
   locale: "en" | "hi" | "bn"; t: (k: string, v?: Record<string, string | number>) => string;
 }) {
   return (

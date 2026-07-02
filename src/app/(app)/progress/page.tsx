@@ -62,7 +62,7 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
           lifetimeLabel={t("progress.lifetime")}
           childId={session.role === "guardian" ? studentId : undefined}
         />
-        <StudentProgressView data={data} standing={standing} hideIdentity />
+        <StudentProgressView data={data} standing={standing} />
       </div>
     );
   }
@@ -121,7 +121,8 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
     ]);
     return (
       <div>
-        <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("progress.title")} />
+        <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("progress.title")}
+          description={data.student ? `${data.student.full_name} · ${data.student.admission_no}` : undefined} />
         {filters}
         <Link href={`/progress?${backQs.toString()}`} className="mb-4 inline-flex items-center gap-1 text-[13px] font-medium text-gold-700 hover:underline">
           <ArrowRightIcon size={14} className="rotate-180" /> {section.class_name}-{section.name}
