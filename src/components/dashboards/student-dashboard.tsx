@@ -173,7 +173,7 @@ async function QuickLinksCard() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-gold-100 text-gold-700 transition-colors group-hover:bg-surface">
                   <Icon size={18} />
                 </span>
-                <span className="text-[12px] font-normal leading-tight text-ink-900">{t(l.labelKey)}</span>
+                <span className="text-[12px] font-semibold leading-tight text-ink-900">{t(l.labelKey)}</span>
               </Link>
             );
           })}
@@ -199,7 +199,6 @@ async function EventCalendarCard() {
   return (
     <Panel>
       <CardHeader
-        eyebrow={t("dashboard.thisMonth")}
         title={t("announce.events")}
         action={
           <Link href="/calendar" className="inline-flex items-center gap-1 text-[12px] font-normal text-gold-700 hover:text-ink-900">
