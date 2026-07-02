@@ -48,7 +48,6 @@ export async function StudentDashboard({ session }: { session: Session }) {
       <div className="flex flex-col gap-3">
         <ProfileCard name={session.fullName} studentId={studentId} />
         <AnnouncementsCard />
-        <QuickLinksCard />
         <EventCalendarCard />
       </div>
     </div>
@@ -94,6 +93,7 @@ async function ProfileCard({ name, studentId }: { name: string; studentId: numbe
 async function MainContent({ name, standing, att }: { name: string; standing: Standing | null; att: Att | null }) {
   const { t, locale } = await getT();
   const firstName = name.split(" ").slice(-1)[0];
+  const links = navFor("student").filter((l) => l.href !== "/");
   return (
     <Panel className="flex flex-col p-6">
       <div className="flex items-start justify-between gap-3">
@@ -109,6 +109,28 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
         <Stat label={t("attendance.percent")} value={att ? `${att.pct}%` : "—"} tone={att && att.pct < 75 ? "down" : "up"} sub={att ? `${att.present}/${att.total}` : undefined} />
         <Stat label={t("progress.sectionStanding")} value={standing?.sectionRank ? `${standing.sectionRank}/${standing.sectionSize}` : "—"} sub={standing ? `${t("progress.sectionAvg")} ${fmtPercent(locale, standing.sectionAvg, 1)}` : undefined} />
         <Stat label={t("progress.classStanding")} value={standing?.classRank ? `${standing.classRank}/${standing.classSize}` : "—"} sub={standing ? `${t("progress.classAvg")} ${fmtPercent(locale, standing.classAvg, 1)}` : undefined} />
+      </div>
+
+      {/* Quick links — horizontal scroll, above My Progress */}
+      <div className="mt-5">
+        <div className="t-label mb-2">{t("dashboard.quickLinks")}</div>
+        <div className="flex gap-3 overflow-x-auto pb-1">
+          {links.map((l) => {
+            const Icon = l.icon;
+            return (
+              <Link
+                key={l.href + l.labelKey}
+                href={l.href}
+                className="group flex w-[92px] shrink-0 flex-col items-center gap-1.5 rounded-sm bg-surface px-2 py-3 text-center transition-colors hover:bg-gold-100"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-gold-100 text-gold-700 transition-colors group-hover:bg-surface">
+                  <Icon size={18} />
+                </span>
+                <span className="text-[12px] font-semibold leading-tight text-ink-900">{t(l.labelKey)}</span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
       {/* Progress call-to-action */}
@@ -148,36 +170,6 @@ async function AnnouncementsCard() {
       />
       <CardBody className="pt-2">
         <AnnouncementsList items={items} emptyLabel={t("common.noData")} />
-      </CardBody>
-    </Panel>
-  );
-}
-
-// ── Right column: Quick Links (two columns) ──────────────────────────────────
-async function QuickLinksCard() {
-  const { t } = await getT();
-  const links = navFor("student").filter((l) => l.href !== "/");
-  return (
-    <Panel>
-      <CardHeader eyebrow={t("dashboard.quickLinks")} />
-      <CardBody className="pt-2">
-        <div className="grid grid-cols-2 gap-2.5">
-          {links.map((l) => {
-            const Icon = l.icon;
-            return (
-              <Link
-                key={l.href + l.labelKey}
-                href={l.href}
-                className="group flex flex-col items-center gap-1.5 rounded-sm bg-surface px-2 py-3 text-center transition-colors hover:bg-gold-100"
-              >
-                <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-gold-100 text-gold-700 transition-colors group-hover:bg-surface">
-                  <Icon size={18} />
-                </span>
-                <span className="text-[12px] font-semibold leading-tight text-ink-900">{t(l.labelKey)}</span>
-              </Link>
-            );
-          })}
-        </div>
       </CardBody>
     </Panel>
   );
