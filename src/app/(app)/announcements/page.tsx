@@ -41,7 +41,7 @@ export default async function AnnouncementsPage() {
                   <div className="font-bold text-ink-900">{t(posterKey[staff?.role ?? ""] ?? "announce.byOffice")}</div>
                   <div className="mt-0.5 text-[12px] text-muted">{fmtRelative(locale, a.published_at)}</div>
                 </div>
-                <span className={cn("shrink-0 rounded-sm px-2.5 py-0.5 text-[11px] font-semibold text-white", scopeColor[a.scope] ?? scopeColor.school)}>
+                <span className={cn("shrink-0 rounded-sm px-2.5 py-0.5 text-[11px] font-normal text-white", scopeColor[a.scope] ?? scopeColor.school)}>
                   {t(scopeKey[a.scope] ?? "announce.scopeSchool")}
                 </span>
               </div>
