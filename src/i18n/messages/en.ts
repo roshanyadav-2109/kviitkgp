@@ -225,6 +225,10 @@ const en = {
   x: {
     authBlurb: "A single, continuous record of every student's learning — progress, attendance and reports in one calm place for students, parents and teachers.",
     authClasses: "Secure sign-in for students, parents and staff",
+    newSession: "Create the next academic session",
+    newSessionHint: "There is no next session yet. Create it here, then promote pupils into it.",
+    sessionName: "Session name",
+    createSession: "Create session",
     marksPrincipalTitle: "Marks entry is for teachers and office",
     marksPrincipalHint: "The principal can view analytics and attendance; marks are entered by subject/class teachers and the office.",
     marksNoSubjects: "No allotted subjects.",

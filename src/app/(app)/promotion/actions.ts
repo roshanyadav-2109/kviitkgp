@@ -24,3 +24,17 @@ export async function commitPromotion(input: { fromYear: number; toYear: number;
   revalidatePath("/students");
   return { ok: true as const, count: Number(data ?? 0) };
 }
+
+// Create a new academic session (office/admin only, enforced by RLS). Added as
+// a non-current year so the office can then promote the cohort into it.
+export async function createAcademicYear(input: { name: string; startDate: string; endDate: string }) {
+  const supabase = await createClient();
+  const name = input.name.trim();
+  if (!name || !input.startDate || !input.endDate) return { ok: false as const, error: "All fields are required" };
+  const { error } = await supabase.from("academic_year").insert({
+    name, start_date: input.startDate, end_date: input.endDate, is_current: false,
+  });
+  if (error) return { ok: false as const, error: error.message };
+  revalidatePath("/promotion");
+  return { ok: true as const };
+}

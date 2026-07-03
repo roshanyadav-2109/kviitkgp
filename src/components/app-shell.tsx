@@ -27,8 +27,9 @@ export function AppShell({
   const [menuOpen, setMenuOpen] = useState(false);
   const items = navFor(role);
 
-  // Students get a dark, floating KV rail; other roles keep the light sidebar.
-  const dark = role === "student";
+  // Every role gets the white floating rail; only the student carries identity
+  // in their dashboard (so the top-bar identity menu is hidden for them).
+  const isStudent = role === "student";
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
@@ -88,21 +89,14 @@ export function AppShell({
   );
 
   return (
-    <div className={cn("min-h-dvh lg:grid lg:grid-cols-[264px_1fr]", dark && "bg-white")}>
-      {/* Desktop sidebar */}
-      <aside
-        className={cn(
-          "sticky hidden flex-col lg:flex",
-          dark
-            ? "top-3 m-3 h-[calc(100dvh-1.5rem)] overflow-hidden rounded-md border border-hair bg-surface"
-            : "top-0 h-dvh border-r border-hair bg-surface",
-        )}
-      >
+    <div className="min-h-dvh bg-white lg:grid lg:grid-cols-[264px_1fr]">
+      {/* Desktop sidebar — white floating rail for every role */}
+      <aside className="sticky top-3 m-3 hidden h-[calc(100dvh-1.5rem)] flex-col overflow-hidden rounded-md border border-hair bg-surface lg:flex">
         {brandHeader}
         <div className="flex-1 overflow-y-auto">
           {navList}
         </div>
-        {dark ? brandFooter : <UserCard name={name} roleLabel={roleLabel} dark={dark} />}
+        {brandFooter}
       </aside>
 
       {/* Mobile drawer */}
@@ -126,22 +120,22 @@ export function AppShell({
             <div className="flex-1 overflow-y-auto">
               {navList}
             </div>
-            {dark ? brandFooter : <UserCard name={name} roleLabel={roleLabel} dark={dark} />}
+            {brandFooter}
           </aside>
         </div>
       )}
 
       <div className="flex min-w-0 flex-col">
         {/* Top bar */}
-        <header className={cn("sticky top-0 z-30 flex h-16 items-center gap-3 bg-paper/85 px-4 backdrop-blur sm:px-6", dark ? "lg:hidden" : "border-b border-hair")}>
+        <header className={cn("sticky top-0 z-30 flex h-16 items-center gap-3 bg-white/85 px-4 backdrop-blur sm:px-6", isStudent ? "lg:hidden" : "border-b border-hair")}>
           <button aria-label="Menu" onClick={() => setOpen(true)} className="rounded-sm p-1.5 text-ink-700 hover:bg-panel lg:hidden">
             <MenuIcon size={20} />
           </button>
           <div className="lg:hidden">
             <KVEmblem size={30} />
           </div>
-          {/* Students carry identity in the dashboard profile card; staff use this menu. */}
-          {!dark && (
+          {/* Students carry identity in the dashboard profile card; others use this menu. */}
+          {!isStudent && (
             <div className="relative ml-auto">
               <button
                 onClick={() => setMenuOpen((v) => !v)}
@@ -182,29 +176,9 @@ export function AppShell({
         </header>
 
         {/* Each section is its own block on the page — no shared wrapper. */}
-        <main className={cn("w-full flex-1", dark ? "p-3 lg:py-3 lg:pl-1 lg:pr-3" : "mx-auto max-w-6xl px-4 py-6 sm:px-6")}>
+        <main className="w-full flex-1 p-3 lg:py-3 lg:pl-1 lg:pr-3">
           {children}
         </main>
-      </div>
-    </div>
-  );
-}
-
-function UserCard({ name, roleLabel, dark }: { name: string; roleLabel: string; dark?: boolean }) {
-  const initials = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
-  return (
-    <div className={cn("flex items-center gap-3 p-4", dark ? "border-t border-white/10" : "border-t border-hair")}>
-      <div
-        className={cn(
-          "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold",
-          dark ? "bg-gold-500 text-ink-900" : "bg-ink-900 text-gold-100",
-        )}
-      >
-        {initials}
-      </div>
-      <div className="min-w-0 leading-tight">
-        <div className={cn("truncate text-[13px] font-semibold", dark ? "text-gold-100" : "text-ink-900")}>{name}</div>
-        <div className={cn("truncate text-[12px]", dark ? "text-gold-100/60" : "text-ink-500")}>{roleLabel}</div>
       </div>
     </div>
   );

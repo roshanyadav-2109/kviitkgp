@@ -7,6 +7,7 @@ import { Card, CardBody } from "@/components/ui/card";
 import { PromotionIcon } from "@/components/icons";
 import { PromotionConsole } from "@/components/promotion/promotion-console";
 import { PromotionSummary } from "@/components/promotion/promotion-summary";
+import { NewSessionForm } from "@/components/promotion/new-session-form";
 import {
   getPromotionYears, getPromotableClasses, getPromotionRoster, getSectionsByLevel, getPromotionSummary,
 } from "@/lib/data/promotion";
@@ -27,8 +28,22 @@ export default async function PromotionPage({ searchParams }: { searchParams: SP
   }
 
   const { from, to } = await getPromotionYears();
-  if (!from || !to) {
+  if (!from) {
     return (<div><PageHeader title={t("nav.promotion")} /><EmptyState icon={PromotionIcon} title={t("x.noNextYear")} hint={t("x.noNextYearHint")} /></div>);
+  }
+  // No next session yet → office creates one here before promoting.
+  if (!to) {
+    if (!isOffice) {
+      return (<div><PageHeader title={t("nav.promotion")} /><EmptyState icon={PromotionIcon} title={t("x.noNextYear")} hint={t("x.noNextYearHint")} /></div>);
+    }
+    const base = parseInt(from.name.slice(0, 4), 10);
+    const y = (Number.isFinite(base) ? base : new Date().getUTCFullYear()) + 1;
+    return (
+      <div>
+        <PageHeader title={t("nav.promotion")} description={t("x.newSessionHint")} />
+        <NewSessionForm name={`${y}-${String((y + 1) % 100).padStart(2, "0")}`} start={`${y}-04-01`} end={`${y + 1}-03-31`} />
+      </div>
+    );
   }
 
   // ---- Principal / class teacher: read-only outcome summary ----
