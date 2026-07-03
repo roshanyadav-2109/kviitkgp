@@ -40,7 +40,7 @@ export function StatCard({ label, value, sub, tone = "ink" }: { label: string; v
   return (
     <div className="rounded-md border border-hair bg-surface p-4">
       <div className="text-[12px] font-normal text-ink-900">{label}</div>
-      <div className={cn("mt-1 text-[30px] font-semibold leading-none tabular", toneCls)}>{value}</div>
+      <div className={cn("mt-1 text-[30px] font-normal leading-none tabular", toneCls)}>{value}</div>
       {sub && <div className="mt-1.5 text-[12px] text-ink-900">{sub}</div>}
     </div>
   );
