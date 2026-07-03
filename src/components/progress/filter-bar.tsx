@@ -22,6 +22,11 @@ export function FilterBar({
   const pathname = usePathname();
   const params = useSearchParams();
 
+  // Currently chosen class — the class itself when viewing a whole class, or the
+  // parent class of the chosen section.
+  const currentClassId = level === "class" ? scopeId : (sectionMeta.find((s) => s.id === scopeId)?.classId ?? classes[0]?.id ?? null);
+  const classSections = sectionMeta.filter((s) => s.classId === currentClassId);
+
   // Subjects cascade off the chosen scope: a class shows that class's subjects;
   // a section shows the subjects taught in it.
   const subjectOptions =
@@ -38,12 +43,20 @@ export function FilterBar({
     next.set("year", v);
     push(next);
   }
-  function setScope(value: string) {
-    const [kind, id] = value.split(":");
+  // Pick a class → whole-class view (all sections), reset section + subject.
+  function setClass(id: string) {
+    const next = new URLSearchParams(params.toString());
+    next.set("class", id);
+    next.delete("section");
+    next.delete("subject");
+    push(next);
+  }
+  // "" → whole class; otherwise a specific section. Reset subject either way.
+  function setSection(value: string) {
     const next = new URLSearchParams(params.toString());
     next.delete("subject");
-    if (kind === "class") { next.set("class", id); next.delete("section"); }
-    else { next.set("section", id); next.delete("class"); }
+    if (value) { next.set("section", value); next.delete("class"); }
+    else { if (currentClassId != null) next.set("class", String(currentClassId)); next.delete("section"); }
     push(next);
   }
   function setSubject(v: string) {
@@ -54,24 +67,26 @@ export function FilterBar({
 
   return (
     <div className="mb-5 flex flex-wrap items-end gap-3 rounded-md border border-hair bg-surface p-3">
-      <div className="min-w-[140px] flex-1">
+      <div className="min-w-[130px] flex-1">
         <label className="t-label mb-1 block">{t("common.year")}</label>
         <Select value={yearId} onChange={(e) => setYear(e.target.value)}>
           {years.map((y) => (<option key={y.id} value={y.id}>{y.name}{y.is_current ? " ★" : ""}</option>))}
         </Select>
       </div>
-      <div className="min-w-[200px] flex-1">
-        <label className="t-label mb-1 block">{t("common.class")} / {t("common.section")}</label>
-        <Select value={`${level}:${scopeId}`} onChange={(e) => setScope(e.target.value)}>
-          <optgroup label={t("dashboard.myClass") + " · " + t("common.all")}>
-            {classes.map((c) => (<option key={"c" + c.id} value={`class:${c.id}`}>{c.name} · {t("common.all")}</option>))}
-          </optgroup>
-          <optgroup label={t("common.section")}>
-            {sectionMeta.map((s) => (<option key={"s" + s.id} value={`section:${s.id}`}>{s.label}{s.isClassTeacher ? " ★" : ""}</option>))}
-          </optgroup>
+      <div className="min-w-[130px] flex-1">
+        <label className="t-label mb-1 block">{t("common.class")}</label>
+        <Select value={currentClassId ?? ""} onChange={(e) => setClass(e.target.value)}>
+          {classes.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
         </Select>
       </div>
-      <div className="min-w-[160px] flex-1">
+      <div className="min-w-[130px] flex-1">
+        <label className="t-label mb-1 block">{t("common.section")}</label>
+        <Select value={level === "section" ? scopeId : ""} onChange={(e) => setSection(e.target.value)}>
+          <option value="">{t("common.all")}</option>
+          {classSections.map((s) => (<option key={s.id} value={s.id}>{s.sectionName}{s.isClassTeacher ? " ★" : ""}</option>))}
+        </Select>
+      </div>
+      <div className="min-w-[150px] flex-1">
         <label className="t-label mb-1 block">{t("common.subject")}</label>
         <Select value={subjectId ?? ""} onChange={(e) => setSubject(e.target.value)}>
           <option value="">{t("common.all")}</option>
