@@ -147,6 +147,7 @@ const en = {
     markAllPresent: "Mark all present",
     markAllAbsent: "Mark all absent",
     markHoliday: "Mark as holiday",
+    saveAttendance: "Save attendance",
     date: "Date",
     savedFor: "Attendance saved for {date}",
     lowNote: "{count} student(s) below 75%",

@@ -103,7 +103,7 @@ export function AttendanceBoard({
             <div className="mt-4 flex items-center gap-3">
               <Button onClick={save} disabled={pending}>
                 <CheckIcon size={16} />
-                {pending ? t("common.saving") : t("marks.saveMarks")}
+                {pending ? t("common.saving") : t("attendance.saveAttendance")}
               </Button>
               {saved && <span className="text-[13px] font-medium text-up">{t("attendance.savedFor", { date: fmtDate(locale, date) })}</span>}
             </div>

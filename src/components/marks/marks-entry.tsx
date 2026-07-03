@@ -2,7 +2,7 @@
 import { useState, useTransition } from "react";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BandChip, StatusPill } from "@/components/ui/status";
+import { BandChip } from "@/components/ui/status";
 import { CheckIcon } from "@/components/icons";
 import { useT } from "@/i18n/provider";
 import { cn } from "@/lib/utils";
@@ -62,9 +62,9 @@ export function MarksEntry({
     <Card>
       <CardHeader eyebrow={t("marks.enter")} title={`${assessmentName} · ${t("marks.maxMarks", { max: maxMarks })}`}
         action={
-          <div className="flex items-center gap-2">
-            <StatusPill status={published ? "up" : "watch"}>{published ? t("marks.released") : t("marks.draft")}</StatusPill>
-            <Button size="sm" variant={published ? "ghost" : "gold"} disabled={releasing} onClick={toggleRelease}>
+          <div className="flex items-center gap-3">
+            <span className={cn("text-[13px]", published ? "text-up" : "text-down")}>{published ? t("marks.released") : t("marks.draft")}</span>
+            <Button size="sm" variant={published ? "ghost" : "primary"} disabled={releasing} onClick={toggleRelease}>
               {releasing ? t("common.saving") : published ? t("marks.unpublish") : t("marks.release")}
             </Button>
           </div>
@@ -84,11 +84,11 @@ export function MarksEntry({
                   value={e.absent ? "" : e.marks ?? ""}
                   disabled={e.absent}
                   onChange={(ev) => setMark(r.id, ev.target.value)}
-                  className="h-9 w-20 rounded-sm border border-hair bg-surface px-2 text-right text-[14px] tabular focus-visible:border-gold-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 disabled:bg-panel"
+                  className="h-9 w-20 rounded-sm border border-hair bg-surface px-2 text-right text-[14px] tabular focus-visible:border-[rgb(37,99,235)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(37,99,235)]/30 disabled:bg-panel"
                   placeholder={String(maxMarks)}
                 />
                 <button onClick={() => toggleAbsent(r.id)} aria-pressed={e.absent}
-                  className={cn("h-8 rounded-sm px-2 text-[12px] font-semibold", e.absent ? "bg-down text-white" : "bg-panel text-ink-500 hover:bg-gold-100")}>
+                  className={cn("h-8 rounded-sm px-2 text-[12px] font-semibold", e.absent ? "bg-down text-white" : "bg-panel text-ink-500 hover:bg-[rgb(37,99,235)]/[0.05]")}>
                   {t("marks.absent")}
                 </button>
               </li>

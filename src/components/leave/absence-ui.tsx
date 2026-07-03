@@ -2,7 +2,6 @@
 import { useState, useTransition } from "react";
 import { Textarea } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
-import { StatusPill } from "@/components/ui/status";
 import { useI18n } from "@/i18n/provider";
 import { fmtDate } from "@/i18n/format";
 import { cn } from "@/lib/utils";
@@ -105,7 +104,7 @@ function StaffAbsence({ notices }: { notices: AbsenceNotice[] }) {
                 <div className="text-[14px] font-semibold text-ink-900">{n.studentName}</div>
                 <div className="text-[12px] text-ink-900 tabular">{t("leave.absentOn", { date: fmtDate(locale, n.on_date) })}</div>
               </div>
-              <StatusPill status={pending ? "watch" : "up"}>{pending ? t("leave.awaitingReason") : t("leave.explained")}</StatusPill>
+              <span className={`shrink-0 text-[13px] ${pending ? "text-down" : "text-up"}`}>{pending ? t("leave.awaitingReason") : t("leave.explained")}</span>
             </div>
             {n.reason && <p className="mt-2 rounded-sm bg-surface px-2.5 py-1.5 text-[13px] text-ink-900">{n.reason}</p>}
           </li>

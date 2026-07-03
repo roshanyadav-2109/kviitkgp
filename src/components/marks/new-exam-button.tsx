@@ -44,7 +44,7 @@ export function NewExamButton({ classId, subjectId, yearId, className }: {
   }
 
   return (
-    <div className="mb-5 rounded-md border border-gold-500 bg-gold-100/40 p-4 shadow-[var(--shadow-card)]">
+    <div className="mb-5 rounded-md border border-hair bg-surface p-4">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="t-h3 text-ink-900">{t("x.newExamFor", { cls: className })}</h3>
         <button onClick={() => setOpen(false)} className="text-[13px] text-muted hover:text-ink-700">{t("common.cancel")}</button>
