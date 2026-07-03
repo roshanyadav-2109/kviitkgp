@@ -155,7 +155,7 @@ export function AppShell({
 
       <div className="flex min-w-0 flex-col">
         {/* No full navbar — just the mobile hamburger + a person card top-right. */}
-        <header className={cn("sticky top-0 z-30 flex h-14 items-center gap-3 px-3 sm:px-5", !personMenu && "lg:hidden")}>
+        <header className={cn("flex h-14 items-center gap-3 px-3 sm:px-5", !personMenu && "lg:hidden")}>
           <button aria-label="Menu" onClick={() => setOpen(true)} className="rounded-sm p-1.5 text-ink-700 hover:bg-panel lg:hidden">
             <MenuIcon size={20} />
           </button>
