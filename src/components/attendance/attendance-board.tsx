@@ -3,7 +3,7 @@ import { useState, useTransition } from "react";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusPill, type Status } from "@/components/ui/status";
-import { CheckIcon, AlertIcon } from "@/components/icons";
+import { CheckIcon } from "@/components/icons";
 import { useI18n } from "@/i18n/provider";
 import { fmtDate } from "@/i18n/format";
 import { cn } from "@/lib/utils";
@@ -113,8 +113,7 @@ export function AttendanceBoard({
 
       {/* Below-threshold flags */}
       <Card className={below.length ? "border-down/30" : undefined}>
-        <CardHeader eyebrow={t("attendance.percent")} title={t("attendance.belowThreshold")}
-          action={<AlertIcon size={18} className={below.length ? "text-down" : "text-ink-900"} />} />
+        <CardHeader eyebrow={t("attendance.percent")} title={t("attendance.belowThreshold")} />
         <CardBody className="pt-2">
           {below.length ? (
             <ul className="space-y-1.5">
