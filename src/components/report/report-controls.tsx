@@ -18,7 +18,7 @@ export function ReportControls({ month, extra }: { month: string; extra?: React.
   }
 
   return (
-    <div className="no-print mb-5 flex flex-wrap items-end gap-3 rounded-md border border-hair bg-surface p-3 shadow-[var(--shadow-card)]">
+    <div className="no-print mb-5 flex flex-wrap items-end gap-3 rounded-md border border-hair bg-surface p-3">
       <div className="min-w-[160px]">
         <label className="t-label mb-1 block">{t("report.month")}</label>
         <Input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />

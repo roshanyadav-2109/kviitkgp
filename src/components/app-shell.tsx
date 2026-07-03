@@ -75,7 +75,7 @@ export function AppShell({
   // the width; "technologies" spreads its letters to fill that exact width.
   const brandFooter = (
     <div className="px-4 py-4 text-center">
-      <div className="inline-block">
+      <a href="https://hebrewtechnologies.com" target="_blank" rel="noreferrer" className="inline-block">
         <div className="text-[24px] font-medium lowercase leading-none tracking-[0.08em] text-ink-900">hebrew</div>
         <div className="mt-1.5 flex justify-between text-[12px] font-normal lowercase leading-none text-muted" aria-hidden>
           {"technologies".split("").map((ch, i) => (
@@ -83,7 +83,7 @@ export function AppShell({
           ))}
         </div>
         <span className="sr-only">technologies</span>
-      </div>
+      </a>
     </div>
   );
 
