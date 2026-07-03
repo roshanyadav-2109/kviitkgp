@@ -13,7 +13,6 @@ type Row = { id: number; name: string; roll: number | null };
 const STATUSES: { key: AttStatus; short: string; cls: string }[] = [
   { key: "present", short: "P", cls: "bg-up text-white" },
   { key: "absent", short: "A", cls: "bg-down text-white" },
-  { key: "holiday", short: "H", cls: "bg-black text-white" },
 ];
 
 const statusStyle: Record<AttStatus, Status> = { present: "up", absent: "down", late: "watch", leave: "flat", holiday: "flat" };
@@ -37,6 +36,9 @@ export function AttendanceBoard({
   });
   const [pending, start] = useTransition();
   const [saved, setSaved] = useState(false);
+  // Whole-day holiday toggle: when on, per-student P/A can't be set and the
+  // whole section is saved as "holiday" (excluded from attendance %).
+  const [holiday, setHoliday] = useState(() => roster.length > 0 && roster.every((r) => initial[r.id] === "holiday"));
 
   const setAll = (status: AttStatus) => setMarks(Object.fromEntries(roster.map((r) => [r.id, status])));
   const below = roster
@@ -48,7 +50,7 @@ export function AttendanceBoard({
     start(async () => {
       const res = await saveDailyAttendance({
         sectionId, yearId, date,
-        entries: roster.map((r) => ({ studentId: r.id, status: marks[r.id] })),
+        entries: roster.map((r) => ({ studentId: r.id, status: holiday ? "holiday" : marks[r.id] })),
       });
       if (res.ok) { setSaved(true); setTimeout(() => setSaved(false), 2500); }
     });
@@ -60,9 +62,13 @@ export function AttendanceBoard({
         <CardHeader eyebrow={fmtDate(locale, date, { weekday: "long", day: "numeric", month: "long" })} title={readOnly ? t("attendance.title") : t("attendance.markToday")}
           action={readOnly ? undefined : (
             <div className="flex flex-wrap gap-2">
-              <Button size="sm" variant="subtle" onClick={() => setAll("present")}>{t("attendance.markAllPresent")}</Button>
-              <Button size="sm" variant="subtle" onClick={() => setAll("absent")}>{t("attendance.markAllAbsent")}</Button>
-              <Button size="sm" variant="subtle" onClick={() => setAll("holiday")}>{t("attendance.markHoliday")}</Button>
+              <Button size="sm" variant="subtle" disabled={holiday} onClick={() => setAll("present")}>{t("attendance.markAllPresent")}</Button>
+              <Button size="sm" variant="subtle" disabled={holiday} onClick={() => setAll("absent")}>{t("attendance.markAllAbsent")}</Button>
+              <button type="button" onClick={() => setHoliday((v) => !v)} aria-pressed={holiday}
+                className={cn("h-8 rounded-sm border px-3 text-[13px] font-medium transition-colors",
+                  holiday ? "border-black bg-black text-white" : "border-hair bg-panel text-ink-900 hover:bg-[rgb(37,99,235)]/[0.05]")}>
+                {t("attendance.holiday")}
+              </button>
             </div>
           )} />
         <CardBody className="pt-2">
@@ -80,10 +86,11 @@ export function AttendanceBoard({
                 ) : (
                   <div className="flex gap-1">
                     {STATUSES.map((s) => (
-                      <button key={s.key} onClick={() => setMarks((m) => ({ ...m, [r.id]: s.key }))}
-                        aria-pressed={marks[r.id] === s.key}
+                      <button key={s.key} disabled={holiday} onClick={() => setMarks((m) => ({ ...m, [r.id]: s.key }))}
+                        aria-pressed={!holiday && marks[r.id] === s.key}
                         className={cn("h-8 w-9 rounded-sm text-[12px] font-bold transition-colors",
-                          marks[r.id] === s.key ? s.cls : "bg-panel text-ink-900 hover:bg-[rgb(37,99,235)]/[0.05]")}>
+                          holiday ? "cursor-not-allowed bg-panel text-ink-900 opacity-40"
+                            : marks[r.id] === s.key ? s.cls : "bg-panel text-ink-900 hover:bg-[rgb(37,99,235)]/[0.05]")}>
                         {s.short}
                       </button>
                     ))}
