@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { navFor, type NavRole } from "@/lib/nav";
 import { useT } from "@/i18n/provider";
 import { KVEmblem } from "@/components/brand";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 import { signOut } from "@/lib/actions";
 
 export function AppShell({
@@ -92,8 +91,6 @@ export function AppShell({
         <>
           <div className="fixed inset-0 z-30" onClick={() => setMenuOpen(false)} />
           <div role="menu" className="absolute right-0 top-full z-40 mt-1.5 w-52 rounded-lg border border-hair bg-surface p-1.5 shadow-[var(--shadow-pop)]">
-            <div className="px-1.5 pb-1.5"><LocaleSwitcher /></div>
-            <div className="my-1 border-t border-hair" />
             <form action={signOut}>
               <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-[13px] font-normal text-ink-900 hover:bg-panel">
                 <LogoutIcon size={16} className="text-ink-900" />

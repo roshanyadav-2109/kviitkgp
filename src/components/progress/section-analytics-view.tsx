@@ -5,7 +5,7 @@ import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty";
 import { DeltaBadge } from "@/components/ui/status";
 import { KVBarChart, KVLineChart } from "@/components/charts";
-import { TrophyIcon, AlertIcon, ProgressIcon, ArrowRightIcon } from "@/components/icons";
+import { ProgressIcon } from "@/components/icons";
 import { useI18n } from "@/i18n/provider";
 import { fmtPercent } from "@/i18n/format";
 import { supportReason } from "@/components/progress/insight";
@@ -42,7 +42,7 @@ export function SectionAnalyticsView({
       {/* Auto-generated conclusions */}
       {data.conclusions.length > 0 && (
         <Card className="border-hair bg-surface">
-          <CardHeader eyebrow={t("progress.autoInsights")} title="" />
+          <CardHeader title={t("progress.autoInsights")} />
           <CardBody className="pt-1">
             <ul className="space-y-2">
               {data.conclusions.map((c, i) => (
@@ -59,7 +59,7 @@ export function SectionAnalyticsView({
       <div className="grid gap-5 lg:grid-cols-2">
         {/* Subject vs subject */}
         <Card>
-          <CardHeader eyebrow={t("progress.subjectCompare")} title={t("progress.average")} />
+          <CardHeader title={t("progress.subjectCompare")} />
           <CardBody className="pt-2">
             <KVBarChart data={subjBars} xKey="subject" valueKey="avg" horizontal height={280} />
           </CardBody>
@@ -67,7 +67,7 @@ export function SectionAnalyticsView({
 
         {/* Term trend */}
         <Card>
-          <CardHeader eyebrow={t("progress.timeline")} title={t("progress.thisTerm")} />
+          <CardHeader title={t("progress.timeline")} />
           <CardBody className="pt-2">
             {data.termTrend.length > 1 ? (
               <KVLineChart data={data.termTrend} xKey="term" lines={[{ key: "avg", name: t("progress.average"), color: "#E09E3E" }]} height={280} area />
@@ -79,7 +79,7 @@ export function SectionAnalyticsView({
 
         {/* Distribution */}
         <Card>
-          <CardHeader eyebrow={t("progress.distribution")} title={subjectName ?? t("common.all")} />
+          <CardHeader title={subjectName ? `${t("progress.distribution")} · ${subjectName}` : t("progress.distribution")} />
           <CardBody className="pt-2">
             <KVBarChart data={data.distribution} xKey="band" valueKey="n" colorByBand showValues
               maxDomain={Math.max(5, ...data.distribution.map((d) => d.n)) + 2} height={280} />
@@ -88,7 +88,7 @@ export function SectionAnalyticsView({
 
         {/* Section comparison (only when a subject is chosen) */}
         <Card>
-          <CardHeader eyebrow={t("progress.sectionCompare")} title={subjectName ?? "—"} />
+          <CardHeader title={subjectName ? `${t("progress.sectionCompare")} · ${subjectName}` : t("progress.sectionCompare")} />
           <CardBody className="pt-2">
             {compBars.length ? (
               <KVBarChart data={compBars} xKey="name" valueKey="avg" horizontal height={280} />
@@ -104,7 +104,7 @@ export function SectionAnalyticsView({
       {/* Top performers & needs support */}
       <div className="grid gap-5 lg:grid-cols-2">
         <Card>
-          <CardHeader eyebrow={t("progress.topPerformers")} title="" action={<TrophyIcon size={18} className="text-[rgb(37,99,235)]" />} />
+          <CardHeader title={t("progress.topPerformers")} />
           <CardBody className="pt-1">
             <ol className="space-y-1.5">
               {data.topPerformers.map((s, i) => (
@@ -119,7 +119,7 @@ export function SectionAnalyticsView({
         </Card>
 
         <Card className="border-watch/30">
-          <CardHeader eyebrow={t("progress.needsSupport")} title="" action={<AlertIcon size={18} className="text-watch" />} />
+          <CardHeader title={t("progress.needsSupport")} />
           <CardBody className="pt-1">
             <p className="mb-2 text-[12px] text-ink-900">{t("progress.needsSupportNote")}</p>
             {data.needsSupport.length ? (
@@ -146,14 +146,13 @@ export function SectionAnalyticsView({
 
       {/* Roster with drill-down to each student's record */}
       <Card>
-        <CardHeader eyebrow={t("common.students")} title={`${roster.length}`} />
+        <CardHeader title={`${t("common.students")} (${roster.length})`} />
         <CardBody className="pt-2">
           <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
             {roster.map((s) => (
               <Link key={s.id} href={drillHref(s.id)} className="group flex items-center gap-2.5 rounded-sm border border-hair bg-surface px-3 py-2 transition-colors hover:border-[rgb(37,99,235)]/40 hover:bg-[rgb(37,99,235)]/[0.05]">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-panel text-[11px] font-semibold text-ink-900 tabular">{s.roll ?? "–"}</span>
                 <span className="flex-1 truncate text-[13px] font-medium text-ink-900">{s.name}</span>
-                <ArrowRightIcon size={15} className="text-ink-900 transition-transform group-hover:translate-x-0.5 group-hover:text-[rgb(37,99,235)]" />
               </Link>
             ))}
           </div>

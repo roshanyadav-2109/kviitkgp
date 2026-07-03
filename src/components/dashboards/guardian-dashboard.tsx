@@ -9,6 +9,7 @@ import { Card, CardBody } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty";
 import { AlertIcon, ProgressIcon, ArrowRightIcon } from "@/components/icons";
 import { DashHeader, AnnouncementsPanel, EventsPanel, QuickLinks } from "@/components/dashboards/parts";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 
 // Parent view: a card per child (one login shows all siblings).
 export async function GuardianDashboard({ session }: { session: Session }) {
@@ -38,7 +39,10 @@ export async function GuardianDashboard({ session }: { session: Session }) {
 
   return (
     <div>
-      <DashHeader name={session.fullName} />
+      <div className="mb-6 flex items-start justify-between gap-3">
+        <DashHeader name={session.fullName} />
+        <LocaleSwitcher />
+      </div>
 
       {!!pending && pending > 0 && (
         <Link href="/leave" className="mb-5 flex items-center gap-3 rounded-md border border-watch/40 bg-watch-soft px-4 py-3 transition-colors hover:border-watch">

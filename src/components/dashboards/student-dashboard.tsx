@@ -10,7 +10,6 @@ import { navFor } from "@/lib/nav";
 import { CalendarIcon, ArrowRightIcon } from "@/components/icons";
 import { ProfileMenu } from "@/components/dashboards/profile-menu";
 import { AnnouncementsList } from "@/components/dashboards/announcements-list";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 import { cn } from "@/lib/utils";
 
 type Att = Awaited<ReturnType<typeof getStudentAttendance>>;
@@ -104,12 +103,9 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
   };
   return (
     <section className="flex flex-col gap-3">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
-          <p className="mt-1 text-[14px] text-ink-900">{t("dashboard.overview")}</p>
-        </div>
-        <LocaleSwitcher />
+      <div>
+        <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
+        <p className="mt-1 text-[14px] text-ink-900">{t("dashboard.overview")}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">

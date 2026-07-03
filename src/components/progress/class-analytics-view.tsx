@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty";
 import { DeltaBadge } from "@/components/ui/status";
 import { KVBarChart } from "@/components/charts";
-import { TrophyIcon, AlertIcon, ProgressIcon } from "@/components/icons";
+import { ProgressIcon } from "@/components/icons";
 import { useI18n } from "@/i18n/provider";
 import { fmtPercent } from "@/i18n/format";
 import { supportReason } from "@/components/progress/insight";
@@ -20,7 +20,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
     <div className="space-y-5">
       {data.conclusions.length > 0 && (
         <Card className="border-hair bg-surface">
-          <CardHeader eyebrow={t("progress.autoInsights")} title="" />
+          <CardHeader title={t("progress.autoInsights")} />
           <CardBody className="pt-1">
             <ul className="space-y-2">
               {data.conclusions.map((c, i) => (
@@ -34,7 +34,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
       <div className="grid gap-5 lg:grid-cols-2">
         {/* Section comparison — the headline of a whole-class view */}
         <Card>
-          <CardHeader eyebrow={t("progress.sectionCompare")} title={subjectName ?? t("common.all")} />
+          <CardHeader title={subjectName ? `${t("progress.sectionCompare")} · ${subjectName}` : t("progress.sectionCompare")} />
           <CardBody className="pt-2">
             {data.sectionComparison.length ? (
               <KVBarChart data={data.sectionComparison} xKey="name" valueKey="avg" horizontal height={260} />
@@ -46,7 +46,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
 
         {/* Subject vs subject across the class */}
         <Card>
-          <CardHeader eyebrow={t("progress.subjectCompare")} title={t("progress.average")} />
+          <CardHeader title={t("progress.subjectCompare")} />
           <CardBody className="pt-2">
             <KVBarChart data={data.subjectAverages} xKey="subject" valueKey="avg" horizontal height={260} />
           </CardBody>
@@ -54,7 +54,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
 
         {/* Distribution across the class */}
         <Card>
-          <CardHeader eyebrow={t("progress.distribution")} title={subjectName ?? t("common.all")} />
+          <CardHeader title={subjectName ? `${t("progress.distribution")} · ${subjectName}` : t("progress.distribution")} />
           <CardBody className="pt-2">
             <KVBarChart data={data.distribution} xKey="band" valueKey="n" colorByBand showValues
               maxDomain={Math.max(5, ...data.distribution.map((d) => d.n)) + 2} height={260} />
@@ -63,7 +63,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
 
         {/* Best performers across the class (with section) */}
         <Card>
-          <CardHeader eyebrow={t("progress.topPerformers")} title="" action={<TrophyIcon size={18} className="text-[rgb(37,99,235)]" />} />
+          <CardHeader title={t("progress.topPerformers")} />
           <CardBody className="pt-1">
             <ol className="space-y-1.5">
               {data.topPerformers.map((s, i) => (
@@ -81,7 +81,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
 
       {/* Needs support across the class */}
       <Card className="border-watch/30">
-        <CardHeader eyebrow={t("progress.needsSupport")} title="" action={<AlertIcon size={18} className="text-watch" />} />
+        <CardHeader title={t("progress.needsSupport")} />
         <CardBody className="pt-1">
           <p className="mb-2 text-[12px] text-ink-900">{t("progress.needsSupportNote")}</p>
           {data.needsSupport.length ? (
