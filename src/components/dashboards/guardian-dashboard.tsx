@@ -5,9 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getMyChildren } from "@/lib/data/analytics";
 import { Card, CardBody } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty";
-import { AlertIcon, ProgressIcon, ArrowRightIcon } from "@/components/icons";
+import { ProgressIcon, ArrowRightIcon } from "@/components/icons";
 import { DashHeader, AnnouncementsPanel, EventsPanel, QuickLinks } from "@/components/dashboards/parts";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 
 // Parent view: an ID card per child (one login shows all siblings).
 export async function GuardianDashboard({ session }: { session: Session }) {
@@ -20,10 +19,10 @@ export async function GuardianDashboard({ session }: { session: Session }) {
   const supabase = await createClient();
   const childIds = children.map((c) => c.id);
 
-  const [{ data: enr }, { count: pending }] = await Promise.all([
-    supabase.from("student_enrollment").select("student_id, roll_no, section:section_id(name, class:class_id(name))").in("student_id", childIds).eq("academic_year_id", year.id),
-    supabase.from("absence_notice").select("id", { count: "exact", head: true }).in("student_id", childIds).eq("status", "pending"),
-  ]);
+  const { data: enr } = await supabase
+    .from("student_enrollment")
+    .select("student_id, roll_no, section:section_id(name, class:class_id(name))")
+    .in("student_id", childIds).eq("academic_year_id", year.id);
   const infoOf = new Map<number, { className: string; sectionName: string; roll: number | null }>();
   for (const e of enr ?? []) {
     const s = e.section as unknown as { name: string; class: { name: string } } | null;
@@ -32,17 +31,7 @@ export async function GuardianDashboard({ session }: { session: Session }) {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-start gap-3">
-        <DashHeader name={session.fullName} />
-        <LocaleSwitcher />
-      </div>
-
-      {!!pending && pending > 0 && (
-        <Link href="/leave" className="mb-5 flex items-center gap-3 rounded-md border border-watch/40 bg-watch-soft px-4 py-3 transition-colors hover:border-watch">
-          <AlertIcon size={20} className="text-watch" />
-          <div className="text-[14px] text-ink-900"><span className="font-semibold">{pending}</span> {t("leave.absence").toLowerCase()} — {t("leave.explainPrompt").toLowerCase()}</div>
-        </Link>
-      )}
+      <DashHeader name={session.fullName} />
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
         {children.map((child) => {

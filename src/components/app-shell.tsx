@@ -8,6 +8,7 @@ import { navFor, type NavRole } from "@/lib/nav";
 import { useT } from "@/i18n/provider";
 import { KVEmblem } from "@/components/brand";
 import { SignOutModal } from "@/components/dashboards/profile-menu";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 
 export function AppShell({
   name,
@@ -161,7 +162,12 @@ export function AppShell({
           <div className="lg:hidden">
             <KVEmblem size={28} />
           </div>
-          {personMenu && <div className="ml-auto">{personMenu}</div>}
+          {(personMenu || (role === "guardian" && isDashboard)) && (
+            <div className="ml-auto flex items-center gap-2">
+              {role === "guardian" && isDashboard && <LocaleSwitcher />}
+              {personMenu}
+            </div>
+          )}
         </header>
 
         {/* Each section is its own block on the page — no shared wrapper. */}
