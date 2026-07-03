@@ -45,7 +45,7 @@ export function ProfileMenu({
 
       {open && (
         <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-ink-900/40" onClick={() => setOpen(false)} />
+          <div className="absolute inset-0 bg-ink-900/40 backdrop-blur-md" onClick={() => setOpen(false)} />
           <div className="relative z-10 flex h-[70vh] w-[92vw] flex-col items-center justify-center rounded-sm bg-surface p-8 text-center shadow-[var(--shadow-pop)] sm:h-[60vh] sm:w-[60vw]">
             <LogoutHuman />
             <p className="mt-6 t-h3 text-ink-900">{promptLabel}</p>

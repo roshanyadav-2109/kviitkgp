@@ -83,7 +83,7 @@ export function AppShell({
   );
 
   return (
-    <div className={cn("min-h-dvh lg:grid lg:grid-cols-[264px_1fr]", dark && "bg-paper")}>
+    <div className={cn("min-h-dvh lg:grid lg:grid-cols-[264px_1fr]", dark && "bg-white")}>
       {/* Desktop sidebar */}
       <aside
         className={cn(

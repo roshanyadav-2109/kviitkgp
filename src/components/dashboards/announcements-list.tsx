@@ -33,7 +33,7 @@ export function AnnouncementsList({ items, emptyLabel }: { items: AnnItem[]; emp
 
       {sel && (
         <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-ink-900/40" onClick={() => setSel(null)} />
+          <div className="absolute inset-0 bg-ink-900/40 backdrop-blur-md" onClick={() => setSel(null)} />
           <div className="relative z-10 flex h-[80vh] w-[92vw] flex-col rounded-sm bg-surface p-6 shadow-[var(--shadow-pop)] sm:h-[60vh] sm:w-[60vw]">
             <button
               aria-label="Close"
