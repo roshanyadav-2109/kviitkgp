@@ -1,174 +1,143 @@
 "use client";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { LoginIcon, ArrowRightIcon } from "@/components/icons";
+import type { Provider } from "@supabase/supabase-js";
+import { ArrowRightIcon } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
 import { useT } from "@/i18n/provider";
 import { KVEmblem } from "@/components/brand";
-import { Button } from "@/components/ui/button";
-import { Field, Input } from "@/components/ui/field";
 import { DEMO_ACCOUNTS, DEMO_PASSWORD } from "@/lib/demo";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 
-// Fine tileable grain, for atmospheric depth on the dark dawn panel.
-const GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
-
-// A rising-sun sunburst — rays + horizon arcs, echoing the KV emblem.
-function RisingSun({ className }: { className?: string }) {
+// ── Provider brand marks (inline so they need no external assets) ──────────────
+function GoogleMark({ size = 20 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMax slice" className={className} fill="none" stroke="currentColor">
-      {Array.from({ length: 21 }, (_, i) => {
-        const a = (-90 + i * 9) * (Math.PI / 180);
-        return <line key={i} x1="200" y1="200" x2={200 + Math.sin(a) * 280} y2={200 - Math.cos(a) * 280} strokeWidth="1.4" strokeOpacity="0.13" />;
-      })}
-      {[72, 122, 176].map((r, i) => (
-        <circle key={r} cx="200" cy="200" r={r} strokeWidth="1.4" strokeOpacity={0.3 - i * 0.08} />
-      ))}
-      <circle cx="200" cy="200" r="46" strokeWidth="2" strokeOpacity="0.5" />
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden>
+      <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
+      <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z" />
+      <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z" />
+      <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z" />
     </svg>
   );
 }
+function MicrosoftMark({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+      <rect x="1" y="1" width="10" height="10" fill="#F25022" />
+      <rect x="13" y="1" width="10" height="10" fill="#7FBA00" />
+      <rect x="1" y="13" width="10" height="10" fill="#00A4EF" />
+      <rect x="13" y="13" width="10" height="10" fill="#FFB900" />
+    </svg>
+  );
+}
+function ZohoMark({ size = 20 }: { size?: number }) {
+  const bars = ["#E42527", "#F9B21D", "#089949", "#226DB4"];
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+      {bars.map((c, i) => (
+        <rect key={c} x={2 + i * 5.3} y="5" width="3.6" height="14" rx="1.2" fill={c} />
+      ))}
+    </svg>
+  );
+}
+
+const PROVIDERS: { key: string; provider: Provider; label: string; Mark: (p: { size?: number }) => React.ReactElement }[] = [
+  { key: "google", provider: "google", label: "Continue with Google", Mark: GoogleMark },
+  { key: "microsoft", provider: "azure", label: "Continue with Microsoft", Mark: MicrosoftMark },
+  { key: "zoho", provider: "zoho" as Provider, label: "Continue with Zoho", Mark: ZohoMark },
+];
 
 export default function LoginPage() {
   const t = useT();
   const router = useRouter();
   const params = useSearchParams();
   const supabase = createClient();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState(false);
 
   async function signIn(em: string, pw: string, key: string) {
-    setBusy(key);
-    setError(false);
+    setBusy(key); setError(false);
     const { error } = await supabase.auth.signInWithPassword({ email: em, password: pw });
-    if (error) {
-      setError(true);
-      setBusy(null);
-      return;
-    }
+    if (error) { setError(true); setBusy(null); return; }
     router.push(params.get("next") || "/");
     router.refresh();
   }
 
+  async function oauth(provider: Provider, key: string) {
+    setBusy(key); setError(false);
+    const redirectTo = typeof window !== "undefined" ? `${window.location.origin}${params.get("next") || "/"}` : undefined;
+    const { error } = await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } });
+    if (error) { setError(true); setBusy(null); }
+  }
+
+  const rowBase = "flex w-full items-center gap-3 rounded-sm border border-hair bg-surface px-4 py-3 text-[14px] font-normal text-ink-900 transition-colors hover:bg-panel disabled:opacity-50";
+
   return (
-    <div className="grid min-h-dvh lg:grid-cols-[1.08fr_1fr]">
-      {/* ── Brand / dawn panel ─────────────────────────────────────────────── */}
-      <aside className="relative hidden overflow-hidden bg-ink-900 text-gold-100 lg:flex lg:flex-col">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          {/* rising-sun glow */}
-          <div
-            className="absolute bottom-[-38%] left-1/2 h-[92%] w-[135%] -translate-x-1/2 rounded-[50%] blur-2xl"
-            style={{ background: "radial-gradient(ellipse at center, rgba(224,158,62,0.40), rgba(224,158,62,0.10) 42%, transparent 70%)" }}
+    <div className="grid min-h-dvh lg:grid-cols-[1.05fr_1fr]">
+      {/* ── Left: video frame (drop the clip at /public/kv-login.mp4) ─────────── */}
+      <aside className="hidden p-3 lg:block">
+        <div className="h-full w-full overflow-hidden rounded-md border border-hair bg-ink-900">
+          <video
+            className="h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            src="/kv-login.mp4"
           />
-          <RisingSun className="absolute bottom-0 left-1/2 h-[72%] w-[150%] -translate-x-1/2 text-gold-500" />
-          {/* top-to-bottom depth + grain */}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(43,27,28,0.72), transparent 26%, transparent 66%, rgba(43,27,28,0.55))" }} />
-          <div className="absolute inset-0 opacity-[0.05] mix-blend-soft-light" style={{ backgroundImage: GRAIN }} />
-        </div>
-
-        <div className="relative z-10 flex h-full flex-col justify-between p-12 xl:p-16">
-          <div className="reveal flex items-center gap-3" style={{ animationDelay: "60ms" }}>
-            <span className="flex h-12 w-12 items-center justify-center rounded-md bg-gold-100 p-1">
-              <KVEmblem size={40} />
-            </span>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-100/65">Kendriya Vidyalaya Sangathan</span>
-          </div>
-
-          <div className="max-w-xl">
-            <div className="reveal text-[12px] font-semibold uppercase tracking-[0.28em] text-gold-300" style={{ animationDelay: "140ms" }}>
-              PM Shri · IIT Kharagpur
-            </div>
-            <h1 className="reveal font-display mt-4 text-[48px] font-medium leading-[0.98] tracking-[-0.02em] text-gold-100 xl:text-[60px]" style={{ animationDelay: "210ms" }}>
-              Kendriya Vidyalaya No.&nbsp;1
-            </h1>
-            <p className="reveal mt-5 text-[16px] font-medium text-gold-100/85" style={{ animationDelay: "270ms" }}>
-              {t("common.appTagline")}
-            </p>
-            <p className="reveal mt-3 max-w-md text-[14px] leading-relaxed text-gold-100/65" style={{ animationDelay: "330ms" }}>
-              {t("x.authBlurb")}
-            </p>
-          </div>
-
-          <div className="reveal text-[11px] uppercase tracking-[0.18em] text-gold-100/45" style={{ animationDelay: "400ms" }}>
-            {t("x.authClasses")}
-          </div>
         </div>
       </aside>
 
-      {/* ── Form panel ─────────────────────────────────────────────────────── */}
-      <main className="relative flex flex-col justify-center overflow-hidden bg-paper px-6 py-12 sm:px-14">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full blur-3xl"
-          style={{ background: "radial-gradient(circle, rgba(224,158,62,0.14), transparent 70%)" }}
-        />
-        <div className="relative mx-auto w-full max-w-sm">
-          {/* Mobile brand + locale */}
-          <div className="mb-10 flex items-center justify-between lg:hidden">
-            <div className="flex items-center gap-2.5">
-              <KVEmblem size={34} />
-              <span className="text-[13px] font-bold text-ink-900">KV No. 1 · IIT Kharagpur</span>
-            </div>
-            <LocaleSwitcher />
-          </div>
-          <div className="mb-6 hidden justify-end lg:flex">
-            <LocaleSwitcher />
+      {/* ── Right: welcome + sign-in options ─────────────────────────────────── */}
+      <main className="flex flex-col justify-center px-6 py-12 sm:px-14">
+        <div className="mx-auto w-full max-w-sm">
+          <div className="mb-8">
+            <span className="flex h-12 w-12 items-center justify-center rounded-md border border-hair bg-surface p-1">
+              <KVEmblem size={38} />
+            </span>
+            <div className="mt-5 text-[15px] font-semibold text-ink-900">Kendriya Vidyalaya No 1, IIT Kharagpur</div>
+            <h1 className="font-display mt-1 text-[48px] font-medium leading-[1.02] tracking-[-0.02em] text-ink-900">Welcomes</h1>
           </div>
 
-          <div className="reveal" style={{ animationDelay: "80ms" }}>
-            <h2 className="font-display text-[34px] font-medium leading-tight tracking-[-0.01em] text-ink-900">{t("auth.welcome")}</h2>
-            <p className="mt-1.5 text-[14px] text-ink-500">{t("auth.subtitle")}</p>
+          {error && (
+            <p className="mb-3 rounded-sm border border-down/30 bg-down-soft px-3 py-2 text-[13px] text-down">{t("auth.invalid")}</p>
+          )}
+
+          {/* Provider sign-in */}
+          <div className="space-y-2.5">
+            {PROVIDERS.map(({ key, provider, label, Mark }) => (
+              <button key={key} onClick={() => oauth(provider, key)} disabled={busy !== null} className={rowBase}>
+                <Mark size={20} />
+                <span className="flex-1 text-left">{label}</span>
+                {busy === key && <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-hair border-t-ink-900" />}
+              </button>
+            ))}
           </div>
 
-          <form
-            className="reveal mt-7 space-y-4"
-            style={{ animationDelay: "160ms" }}
-            onSubmit={(e) => {
-              e.preventDefault();
-              signIn(email, password, "form");
-            }}
-          >
-            <Field label={t("auth.email")} htmlFor="email">
-              <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@kv.demo" />
-            </Field>
-            <Field label={t("auth.password")} htmlFor="password">
-              <Input id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
-            </Field>
-            {error && (
-              <p className="rounded-sm border border-down/30 bg-down-soft px-3 py-2 text-[13px] text-down">{t("auth.invalid")}</p>
-            )}
-            <Button type="submit" className="w-full" disabled={busy !== null}>
-              <LoginIcon size={16} />
-              {busy === "form" ? t("auth.signingIn") : t("auth.signIn")}
-            </Button>
-          </form>
-
-          {/* Divider */}
-          <div className="reveal my-8 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted" style={{ animationDelay: "240ms" }}>
+          {/* Demo logins, listed the same way */}
+          <div className="my-7 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
             <span className="h-px flex-1 bg-hair" />
             {t("auth.demoTitle")}
             <span className="h-px flex-1 bg-hair" />
           </div>
 
-          <div className="reveal grid gap-2" style={{ animationDelay: "300ms" }}>
+          <div className="space-y-2">
             {DEMO_ACCOUNTS.map((a) => (
-              <button
-                key={a.email}
-                onClick={() => signIn(a.email, DEMO_PASSWORD, a.email)}
-                disabled={busy !== null}
-                className="group flex items-center justify-between rounded-md border border-hair bg-surface px-3.5 py-2.5 text-left transition-all hover:border-gold-500 hover:bg-gold-100 disabled:opacity-50"
-              >
-                <span className="min-w-0">
-                  <span className="block text-[13px] font-semibold text-ink-900">{t(`roles.${a.role}`)}</span>
-                  <span className="block truncate text-[12px] text-ink-500">{a.note}</span>
+              <button key={a.email} onClick={() => signIn(a.email, DEMO_PASSWORD, a.email)} disabled={busy !== null}
+                className={`${rowBase} group justify-between`}>
+                <span className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-panel text-[12px] font-semibold text-ink-900">
+                    {t(`roles.${a.role}`).charAt(0)}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[14px] font-normal text-ink-900">{t(`roles.${a.role}`)}</span>
+                    <span className="block truncate text-[12px] text-muted">{a.note}</span>
+                  </span>
                 </span>
                 {busy === a.email ? (
-                  <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-gold-300 border-t-gold-700" />
+                  <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-hair border-t-ink-900" />
                 ) : (
-                  <ArrowRightIcon size={16} className="shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-gold-700" />
+                  <ArrowRightIcon size={16} className="shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-ink-900" />
                 )}
               </button>
             ))}
