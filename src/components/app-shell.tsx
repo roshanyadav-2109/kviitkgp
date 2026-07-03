@@ -44,8 +44,8 @@ export function AppShell({
             onClick={() => setOpen(false)}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "group relative flex items-center gap-3 rounded-sm px-3 py-2 text-[14px] font-normal transition-colors",
-              active ? "text-ink-900" : "text-ink-500 hover:text-ink-900",
+              "group relative flex items-center gap-3 rounded-sm px-3 py-2 text-[14px] transition-colors",
+              active ? "font-semibold text-ink-900" : "font-normal text-ink-500 hover:text-ink-900",
             )}
           >
             {active ? (
