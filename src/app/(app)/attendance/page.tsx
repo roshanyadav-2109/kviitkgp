@@ -10,7 +10,7 @@ import { AttendanceBoard } from "@/components/attendance/attendance-board";
 import { AttendanceOverview } from "@/components/attendance/attendance-overview";
 import { AttendanceAdminControls } from "@/components/attendance/attendance-admin-controls";
 import { DetailedSectionAttendance } from "@/components/attendance/detailed-section-attendance";
-import { AttendanceIcon, ArrowRightIcon } from "@/components/icons";
+import { AttendanceIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
 import { getMyChildren } from "@/lib/data/analytics";
 import { getDateAttendance, getSectionAttendanceSummary, getStudentAttendance, getLatestAttendanceDate, getLatestAttendanceDateAll, getAttendanceOverview, getSectionAttendanceRange } from "@/lib/data/attendance";
@@ -124,10 +124,7 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
       if (period === "day") backQs.set("date", date); else backQs.set("month", month);
       return (
         <div>
-          <Link href={`/attendance?${backQs.toString()}`} className="mb-4 inline-flex items-center gap-1 text-[13px] font-medium text-[rgb(37,99,235)] hover:underline">
-            <ArrowRightIcon size={14} className="rotate-180" /> {t("x.attendanceOverview")}
-          </Link>
-          <DetailedSectionAttendance students={detail} period={period} sectionLabel={sectionLabel} dateLabel={label} />
+          <DetailedSectionAttendance students={detail} period={period} sectionLabel={sectionLabel} dateLabel={label} backHref={`/attendance?${backQs.toString()}`} />
         </div>
       );
     }

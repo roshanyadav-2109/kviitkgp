@@ -1,22 +1,31 @@
+import Link from "next/link";
 import { getT } from "@/i18n/server";
 import { Card, CardBody } from "@/components/ui/card";
+import { ArrowRightIcon } from "@/components/icons";
 
 type Detail = Awaited<ReturnType<typeof import("@/lib/data/attendance").getSectionAttendanceRange>>;
 
 // Principal drill-down: per-student attendance for a section, as a plain table.
 // Day mode shows present/absent; month mode shows the attendance % over the range.
-export async function DetailedSectionAttendance({ students, period, sectionLabel, dateLabel }: {
+export async function DetailedSectionAttendance({ students, period, sectionLabel, dateLabel, backHref }: {
   students: Detail;
   period: "day" | "month";
   sectionLabel: string;
   dateLabel: string;
+  backHref: string;
 }) {
   const { t } = await getT();
   return (
     <Card>
       <CardBody>
-        <div className="text-[22px] font-semibold leading-tight text-ink-900">{t("x.attendanceOverview")}</div>
-        <div className="mt-1 text-[13px] font-normal text-ink-900">{sectionLabel} · {dateLabel}</div>
+        <Link href={backHref} className="inline-flex items-center gap-1.5 text-[22px] font-semibold leading-tight text-[rgb(37,99,235)] hover:underline">
+          <ArrowRightIcon size={20} className="rotate-180" />
+          {t("x.attendanceOverview")}
+        </Link>
+        <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-[13px] font-normal text-ink-900">
+          <span>{t("common.class")} - {sectionLabel}</span>
+          <span>{t("attendance.date")} - {dateLabel}</span>
+        </div>
 
         <div className="mt-4 overflow-x-auto">
           <table className="w-full text-[14px]">
