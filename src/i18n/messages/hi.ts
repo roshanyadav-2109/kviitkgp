@@ -262,6 +262,7 @@ const hi: Messages = {
     reportStudent: "छात्र रिपोर्ट",
     reportPickStudent: "एक छात्र चुनें",
     download: "डाउनलोड / प्रिंट",
+    downloadExcel: "एक्सेल डाउनलोड करें",
     attendanceOverview: "उपस्थिति सारांश",
     schoolWide: "विद्यालय-व्यापी",
     classWise: "कक्षावार",

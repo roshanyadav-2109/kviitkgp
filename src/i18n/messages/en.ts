@@ -261,6 +261,7 @@ const en = {
     reportStudent: "Student report",
     reportPickStudent: "Select a student",
     download: "Download / Print",
+    downloadExcel: "Download Excel",
     attendanceOverview: "Attendance overview",
     schoolWide: "School-wide",
     classWise: "Class-wise",

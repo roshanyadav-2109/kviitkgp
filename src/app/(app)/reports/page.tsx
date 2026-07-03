@@ -65,10 +65,10 @@ export default async function ReportsPage({ searchParams }: { searchParams: SP }
   const roster = await getSectionStudents(section.id, yearId);
   const studentId = num(sp.student) ?? (view === "student" ? roster[0]?.id ?? null : null);
 
-  const controls = (
+  const controls = (xlsx?: React.ComponentProps<typeof ReportControls>["xlsx"]) => (
     <>
       <ScopeBar years={scope.years} sections={scope.sections} yearId={yearId} sectionId={section.id} />
-      <ReportControls month={month} extra={<ReportViewControls view={view} students={roster.map((s) => ({ id: s.id, name: s.name }))} studentId={studentId} />} />
+      <ReportControls month={month} xlsx={xlsx} extra={<ReportViewControls view={view} students={roster.map((s) => ({ id: s.id, name: s.name }))} studentId={studentId} />} />
     </>
   );
 
@@ -76,7 +76,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: SP }
     return (
       <div>
         <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("report.title")} description={t("x.reportStudent")} />
-        {controls}
+        {controls()}
         {studentId ? (
           <MonthlyReportCard report={await getStudentMonthly(studentId, month)} month={month} />
         ) : (
@@ -87,10 +87,16 @@ export default async function ReportsPage({ searchParams }: { searchParams: SP }
   }
 
   const rows = await getClassMonthly(section.id, yearId, month);
+  const xlsx = {
+    filename: `${section.class_name}-${section.name} ${month}`,
+    sheetName: `${section.class_name}-${section.name}`,
+    headers: ["#", t("common.student"), t("report.marksThisMonth"), t("attendance.percent")],
+    rows: rows.map((r) => [r.roll ?? "", r.name, r.avg ?? "", r.attPct ?? ""] as (string | number | null)[]),
+  };
   return (
     <div>
       <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("report.title")} description={t("report.generateClass")} />
-      {controls}
+      {controls(xlsx)}
       <Card className="print-area">
         <CardHeader eyebrow={`${section.class_name}-${section.name} · ${fmtMonth(locale, `${month}-01`)}`} title={year?.name ?? ""} />
         <CardBody className="pt-2">

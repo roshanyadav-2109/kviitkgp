@@ -4,8 +4,13 @@ import { Input } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { ReportIcon } from "@/components/icons";
 import { useT } from "@/i18n/provider";
+import { downloadXlsx } from "@/lib/xlsx";
 
-export function ReportControls({ month, extra }: { month: string; extra?: React.ReactNode }) {
+// When `xlsx` is supplied (multi-student class report) the download button
+// exports an Excel workbook; otherwise it prints the single report to PDF.
+export type XlsxExport = { filename: string; sheetName?: string; headers: string[]; rows: (string | number | null)[][] };
+
+export function ReportControls({ month, extra, xlsx }: { month: string; extra?: React.ReactNode; xlsx?: XlsxExport }) {
   const t = useT();
   const router = useRouter();
   const pathname = usePathname();
@@ -24,8 +29,9 @@ export function ReportControls({ month, extra }: { month: string; extra?: React.
         <Input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
       </div>
       {extra}
-      <Button variant="subtle" onClick={() => window.print()} className="ml-auto">
-        <ReportIcon size={16} /> {t("x.download")}
+      <Button variant="subtle" className="ml-auto"
+        onClick={() => xlsx ? downloadXlsx(xlsx.filename, xlsx.headers, xlsx.rows, xlsx.sheetName) : window.print()}>
+        <ReportIcon size={16} /> {xlsx ? t("x.downloadExcel") : t("x.download")}
       </Button>
     </div>
   );
