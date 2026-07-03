@@ -29,14 +29,13 @@ function MicrosoftMark({ size = 20 }: { size?: number }) {
     </svg>
   );
 }
-function ZohoMark({ size = 20 }: { size?: number }) {
-  const bars = ["#E42527", "#F9B21D", "#089949", "#226DB4"];
+// Zoho's brandmark is its four-colour wordmark.
+function ZohoMark() {
+  const letters: [string, string][] = [["Z", "#E42527"], ["o", "#F9B21D"], ["h", "#089949"], ["o", "#226DB4"]];
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
-      {bars.map((c, i) => (
-        <rect key={c} x={2 + i * 5.3} y="5" width="3.6" height="14" rx="1.2" fill={c} />
-      ))}
-    </svg>
+    <span className="text-[13px] font-bold leading-none tracking-tight" aria-hidden>
+      {letters.map(([ch, c], i) => (<span key={i} style={{ color: c }}>{ch}</span>))}
+    </span>
   );
 }
 
@@ -69,10 +68,10 @@ export default function LoginPage() {
     if (error) { setError(true); setBusy(null); }
   }
 
-  const rowBase = "flex w-full items-center gap-3 rounded-sm border border-hair bg-surface px-4 py-3 text-[14px] font-normal text-ink-900 transition-colors hover:bg-panel disabled:opacity-50";
+  const rowBase = "flex w-full items-center gap-3 rounded-sm border border-hair bg-surface px-4 py-2.5 text-[14px] font-normal text-ink-900 transition-colors hover:bg-panel disabled:opacity-50";
 
   return (
-    <div className="grid min-h-dvh lg:grid-cols-[1.05fr_1fr]">
+    <div className="grid min-h-dvh bg-panel lg:h-dvh lg:grid-cols-[1.05fr_1fr]">
       {/* ── Left: image frame ────────────────────────────────────────────────── */}
       <aside className="hidden p-3 lg:block">
         <div className="h-full w-full overflow-hidden rounded-md border border-hair bg-ink-900">
@@ -82,14 +81,16 @@ export default function LoginPage() {
       </aside>
 
       {/* ── Right: welcome + sign-in options ─────────────────────────────────── */}
-      <main className="flex flex-col justify-center px-6 py-12 sm:px-14">
+      <main className="flex flex-col justify-center overflow-y-auto px-6 py-8 sm:px-14">
         <div className="mx-auto w-full max-w-sm">
-          <div className="mb-8">
-            <span className="flex h-12 w-12 items-center justify-center rounded-md border border-hair bg-surface p-1">
-              <KVEmblem size={38} />
-            </span>
-            <div className="mt-5 text-[15px] font-semibold text-ink-900">Kendriya Vidyalaya No 1, IIT Kharagpur</div>
-            <h1 className="font-display mt-1 text-[48px] font-medium leading-[1.02] tracking-[-0.02em] text-ink-900">Welcomes</h1>
+          <div className="mb-6">
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-hair bg-surface p-1">
+                <KVEmblem size={34} />
+              </span>
+              <div className="text-[15px] font-semibold leading-snug text-ink-900">Kendriya Vidyalaya No 1, IIT Kharagpur</div>
+            </div>
+            <h1 className="font-display mt-3 text-center text-[42px] font-medium leading-[1.02] tracking-[-0.02em] text-ink-900">Welcomes</h1>
           </div>
 
           {error && (
@@ -97,18 +98,18 @@ export default function LoginPage() {
           )}
 
           {/* Provider sign-in */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             {PROVIDERS.map(({ key, provider, label, Mark }) => (
               <button key={key} onClick={() => oauth(provider, key)} disabled={busy !== null} className={rowBase}>
-                <Mark size={20} />
-                <span className="flex-1 text-left">{label}</span>
+                <span className="flex w-7 shrink-0 justify-center"><Mark size={20} /></span>
+                <span className="flex-1 text-left font-semibold">{label}</span>
                 {busy === key && <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-hair border-t-ink-900" />}
               </button>
             ))}
           </div>
 
           {/* Demo logins, listed the same way */}
-          <div className="my-7 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+          <div className="my-4 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
             <span className="h-px flex-1 bg-hair" />
             {t("auth.demoTitle")}
             <span className="h-px flex-1 bg-hair" />
@@ -122,10 +123,7 @@ export default function LoginPage() {
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-panel text-[12px] font-semibold text-ink-900">
                     {t(`roles.${a.role}`).charAt(0)}
                   </span>
-                  <span className="min-w-0">
-                    <span className="block text-[14px] font-normal text-ink-900">{t(`roles.${a.role}`)}</span>
-                    <span className="block truncate text-[12px] text-muted">{a.note}</span>
-                  </span>
+                  <span className="truncate text-[14px] font-normal text-ink-900">{t(`roles.${a.role}`)}</span>
                 </span>
                 {busy === a.email ? (
                   <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-hair border-t-ink-900" />
@@ -135,7 +133,6 @@ export default function LoginPage() {
               </button>
             ))}
           </div>
-          <p className="mt-3 text-center text-[12px] text-muted">{t("auth.demoHint")}</p>
         </div>
       </main>
     </div>
