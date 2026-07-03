@@ -124,11 +124,10 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
       if (period === "day") backQs.set("date", date); else backQs.set("month", month);
       return (
         <div>
-          <PageHeader eyebrow={sectionLabel} title={t("attendance.title")} description={label} />
           <Link href={`/attendance?${backQs.toString()}`} className="mb-4 inline-flex items-center gap-1 text-[13px] font-medium text-[rgb(37,99,235)] hover:underline">
             <ArrowRightIcon size={14} className="rotate-180" /> {t("x.attendanceOverview")}
           </Link>
-          <DetailedSectionAttendance students={detail} period={period} sectionLabel={sectionLabel} />
+          <DetailedSectionAttendance students={detail} period={period} sectionLabel={sectionLabel} dateLabel={label} />
         </div>
       );
     }
