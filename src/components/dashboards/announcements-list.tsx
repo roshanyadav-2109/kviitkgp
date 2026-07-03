@@ -20,7 +20,7 @@ export function AnnouncementsList({ items, emptyLabel }: { items: AnnItem[]; emp
               onClick={() => setSel(a)}
               className="flex w-full gap-3 rounded-md p-2.5 text-left transition-colors hover:bg-panel"
             >
-              <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-ink-900" />
+              <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-[rgb(234,88,12)]" />
               <div className="min-w-0">
                 <div className="text-[14px] font-semibold text-ink-900">{a.title}</div>
                 <div className="line-clamp-1 text-[13px] text-ink-900">{a.body}</div>
