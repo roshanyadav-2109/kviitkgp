@@ -146,6 +146,7 @@ const en = {
     belowThreshold: "Below required attendance",
     markAllPresent: "Mark all present",
     markAllAbsent: "Mark all absent",
+    markHoliday: "Mark as holiday",
     date: "Date",
     savedFor: "Attendance saved for {date}",
     lowNote: "{count} student(s) below 75%",

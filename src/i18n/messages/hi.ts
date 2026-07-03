@@ -147,6 +147,7 @@ const hi: Messages = {
     belowThreshold: "आवश्यक उपस्थिति से कम",
     markAllPresent: "सभी को उपस्थित करें",
     markAllAbsent: "सभी को अनुपस्थित करें",
+    markHoliday: "अवकाश के रूप में चिह्नित करें",
     date: "दिनांक",
     savedFor: "{date} की उपस्थिति सहेजी गई",
     lowNote: "{count} छात्र 75% से कम",

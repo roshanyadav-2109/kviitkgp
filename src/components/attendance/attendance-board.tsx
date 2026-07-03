@@ -15,7 +15,7 @@ const STATUSES: { key: AttStatus; short: string; cls: string }[] = [
   { key: "absent", short: "A", cls: "bg-down text-white" },
 ];
 
-const statusStyle: Record<AttStatus, Status> = { present: "up", absent: "down", late: "watch", leave: "flat" };
+const statusStyle: Record<AttStatus, Status> = { present: "up", absent: "down", late: "watch", leave: "flat", holiday: "flat" };
 
 export function AttendanceBoard({
   sectionId, yearId, date, roster, initial, summary, readOnly = false,
@@ -58,9 +58,10 @@ export function AttendanceBoard({
       <Card>
         <CardHeader eyebrow={fmtDate(locale, date, { weekday: "long", day: "numeric", month: "long" })} title={readOnly ? t("attendance.title") : t("attendance.markToday")}
           action={readOnly ? undefined : (
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button size="sm" variant="subtle" onClick={() => setAll("present")}>{t("attendance.markAllPresent")}</Button>
               <Button size="sm" variant="subtle" onClick={() => setAll("absent")}>{t("attendance.markAllAbsent")}</Button>
+              <Button size="sm" variant="subtle" onClick={() => setAll("holiday")}>{t("attendance.markHoliday")}</Button>
             </div>
           )} />
         <CardBody className="pt-2">

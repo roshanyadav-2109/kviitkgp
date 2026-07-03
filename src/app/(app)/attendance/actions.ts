@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getSession } from "@/lib/session";
 
-export type AttStatus = "present" | "absent" | "late" | "leave";
+export type AttStatus = "present" | "absent" | "late" | "leave" | "holiday";
 
 // Save whole-day attendance for a section+date. RLS (attendance_write) ensures
 // the caller may only write for sections they are allotted. Delete-then-insert

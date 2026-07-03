@@ -147,6 +147,7 @@ const bn: Messages = {
     belowThreshold: "প্রয়োজনীয় উপস্থিতির নিচে",
     markAllPresent: "সবাইকে উপস্থিত করুন",
     markAllAbsent: "সবাইকে অনুপস্থিত করুন",
+    markHoliday: "ছুটি হিসেবে চিহ্নিত করুন",
     date: "তারিখ",
     savedFor: "{date}-এর উপস্থিতি সংরক্ষিত",
     lowNote: "{count} জন শিক্ষার্থী ৭৫%-এর নিচে",

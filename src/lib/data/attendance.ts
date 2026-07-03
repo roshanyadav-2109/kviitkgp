@@ -26,6 +26,7 @@ export async function getSectionAttendanceSummary(sectionId: number, yearId: num
     .is("period", null);
   const agg = new Map<number, { present: number; total: number }>();
   for (const r of data ?? []) {
+    if (r.status === "holiday") continue; // holidays don't count toward %
     const a = agg.get(r.student_id) ?? { present: 0, total: 0 };
     a.total += 1;
     if (r.status === "present" || r.status === "late") a.present += 1;
@@ -49,8 +50,9 @@ export async function getStudentAttendance(studentId: number, yearId: number) {
     .is("period", null)
     .order("on_date", { ascending: false });
   const rows = data ?? [];
-  const total = rows.length;
-  const present = rows.filter((r) => r.status === "present" || r.status === "late").length;
+  const counted = rows.filter((r) => r.status !== "holiday"); // holidays excluded
+  const total = counted.length;
+  const present = counted.filter((r) => r.status === "present" || r.status === "late").length;
   const pct = total ? Math.round((present / total) * 1000) / 10 : 0;
   return { pct, present, total, recent: rows.slice(0, 30) };
 }
