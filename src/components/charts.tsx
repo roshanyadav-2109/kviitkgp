@@ -70,16 +70,10 @@ function HScroll({ minWidth, children }: { minWidth?: number; children: React.Re
         <div style={{ minWidth }}>{children}</div>
       </div>
       {edge.left && (
-        <>
-          <div className="pointer-events-none absolute left-0 top-0 bottom-16 w-6 bg-gradient-to-r from-surface to-transparent" />
-          <button aria-label="Scroll left" onClick={() => scroll(-240)} className={`${btn} left-1 rotate-180`}><ArrowRightIcon size={15} /></button>
-        </>
+        <button aria-label="Scroll left" onClick={() => scroll(-240)} className={`${btn} left-1 rotate-180`}><ArrowRightIcon size={15} /></button>
       )}
       {edge.right && (
-        <>
-          <div className="pointer-events-none absolute right-0 top-0 bottom-16 w-6 bg-gradient-to-l from-surface to-transparent" />
-          <button aria-label="Scroll right" onClick={() => scroll(240)} className={`${btn} right-1`}><ArrowRightIcon size={15} /></button>
-        </>
+        <button aria-label="Scroll right" onClick={() => scroll(240)} className={`${btn} right-1`}><ArrowRightIcon size={15} /></button>
       )}
     </div>
   );
