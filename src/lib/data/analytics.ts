@@ -142,6 +142,92 @@ export async function getClassAnalytics(
   return { subjectAverages, sectionComparison, distribution, topPerformers, needsSupport, conclusions };
 }
 
+// CBSE band from a percentage (matches the grade_band SQL helper).
+function gradeBand(pct: number): string {
+  if (pct >= 91) return "A1";
+  if (pct >= 81) return "A2";
+  if (pct >= 71) return "B1";
+  if (pct >= 61) return "B2";
+  if (pct >= 51) return "C1";
+  if (pct >= 41) return "C2";
+  if (pct >= 33) return "D";
+  return "E";
+}
+
+// Distinct exams (assessments) offered for a subject across the given sections,
+// ordered by date. Drives the "Exam" filter in the analytics bar.
+export async function getScopeExams(sectionIds: number[], subjectId: number, yearId: number) {
+  if (!sectionIds.length) return [] as { name: string }[];
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("assessment")
+    .select("name, assessed_on")
+    .in("section_id", sectionIds)
+    .eq("subject_id", subjectId)
+    .eq("academic_year_id", yearId)
+    .order("assessed_on", { ascending: true });
+  const seen = new Set<string>();
+  const out: { name: string }[] = [];
+  for (const a of data ?? []) if (a.name && !seen.has(a.name)) { seen.add(a.name); out.push({ name: a.name }); }
+  return out;
+}
+
+// Analytics for one specific exam (a subject's assessment) across the sections in
+// scope: band distribution, top performers, and section-vs-section comparison.
+export async function getExamAnalytics(sectionIds: number[], subjectId: number, yearId: number, examName: string) {
+  const supabase = await createClient();
+  const empty = { distribution: gradeBands(), topPerformers: [] as ExamTop[], sectionComparison: [] as ExamSection[], average: null as number | null, count: 0 };
+  if (!sectionIds.length) return empty;
+
+  const { data: asmts } = await supabase
+    .from("assessment")
+    .select("id, max_marks, section:section_id(name)")
+    .in("section_id", sectionIds)
+    .eq("subject_id", subjectId)
+    .eq("academic_year_id", yearId)
+    .eq("name", examName);
+  const list = asmts ?? [];
+  if (!list.length) return empty;
+
+  const maxById = new Map(list.map((a) => [a.id, Number(a.max_marks) || 100]));
+  const secById = new Map(list.map((a) => [a.id, (a.section as unknown as { name: string } | null)?.name ?? "—"]));
+
+  const { data: marks } = await supabase
+    .from("mark")
+    .select("marks_obtained, is_absent, assessment_id, student:student_id(full_name)")
+    .in("assessment_id", list.map((a) => a.id));
+
+  const recs = (marks ?? [])
+    .filter((m) => !m.is_absent && m.marks_obtained != null)
+    .map((m) => ({
+      name: (m.student as unknown as { full_name: string } | null)?.full_name ?? "—",
+      section: secById.get(m.assessment_id) ?? "—",
+      pct: Math.round((Number(m.marks_obtained) / (maxById.get(m.assessment_id) || 100)) * 1000) / 10,
+    }));
+  if (!recs.length) return empty;
+
+  const bandAgg = new Map<string, number>();
+  for (const r of recs) bandAgg.set(gradeBand(r.pct), (bandAgg.get(gradeBand(r.pct)) ?? 0) + 1);
+  const distribution = BANDS.map((band) => ({ band, n: bandAgg.get(band) ?? 0 }));
+
+  const topPerformers: ExamTop[] = [...recs].sort((a, b) => b.pct - a.pct).slice(0, 6)
+    .map((r) => ({ student_name: r.name, section_name: r.section, avg_percent: r.pct }));
+
+  const secAgg = new Map<string, { sum: number; n: number }>();
+  for (const r of recs) { const s = secAgg.get(r.section) ?? { sum: 0, n: 0 }; s.sum += r.pct; s.n += 1; secAgg.set(r.section, s); }
+  const sectionComparison: ExamSection[] = [...secAgg.entries()]
+    .map(([name, v]) => ({ name, avg: Math.round((v.sum / v.n) * 10) / 10 }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const average = Math.round((recs.reduce((a, r) => a + r.pct, 0) / recs.length) * 10) / 10;
+  return { distribution, topPerformers, sectionComparison, average, count: recs.length };
+}
+
+type ExamTop = { student_name: string; section_name: string; avg_percent: number };
+type ExamSection = { name: string; avg: number };
+const BANDS = ["A1", "A2", "B1", "B2", "C1", "C2", "D", "E"];
+const gradeBands = () => BANDS.map((band) => ({ band, n: 0 }));
+
 // ---------------------------------------------------------------------------
 // Per-student continuous progress record (owner or staff-in-scope).
 // ---------------------------------------------------------------------------

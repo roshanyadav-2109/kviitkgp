@@ -5,13 +5,15 @@ import { useT } from "@/i18n/provider";
 import type { YearOpt, SectionMeta, ClassOpt, SubjectOpt } from "@/lib/data/scope";
 
 export function FilterBar({
-  years, classes, sectionMeta, subjects, subjectsByClass, yearId, level, scopeId, subjectId,
+  years, classes, sectionMeta, subjects, subjectsByClass, exams, examName, yearId, level, scopeId, subjectId,
 }: {
   years: YearOpt[];
   classes: ClassOpt[];
   sectionMeta: SectionMeta[];
   subjects: SubjectOpt[];
   subjectsByClass: Record<number, SubjectOpt[]>;
+  exams: string[];
+  examName: string | null;
   yearId: number;
   level: "class" | "section";
   scopeId: number;
@@ -43,25 +45,33 @@ export function FilterBar({
     next.set("year", v);
     push(next);
   }
-  // Pick a class → whole-class view (all sections), reset section + subject.
+  // Pick a class → whole-class view (all sections), reset section + subject + exam.
   function setClass(id: string) {
     const next = new URLSearchParams(params.toString());
     next.set("class", id);
     next.delete("section");
     next.delete("subject");
+    next.delete("exam");
     push(next);
   }
-  // "" → whole class; otherwise a specific section. Reset subject either way.
+  // "" → whole class; otherwise a specific section. Reset subject + exam either way.
   function setSection(value: string) {
     const next = new URLSearchParams(params.toString());
     next.delete("subject");
+    next.delete("exam");
     if (value) { next.set("section", value); next.delete("class"); }
     else { if (currentClassId != null) next.set("class", String(currentClassId)); next.delete("section"); }
     push(next);
   }
   function setSubject(v: string) {
     const next = new URLSearchParams(params.toString());
+    next.delete("exam"); // exams differ per subject
     if (v) next.set("subject", v); else next.delete("subject");
+    push(next);
+  }
+  function setExam(v: string) {
+    const next = new URLSearchParams(params.toString());
+    if (v) next.set("exam", v); else next.delete("exam");
     push(next);
   }
 
@@ -91,6 +101,13 @@ export function FilterBar({
         <Select value={subjectId ?? ""} onChange={(e) => setSubject(e.target.value)}>
           <option value="">{t("common.all")}</option>
           {subjectOptions.map((s) => (<option key={s.id} value={s.id}>{s.name}</option>))}
+        </Select>
+      </div>
+      <div className="min-w-[150px] flex-1">
+        <label className="t-label mb-1 block">{t("marks.assessment")}</label>
+        <Select value={examName ?? ""} onChange={(e) => setExam(e.target.value)} disabled={!subjectId || !exams.length}>
+          <option value="">{t("common.all")}</option>
+          {exams.map((name) => (<option key={name} value={name}>{name}</option>))}
         </Select>
       </div>
     </div>

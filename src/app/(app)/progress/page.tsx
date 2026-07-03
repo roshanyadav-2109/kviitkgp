@@ -8,14 +8,16 @@ import { StudentProgressView } from "@/components/progress/student-progress-view
 import { SessionChooser } from "@/components/progress/session-chooser";
 import { SectionAnalyticsView } from "@/components/progress/section-analytics-view";
 import { ClassAnalyticsView } from "@/components/progress/class-analytics-view";
+import { ExamAnalyticsView } from "@/components/progress/exam-analytics-view";
 import { ProgressIcon, ArrowRightIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
-import { getSectionAnalytics, getClassAnalytics, getStudentProgress, getStudentStanding, getMyChildren } from "@/lib/data/analytics";
+import { getSectionAnalytics, getClassAnalytics, getExamAnalytics, getScopeExams, getStudentProgress, getStudentStanding, getMyChildren } from "@/lib/data/analytics";
 
-import { numParam } from "@/lib/utils";
+import { numParam, strParam } from "@/lib/utils";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 const num = numParam;
+const str = strParam;
 
 export default async function ProgressPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
@@ -87,15 +89,37 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
   const section = scope.sections.find((s) => s.id === num(sp.section)) ?? scope.sections[0];
   const cls = classId ? (scope.classes.find((c) => c.id === classId) ?? scope.classes[0]) : null;
   const scopeId = level === "class" && cls ? cls.id : section.id;
+  const examName = str(sp.exam) ?? null;
+
+  // Sections that the current scope covers (all of a class, or one section).
+  const scopeSectionIds = level === "class" && cls
+    ? scope.sections.filter((s) => s.class_id === cls.id).map((s) => s.id)
+    : [section.id];
+  // Exam options depend on the chosen subject + scope.
+  const exams = subjectId ? await getScopeExams(scopeSectionIds, subjectId, yearId) : [];
 
   const filters = (
     <FilterBar years={scope.years} classes={scope.classes} sectionMeta={scope.sectionMeta} subjects={scope.subjects} subjectsByClass={scope.subjectsByClass}
+      exams={exams.map((e) => e.name)} examName={examName}
       yearId={yearId} level={level} scopeId={scopeId} subjectId={subjectId} />
   );
 
+  // Exam-scoped view: a single subject's single exam across the scope.
+  if (examName && subjectId) {
+    const data = await getExamAnalytics(scopeSectionIds, subjectId, yearId, examName);
+    return (
+      <div>
+        <PageHeader title={t("progress.title")}
+          description={`${scope.isAdmin ? t("x.progSchoolScope") : t("x.progAllottedScope")}`} />
+        {filters}
+        <ExamAnalyticsView data={data} examName={examName} subjectName={subjectName} />
+      </div>
+    );
+  }
+
   // Whole-class view: aggregate all sections + section-vs-section comparison
   if (level === "class" && cls) {
-    const sectionIds = scope.sections.filter((s) => s.class_id === cls.id).map((s) => s.id);
+    const sectionIds = scopeSectionIds;
     const data = await getClassAnalytics(cls.id, sectionIds, yearId, subjectId);
     return (
       <div>
