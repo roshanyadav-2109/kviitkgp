@@ -8,6 +8,21 @@ import { AnnounceIcon, CalendarIcon } from "@/components/icons";
 import { navFor, type NavRole } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
+// A distinct, premium colour per destination — icons only, no block behind.
+export const NAV_COLOR: Record<string, string> = {
+  "/progress": "text-[rgb(79,70,229)]",
+  "/attendance": "text-[rgb(22,163,74)]",
+  "/marks": "text-[rgb(219,39,119)]",
+  "/students": "text-[rgb(37,99,235)]",
+  "/announcements": "text-[rgb(217,119,6)]",
+  "/calendar": "text-[rgb(219,39,119)]",
+  "/reports": "text-[rgb(124,58,237)]",
+  "/leave": "text-[rgb(13,148,136)]",
+  "/allotments": "text-[rgb(2,132,199)]",
+  "/feedback": "text-[rgb(217,70,239)]",
+  "/promotion": "text-[rgb(5,150,105)]",
+};
+
 export async function DashHeader({ name, subtitleKey = "dashboard.overview" }: { name: string; subtitleKey?: string }) {
   const { t } = await getT();
   const firstName = name.split(" ").slice(-1)[0];
@@ -47,7 +62,7 @@ export async function AnnouncementsPanel() {
           <ul className="divide-y divide-hair">
             {data.map((a) => (
               <li key={a.id} className="flex gap-3 py-3">
-                <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-[rgb(37,99,235)]" />
+                <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-[rgb(217,119,6)]" />
                 <div className="min-w-0">
                   <div className="text-[14px] font-semibold text-ink-900">{a.title}</div>
                   <div className="line-clamp-1 text-[13px] text-ink-900">{a.body}</div>
@@ -81,7 +96,7 @@ export async function EventsPanel() {
           <ul className="divide-y divide-hair">
             {rows.map((e) => (
               <li key={e.id} className="flex items-center gap-3 py-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-[rgb(37,99,235)]/[0.1] text-[rgb(37,99,235)]"><CalendarIcon size={16} /></span>
+                <CalendarIcon size={18} className="shrink-0 text-[rgb(219,39,119)]" />
                 <div className="min-w-0 flex-1">
                   <div className="text-[14px] font-semibold text-ink-900">{e.title}</div>
                   <div className="text-[12px] capitalize text-ink-900">{e.event_type}</div>
@@ -102,7 +117,7 @@ export async function QuickLinks({ role }: { role: NavRole }) {
   const { t } = await getT();
   const links = navFor(role).filter((l) => l.href !== "/");
   return (
-    <div>
+    <div className="rounded-md border border-hair bg-surface p-4">
       <div className="mb-2.5 text-[13px] font-semibold text-ink-900">{t("dashboard.quickLinks")}</div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {links.map((l) => {
@@ -113,7 +128,7 @@ export async function QuickLinks({ role }: { role: NavRole }) {
               href={l.href}
               className="group flex items-center gap-3 rounded-md border border-hair bg-surface p-3.5 transition-colors hover:border-[rgb(37,99,235)]/40 hover:bg-[rgb(37,99,235)]/[0.05]"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-sm bg-[rgb(37,99,235)]/[0.1] text-[rgb(37,99,235)]"><Icon size={20} /></span>
+              <Icon size={22} className={NAV_COLOR[l.href] ?? "text-ink-900"} />
               <span className="text-[14px] font-normal text-ink-900">{t(l.labelKey)}</span>
             </Link>
           );

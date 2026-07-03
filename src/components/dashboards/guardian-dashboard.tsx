@@ -62,15 +62,15 @@ export async function GuardianDashboard({ session }: { session: Session }) {
               </div>
               <div className="mt-3 grid grid-cols-3 gap-3">
                 <div>
-                  <div className="t-label">{t("progress.average")}</div>
+                  <div className="text-[12px] font-normal text-ink-900">{t("progress.average")}</div>
                   <div className="text-[22px] font-bold tabular text-ink-900">{fmtPercent(locale, standing?.studentAvg ?? null, 0)}</div>
                 </div>
                 <div>
-                  <div className="t-label">{t("progress.sectionStanding")}</div>
+                  <div className="text-[12px] font-normal text-ink-900">{t("progress.sectionStanding")}</div>
                   <div className="text-[22px] font-bold tabular text-ink-900">{standing?.sectionRank ? `${standing.sectionRank}/${standing.sectionSize}` : "—"}</div>
                 </div>
                 <div>
-                  <div className="t-label">{t("attendance.percent")}</div>
+                  <div className="text-[12px] font-normal text-ink-900">{t("attendance.percent")}</div>
                   <div className={`text-[22px] font-bold tabular ${att && att.pct < 75 ? "text-down" : "text-ink-900"}`}>{att ? `${att.pct}%` : "—"}</div>
                 </div>
               </div>
