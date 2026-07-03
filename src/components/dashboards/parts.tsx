@@ -15,7 +15,7 @@ export const NAV_COLOR: Record<string, string> = {
   "/attendance": "text-[rgb(22,163,74)]",
   "/marks": "text-[rgb(219,39,119)]",
   "/students": "text-[rgb(37,99,235)]",
-  "/announcements": "text-[rgb(217,119,6)]",
+  "/announcements": "text-[rgb(234,88,12)]",
   "/calendar": "text-[rgb(219,39,119)]",
   "/reports": "text-[rgb(124,58,237)]",
   "/leave": "text-[rgb(13,148,136)]",
