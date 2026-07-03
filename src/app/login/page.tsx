@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRightIcon, DashboardIcon, MarksIcon, StudentsIcon, ProgressIcon, AllotmentIcon, CloseIcon, type IconComponent } from "@/components/icons";
+import { ArrowRightIcon, AwardIcon, MarksIcon, StudentsIcon, ProgressIcon, AllotmentIcon, CloseIcon, type IconComponent } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
 import { useT } from "@/i18n/provider";
 import { KVEmblem } from "@/components/brand";
@@ -9,7 +9,7 @@ import { DEMO_ACCOUNTS, DEMO_PASSWORD } from "@/lib/demo";
 
 // A suitable icon per demo role.
 const ROLE_ICON: Record<string, IconComponent> = {
-  principal: DashboardIcon,
+  principal: AwardIcon,
   teacher: MarksIcon,
   guardian: StudentsIcon,
   student: ProgressIcon,
@@ -92,7 +92,7 @@ export default function LoginPage() {
               </span>
               <div className="text-[15px] font-semibold leading-snug text-ink-900">Kendriya Vidyalaya No 1, IIT Kharagpur</div>
             </div>
-            <h1 className="font-display mt-3 text-center text-[42px] font-medium leading-[1.02] tracking-[-0.02em] text-ink-900">Welcomes <span className="text-[22px] font-normal text-ink-500">you</span></h1>
+            <h1 className="font-display mt-3 text-center text-[42px] font-medium leading-[1.02] tracking-[-0.02em] text-ink-900">Welcomes</h1>
           </div>
 
           {error && (
