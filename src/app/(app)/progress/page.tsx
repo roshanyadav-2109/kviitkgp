@@ -89,7 +89,7 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
   const scopeId = level === "class" && cls ? cls.id : section.id;
 
   const filters = (
-    <FilterBar years={scope.years} classes={scope.classes} sectionMeta={scope.sectionMeta} subjects={scope.subjects}
+    <FilterBar years={scope.years} classes={scope.classes} sectionMeta={scope.sectionMeta} subjects={scope.subjects} subjectsByClass={scope.subjectsByClass}
       yearId={yearId} level={level} scopeId={scopeId} subjectId={subjectId} />
   );
 

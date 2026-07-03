@@ -10,6 +10,7 @@ export type ClassOpt = { id: number; name: string; level: number };
 // sections where they only teach a subject.
 export type SectionMeta = {
   id: number;
+  classId: number;
   label: string;        // "VIII-A"
   className: string;
   classLevel: number;
@@ -27,6 +28,7 @@ export type StaffScope = {
   subjects: SubjectOpt[];
   classSectionId: number | null;   // the teacher's own class-teacher section
   sectionMeta: SectionMeta[];       // full/subject split per section
+  subjectsByClass: Record<number, SubjectOpt[]>; // subjects offered per class
 };
 
 // Filter options limited to the caller's allotment (brief §2.3). Principal/office
@@ -49,9 +51,25 @@ export async function getStaffScope(): Promise<StaffScope> {
   const subById = new Map<number, SubjectOpt>(allSubjects.map((s) => [s.id, s]));
 
   const toMeta = (s: SectionOpt, isCt: boolean, subjects: SubjectOpt[]): SectionMeta => ({
-    id: s.id, label: `${s.class_name}-${s.name}`, className: s.class_name, classLevel: s.class_level,
+    id: s.id, classId: s.class_id, label: `${s.class_name}-${s.name}`, className: s.class_name, classLevel: s.class_level,
     sectionName: s.name, isClassTeacher: isCt, subjects,
   });
+
+  // class_id → its offered subjects (from class_subject), sorted by name.
+  const buildClassSubjects = async (classIds: number[]): Promise<Map<number, SubjectOpt[]>> => {
+    const map = new Map<number, SubjectOpt[]>();
+    if (!classIds.length) return map;
+    const { data } = await supabase.from("class_subject").select("class_id, subject_id").in("class_id", classIds);
+    for (const row of data ?? []) {
+      const s = subById.get(row.subject_id);
+      if (!s) continue;
+      const arr = map.get(row.class_id) ?? [];
+      arr.push(s);
+      map.set(row.class_id, arr);
+    }
+    for (const arr of map.values()) arr.sort((a, b) => a.name.localeCompare(b.name));
+    return map;
+  };
 
   if (isAdmin) {
     const { data: secs } = await supabase
@@ -62,8 +80,12 @@ export async function getStaffScope(): Promise<StaffScope> {
       const c = s.class as unknown as ClassOpt;
       return { id: s.id, name: s.name, class_id: c.id, class_name: c.name, class_level: c.level };
     }).sort((a, b) => a.class_level - b.class_level || a.name.localeCompare(b.name));
-    const sectionMeta = sections.map((s) => toMeta(s, false, allSubjects));
-    return { isAdmin, years: yearList, currentYearId, classes: dedupeClasses(sections), sections, subjects: allSubjects, classSectionId: null, sectionMeta };
+    const classes = dedupeClasses(sections);
+    const clsSubs = await buildClassSubjects(classes.map((c) => c.id));
+    const forClass = (cid: number) => clsSubs.get(cid) ?? allSubjects;
+    const sectionMeta = sections.map((s) => toMeta(s, false, forClass(s.class_id)));
+    const subjectsByClass = Object.fromEntries(classes.map((c) => [c.id, forClass(c.id)]));
+    return { isAdmin, years: yearList, currentYearId, classes, sections, subjects: allSubjects, classSectionId: null, sectionMeta, subjectsByClass };
   }
 
   // Teacher: derive scope from their own allotments (RLS: allot_read = own rows).
@@ -112,7 +134,18 @@ export async function getStaffScope(): Promise<StaffScope> {
   for (const m of sectionMeta) for (const s of m.subjects) subjMap.set(s.id, s);
   const subjects = [...subjMap.values()].sort((a, b) => a.name.localeCompare(b.name));
 
-  return { isAdmin, years: yearList, currentYearId, classes: dedupeClasses(sections), sections, subjects, classSectionId, sectionMeta };
+  // Union each class's subjects across the teacher's sections of that class.
+  const byClass = new Map<number, Map<number, SubjectOpt>>();
+  for (const m of sectionMeta) {
+    const cur = byClass.get(m.classId) ?? new Map<number, SubjectOpt>();
+    for (const s of m.subjects) cur.set(s.id, s);
+    byClass.set(m.classId, cur);
+  }
+  const subjectsByClass = Object.fromEntries(
+    [...byClass.entries()].map(([cid, m]) => [cid, [...m.values()].sort((a, b) => a.name.localeCompare(b.name))]),
+  );
+
+  return { isAdmin, years: yearList, currentYearId, classes: dedupeClasses(sections), sections, subjects, classSectionId, sectionMeta, subjectsByClass };
 }
 
 function dedupeClasses(sections: SectionOpt[]): ClassOpt[] {

@@ -5,12 +5,13 @@ import { useT } from "@/i18n/provider";
 import type { YearOpt, SectionMeta, ClassOpt, SubjectOpt } from "@/lib/data/scope";
 
 export function FilterBar({
-  years, classes, sectionMeta, subjects, yearId, level, scopeId, subjectId,
+  years, classes, sectionMeta, subjects, subjectsByClass, yearId, level, scopeId, subjectId,
 }: {
   years: YearOpt[];
   classes: ClassOpt[];
   sectionMeta: SectionMeta[];
   subjects: SubjectOpt[];
+  subjectsByClass: Record<number, SubjectOpt[]>;
   yearId: number;
   level: "class" | "section";
   scopeId: number;
@@ -21,8 +22,12 @@ export function FilterBar({
   const pathname = usePathname();
   const params = useSearchParams();
 
+  // Subjects cascade off the chosen scope: a class shows that class's subjects;
+  // a section shows the subjects taught in it.
   const subjectOptions =
-    level === "class" ? subjects : (sectionMeta.find((s) => s.id === scopeId)?.subjects ?? []);
+    level === "class"
+      ? (subjectsByClass[scopeId] ?? subjects)
+      : (sectionMeta.find((s) => s.id === scopeId)?.subjects ?? []);
 
   function push(next: URLSearchParams) {
     next.delete("studentId");
