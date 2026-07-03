@@ -10,7 +10,7 @@ import { AttendanceBoard } from "@/components/attendance/attendance-board";
 import { AttendanceOverview } from "@/components/attendance/attendance-overview";
 import { AttendanceAdminControls } from "@/components/attendance/attendance-admin-controls";
 import { DetailedSectionAttendance } from "@/components/attendance/detailed-section-attendance";
-import { AttendanceIcon } from "@/components/icons";
+import { AttendanceIcon, ArrowRightIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
 import { getMyChildren } from "@/lib/data/analytics";
 import { getDateAttendance, getSectionAttendanceSummary, getStudentAttendance, getLatestAttendanceDate, getLatestAttendanceDateAll, getAttendanceOverview, getSectionAttendanceRange } from "@/lib/data/attendance";
@@ -112,14 +112,25 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
         }
       : undefined;
 
-    let detail = null as Awaited<ReturnType<typeof getSectionAttendanceRange>> | null;
-    let sectionLabel = "";
+    // Selecting a section opens its own detail page (not shown below the overview).
     if (isPrincipal && selectedSection) {
-      detail = await getSectionAttendanceRange(selectedSection, start, end, year.id);
+      const detail = await getSectionAttendanceRange(selectedSection, start, end, year.id);
+      let sectionLabel = "";
       for (const c of overview.classes) {
         const sec = c.sections.find((x) => x.id === selectedSection);
         if (sec) { sectionLabel = `${c.name}-${sec.name}`; break; }
       }
+      const backQs = new URLSearchParams({ period });
+      if (period === "day") backQs.set("date", date); else backQs.set("month", month);
+      return (
+        <div>
+          <PageHeader eyebrow={sectionLabel} title={t("attendance.title")} description={label} />
+          <Link href={`/attendance?${backQs.toString()}`} className="mb-4 inline-flex items-center gap-1 text-[13px] font-medium text-[rgb(37,99,235)] hover:underline">
+            <ArrowRightIcon size={14} className="rotate-180" /> {t("x.attendanceOverview")}
+          </Link>
+          <DetailedSectionAttendance students={detail} period={period} sectionLabel={sectionLabel} />
+        </div>
+      );
     }
 
     return (
@@ -127,7 +138,6 @@ export default async function AttendancePage({ searchParams }: { searchParams: S
         <PageHeader title={t("attendance.title")} description={t("x.attendanceOverview")} />
         <AttendanceAdminControls period={period} date={date} month={month} />
         <AttendanceOverview overview={overview} label={label} hrefForSection={hrefForSection} selectedSection={selectedSection} />
-        {isPrincipal && detail && <DetailedSectionAttendance students={detail} period={period} sectionLabel={sectionLabel} />}
       </div>
     );
   }
