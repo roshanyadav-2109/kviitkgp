@@ -154,38 +154,41 @@ function gradeBand(pct: number): string {
   return "E";
 }
 
-// Distinct exams (assessments) offered for a subject across the given sections,
-// ordered by date. Drives the "Exam" filter in the analytics bar.
-export async function getScopeExams(sectionIds: number[], subjectId: number, yearId: number) {
+// Distinct exams (assessments) across the given sections (optionally a single
+// subject), ordered by date. Drives the "Exam" filter in the analytics bar.
+export async function getScopeExams(sectionIds: number[], subjectId: number | null, yearId: number) {
   if (!sectionIds.length) return [] as { name: string }[];
   const supabase = await createClient();
-  const { data } = await supabase
+  let q = supabase
     .from("assessment")
     .select("name, assessed_on")
     .in("section_id", sectionIds)
-    .eq("subject_id", subjectId)
     .eq("academic_year_id", yearId)
     .order("assessed_on", { ascending: true });
+  if (subjectId) q = q.eq("subject_id", subjectId);
+  const { data } = await q;
   const seen = new Set<string>();
   const out: { name: string }[] = [];
   for (const a of data ?? []) if (a.name && !seen.has(a.name)) { seen.add(a.name); out.push({ name: a.name }); }
   return out;
 }
 
-// Analytics for one specific exam (a subject's assessment) across the sections in
-// scope: band distribution, top performers, and section-vs-section comparison.
-export async function getExamAnalytics(sectionIds: number[], subjectId: number, yearId: number, examName: string) {
+// Analytics for one exam across the sections in scope, optionally narrowed to a
+// subject (else averaged across every subject the pupil sat in that exam):
+// band distribution, top performers, and section-vs-section comparison.
+export async function getExamAnalytics(sectionIds: number[], subjectId: number | null, yearId: number, examName: string) {
   const supabase = await createClient();
   const empty = { distribution: gradeBands(), topPerformers: [] as ExamTop[], sectionComparison: [] as ExamSection[], average: null as number | null, count: 0 };
   if (!sectionIds.length) return empty;
 
-  const { data: asmts } = await supabase
+  let aq = supabase
     .from("assessment")
     .select("id, max_marks, section:section_id(name)")
     .in("section_id", sectionIds)
-    .eq("subject_id", subjectId)
     .eq("academic_year_id", yearId)
     .eq("name", examName);
+  if (subjectId) aq = aq.eq("subject_id", subjectId);
+  const { data: asmts } = await aq;
   const list = asmts ?? [];
   if (!list.length) return empty;
 
@@ -194,16 +197,23 @@ export async function getExamAnalytics(sectionIds: number[], subjectId: number, 
 
   const { data: marks } = await supabase
     .from("mark")
-    .select("marks_obtained, is_absent, assessment_id, student:student_id(full_name)")
+    .select("student_id, marks_obtained, is_absent, assessment_id, student:student_id(full_name)")
     .in("assessment_id", list.map((a) => a.id));
 
-  const recs = (marks ?? [])
-    .filter((m) => !m.is_absent && m.marks_obtained != null)
-    .map((m) => ({
+  // Average each pupil's percentage across the exam (one subject → their single
+  // paper; no subject → mean of all their papers in that exam).
+  const perStudent = new Map<number, { name: string; section: string; sum: number; n: number }>();
+  for (const m of marks ?? []) {
+    if (m.is_absent || m.marks_obtained == null) continue;
+    const pct = (Number(m.marks_obtained) / (maxById.get(m.assessment_id) || 100)) * 100;
+    const cur = perStudent.get(m.student_id) ?? {
       name: (m.student as unknown as { full_name: string } | null)?.full_name ?? "—",
       section: secById.get(m.assessment_id) ?? "—",
-      pct: Math.round((Number(m.marks_obtained) / (maxById.get(m.assessment_id) || 100)) * 1000) / 10,
-    }));
+      sum: 0, n: 0,
+    };
+    cur.sum += pct; cur.n += 1; perStudent.set(m.student_id, cur);
+  }
+  const recs = [...perStudent.values()].map((s) => ({ name: s.name, section: s.section, pct: Math.round((s.sum / s.n) * 10) / 10 }));
   if (!recs.length) return empty;
 
   const bandAgg = new Map<string, number>();

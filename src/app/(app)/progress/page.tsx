@@ -95,8 +95,8 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
   const scopeSectionIds = level === "class" && cls
     ? scope.sections.filter((s) => s.class_id === cls.id).map((s) => s.id)
     : [section.id];
-  // Exam options depend on the chosen subject + scope.
-  const exams = subjectId ? await getScopeExams(scopeSectionIds, subjectId, yearId) : [];
+  // Exam options for the scope (all subjects, or the chosen subject).
+  const exams = await getScopeExams(scopeSectionIds, subjectId, yearId);
 
   const filters = (
     <FilterBar years={scope.years} classes={scope.classes} sectionMeta={scope.sectionMeta} subjects={scope.subjects} subjectsByClass={scope.subjectsByClass}
@@ -104,8 +104,8 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
       yearId={yearId} level={level} scopeId={scopeId} subjectId={subjectId} />
   );
 
-  // Exam-scoped view: a single subject's single exam across the scope.
-  if (examName && subjectId) {
+  // Exam-scoped view: one exam across the scope (optionally one subject).
+  if (examName) {
     const data = await getExamAnalytics(scopeSectionIds, subjectId, yearId, examName);
     return (
       <div>

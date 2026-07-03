@@ -105,7 +105,7 @@ export function FilterBar({
       </div>
       <div className="min-w-[150px] flex-1">
         <label className="t-label mb-1 block">{t("marks.assessment")}</label>
-        <Select value={examName ?? ""} onChange={(e) => setExam(e.target.value)} disabled={!subjectId || !exams.length}>
+        <Select value={examName ?? ""} onChange={(e) => setExam(e.target.value)} disabled={!exams.length}>
           <option value="">{t("common.all")}</option>
           {exams.map((name) => (<option key={name} value={name}>{name}</option>))}
         </Select>
