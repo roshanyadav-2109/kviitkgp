@@ -223,8 +223,8 @@ const en = {
     comparedToRecord: "vs the child's recent record",
   },
   x: {
-    authBlurb: "One continuous record for every child — trends, not just marks. Attendance, reports and analytics, each scoped to what a teacher is allotted.",
-    authClasses: "Classes I–XII · Foundational to Senior · CBSE / NEP aligned",
+    authBlurb: "A single, continuous record of every student's learning — progress, attendance and reports in one calm place for students, parents and teachers.",
+    authClasses: "Secure sign-in for students, parents and staff",
     marksPrincipalTitle: "Marks entry is for teachers and office",
     marksPrincipalHint: "The principal can view analytics and attendance; marks are entered by subject/class teachers and the office.",
     marksNoSubjects: "No allotted subjects.",
