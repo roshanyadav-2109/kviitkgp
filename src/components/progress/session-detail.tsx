@@ -8,7 +8,7 @@ export function SessionDetail({ sessions }: { sessions: Sessions }) {
   const t = useT();
   const [yearId, setYearId] = useState<number>(sessions[0]?.yearId ?? 0);
   const sess = sessions.find((s) => s.yearId === yearId) ?? sessions[0];
-  if (!sess) return <p className="py-2 text-[14px] text-ink-500">{t("common.noData")}</p>;
+  if (!sess) return <p className="py-2 text-[14px] text-ink-900">{t("common.noData")}</p>;
 
   return (
     <div>
@@ -44,7 +44,7 @@ export function SessionDetail({ sessions }: { sessions: Sessions }) {
                       {c ? (
                         <span className={`tabular ${c.percent < 33 ? "text-down" : "text-ink-900"}`}>{c.percent}</span>
                       ) : (
-                        <span className="text-muted">—</span>
+                        <span className="text-ink-900">—</span>
                       )}
                     </td>
                   );

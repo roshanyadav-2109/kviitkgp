@@ -23,7 +23,7 @@ function OwnerAbsence({ notices }: { notices: AbsenceNotice[] }) {
   const [reason, setReason] = useState("");
   const [busy, start] = useTransition();
 
-  if (!notices.length) return <p className="py-2 text-[14px] text-ink-500">{t("common.noData")}</p>;
+  if (!notices.length) return <p className="py-2 text-[14px] text-ink-900">{t("common.noData")}</p>;
 
   const toggle = (id: number) => setSelected((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const allSelected = pending.length > 0 && selected.size === pending.length;
@@ -43,7 +43,7 @@ function OwnerAbsence({ notices }: { notices: AbsenceNotice[] }) {
         <section>
           <div className="mb-3 flex items-baseline justify-between">
             <h3 className="text-[15px] font-semibold text-ink-900">{t("leave.selectDays")}</h3>
-            <button onClick={selectAll} className="text-[13px] text-ink-500 underline-offset-2 hover:text-ink-900 hover:underline">{t("leave.selectAll")}</button>
+            <button onClick={selectAll} className="text-[13px] text-ink-900 underline-offset-2 hover:text-ink-900 hover:underline">{t("leave.selectAll")}</button>
           </div>
           <div className="flex flex-wrap gap-2">
             {pending.map((n) => {
@@ -57,7 +57,7 @@ function OwnerAbsence({ notices }: { notices: AbsenceNotice[] }) {
                   )}
                 >
                   <input type="checkbox" checked={on} onChange={() => toggle(n.id)} className="h-4 w-4 accent-[var(--color-ink-900)]" />
-                  <span className={cn("tabular", on ? "font-semibold text-ink-900" : "text-ink-700")}>{fmtDate(locale, n.on_date, { day: "numeric", month: "short" })}</span>
+                  <span className={cn("tabular", on ? "font-semibold text-ink-900" : "text-ink-900")}>{fmtDate(locale, n.on_date, { day: "numeric", month: "short" })}</span>
                 </label>
               );
             })}
@@ -79,9 +79,9 @@ function OwnerAbsence({ notices }: { notices: AbsenceNotice[] }) {
             <li key={n.id} className="py-3">
               <div className="flex items-baseline justify-between gap-3">
                 <span className="text-[14px] font-medium text-ink-900 tabular">{fmtDate(locale, n.on_date)}</span>
-                <span className="text-[12px] text-muted">{t("leave.explained")}</span>
+                <span className="text-[12px] text-ink-900">{t("leave.explained")}</span>
               </div>
-              {n.reason && <p className="mt-1 text-[13px] leading-relaxed text-ink-600">{n.reason}</p>}
+              {n.reason && <p className="mt-1 text-[13px] leading-relaxed text-ink-900">{n.reason}</p>}
             </li>
           ))}
         </ul>
@@ -93,7 +93,7 @@ function OwnerAbsence({ notices }: { notices: AbsenceNotice[] }) {
 // Staff: read-only list of section absences and their reasons.
 function StaffAbsence({ notices }: { notices: AbsenceNotice[] }) {
   const { t, locale } = useI18n();
-  if (!notices.length) return <p className="py-2 text-[14px] text-ink-500">{t("common.noData")}</p>;
+  if (!notices.length) return <p className="py-2 text-[14px] text-ink-900">{t("common.noData")}</p>;
   return (
     <ul className="space-y-2.5">
       {notices.map((n) => {
@@ -103,11 +103,11 @@ function StaffAbsence({ notices }: { notices: AbsenceNotice[] }) {
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-[14px] font-semibold text-ink-900">{n.studentName}</div>
-                <div className="text-[12px] text-muted tabular">{t("leave.absentOn", { date: fmtDate(locale, n.on_date) })}</div>
+                <div className="text-[12px] text-ink-900 tabular">{t("leave.absentOn", { date: fmtDate(locale, n.on_date) })}</div>
               </div>
               <StatusPill status={pending ? "watch" : "up"}>{pending ? t("leave.awaitingReason") : t("leave.explained")}</StatusPill>
             </div>
-            {n.reason && <p className="mt-2 rounded-sm bg-panel/60 px-2.5 py-1.5 text-[13px] text-ink-700">{n.reason}</p>}
+            {n.reason && <p className="mt-2 rounded-sm bg-surface px-2.5 py-1.5 text-[13px] text-ink-900">{n.reason}</p>}
           </li>
         );
       })}

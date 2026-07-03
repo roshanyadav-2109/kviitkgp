@@ -82,7 +82,7 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
         <CardHeader title={t("common.subject")} />
         <CardBody className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {data.subjects.map((s) => (
-            <div key={s.code} className="rounded-md border border-hair bg-panel/40 p-3">
+            <div key={s.code} className="rounded-md border border-hair bg-surface p-3">
               <div className="flex items-center justify-between">
                 <span className="text-[14px] font-semibold text-ink-900">{s.name}</span>
                 <BandChip band={s.band} />
@@ -124,13 +124,13 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
                   <span className="mt-0.5 shrink-0 text-ink-900"><NotebookIcon size={15} /></span>
                   <div className="min-w-0">
                     <div className="text-[14px] text-ink-900">{o.body}</div>
-                    <div className="mt-0.5 text-[12px] text-muted"><span className="capitalize">{o.category}</span>{o.subject ? ` · ${o.subject}` : ""} · {o.staff} · {fmtDate(locale, o.date)}</div>
+                    <div className="mt-0.5 text-[12px] text-ink-900"><span className="capitalize">{o.category}</span>{o.subject ? ` · ${o.subject}` : ""} · {o.staff} · {fmtDate(locale, o.date)}</div>
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="py-2 text-[14px] text-ink-500">{t("common.noData")}</p>
+            <p className="py-2 text-[14px] text-ink-900">{t("common.noData")}</p>
           )}
         </CardBody>
       </Card>

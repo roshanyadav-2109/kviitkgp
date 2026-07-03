@@ -19,12 +19,12 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
   return (
     <div className="space-y-5">
       {data.conclusions.length > 0 && (
-        <Card className="border-gold-500/40 bg-gold-100/50">
+        <Card className="border-hair bg-surface">
           <CardHeader eyebrow={t("progress.autoInsights")} title="" />
           <CardBody className="pt-1">
             <ul className="space-y-2">
               {data.conclusions.map((c, i) => (
-                <li key={i} className="flex gap-2.5 text-[14px] text-ink-900"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-700" />{t(c.key, c.vars)}</li>
+                <li key={i} className="flex gap-2.5 text-[14px] text-ink-900"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(37,99,235)]" />{t(c.key, c.vars)}</li>
               ))}
             </ul>
           </CardBody>
@@ -39,7 +39,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
             {data.sectionComparison.length ? (
               <KVBarChart data={data.sectionComparison} xKey="name" valueKey="avg" horizontal height={260} />
             ) : (
-              <div className="flex h-[260px] items-center justify-center text-[14px] text-ink-500">{t("common.noData")}</div>
+              <div className="flex h-[260px] items-center justify-center text-[14px] text-ink-900">{t("common.noData")}</div>
             )}
           </CardBody>
         </Card>
@@ -63,14 +63,14 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
 
         {/* Best performers across the class (with section) */}
         <Card>
-          <CardHeader eyebrow={t("progress.topPerformers")} title="" action={<TrophyIcon size={18} className="text-gold-700" />} />
+          <CardHeader eyebrow={t("progress.topPerformers")} title="" action={<TrophyIcon size={18} className="text-[rgb(37,99,235)]" />} />
           <CardBody className="pt-1">
             <ol className="space-y-1.5">
               {data.topPerformers.map((s, i) => (
                 <li key={i} className="flex items-center gap-3 rounded-sm px-2 py-1.5 odd:bg-panel/50">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gold-100 text-[12px] font-bold text-gold-700 tabular">{i + 1}</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[rgb(37,99,235)]/[0.1] text-[12px] font-bold text-[rgb(37,99,235)] tabular">{i + 1}</span>
                   <span className="flex-1 truncate text-[14px] text-ink-900">{s.student_name}</span>
-                  <span className="rounded-xs bg-panel px-1.5 py-0.5 text-[11px] font-semibold text-ink-500 tabular">{s.section_name}</span>
+                  <span className="rounded-xs bg-panel px-1.5 py-0.5 text-[11px] font-semibold text-ink-900 tabular">{s.section_name}</span>
                   <span className="text-[14px] font-semibold tabular text-ink-900">{fmtPercent(locale, Number(s.avg_percent), 1)}</span>
                 </li>
               ))}
@@ -83,7 +83,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
       <Card className="border-watch/30">
         <CardHeader eyebrow={t("progress.needsSupport")} title="" action={<AlertIcon size={18} className="text-watch" />} />
         <CardBody className="pt-1">
-          <p className="mb-2 text-[12px] text-muted">{t("progress.needsSupportNote")}</p>
+          <p className="mb-2 text-[12px] text-ink-900">{t("progress.needsSupportNote")}</p>
           {data.needsSupport.length ? (
             <div className="grid gap-2 sm:grid-cols-2">
               {data.needsSupport.slice(0, 8).map((s, i) => (
@@ -91,16 +91,16 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
                   <div className="flex items-center justify-between">
                     <span className="text-[14px] font-semibold text-ink-900">{s.student_name}</span>
                     <span className="flex items-center gap-2">
-                      <span className="rounded-xs bg-panel px-1.5 py-0.5 text-[11px] font-semibold text-ink-500 tabular">{s.section_name}</span>
+                      <span className="rounded-xs bg-panel px-1.5 py-0.5 text-[11px] font-semibold text-ink-900 tabular">{s.section_name}</span>
                       <DeltaBadge value={Math.round(Number(s.recent_trend))} />
                     </span>
                   </div>
-                  <div className="mt-0.5 text-[12px] text-ink-500">{supportReason(t, s)}</div>
+                  <div className="mt-0.5 text-[12px] text-ink-900">{supportReason(t, s)}</div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="py-2 text-[14px] text-ink-500">{t("common.noData")}</p>
+            <p className="py-2 text-[14px] text-ink-900">{t("common.noData")}</p>
           )}
         </CardBody>
       </Card>

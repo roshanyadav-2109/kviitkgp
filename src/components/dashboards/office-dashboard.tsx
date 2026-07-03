@@ -24,7 +24,7 @@ export async function OfficeDashboard({ session }: { session: Session }) {
       {s && s.draft > 0 && (
         <Link href="/marks" className="mb-6 flex items-center gap-3 rounded-md border border-watch/40 bg-watch-soft px-4 py-3 transition-colors hover:border-watch">
           <MarksIcon size={20} className="text-watch" />
-          <div className="text-[14px] text-ink-900"><span className="font-semibold">{s.draft}</span> {t("marks.draft").toLowerCase()} — <span className="text-gold-700 underline">{t("marks.release").toLowerCase()}</span></div>
+          <div className="text-[14px] text-ink-900"><span className="font-semibold">{s.draft}</span> {t("marks.draft").toLowerCase()} — <span className="text-[rgb(37,99,235)] underline">{t("marks.release").toLowerCase()}</span></div>
         </Link>
       )}
 

@@ -48,7 +48,7 @@ export function FilterBar({
   }
 
   return (
-    <div className="mb-5 flex flex-wrap items-end gap-3 rounded-md border border-hair bg-surface p-3 shadow-[var(--shadow-card)]">
+    <div className="mb-5 flex flex-wrap items-end gap-3 rounded-md border border-hair bg-surface p-3">
       <div className="min-w-[140px] flex-1">
         <label className="t-label mb-1 block">{t("common.year")}</label>
         <Select value={yearId} onChange={(e) => setYear(e.target.value)}>

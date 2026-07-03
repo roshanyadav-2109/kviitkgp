@@ -18,11 +18,11 @@ export async function MonthlyReportCard({ report, month }: { report: Report; mon
           <KVEmblem size={44} />
           <div className="flex-1">
             <div className="t-h3 text-ink-900">Kendriya Vidyalaya No 1, IIT Kharagpur</div>
-            <div className="text-[13px] text-ink-500">{t("report.title")} · {fmtMonth(locale, `${month}-01`)}</div>
+            <div className="text-[13px] text-ink-900">{t("report.title")} · {fmtMonth(locale, `${month}-01`)}</div>
           </div>
           <div className="text-right">
             <div className="text-[14px] font-semibold text-ink-900">{r.student?.full_name}</div>
-            <div className="text-[12px] text-muted tabular">{r.student?.admission_no}</div>
+            <div className="text-[12px] text-ink-900 tabular">{r.student?.admission_no}</div>
           </div>
         </div>
 
@@ -32,7 +32,7 @@ export async function MonthlyReportCard({ report, month }: { report: Report; mon
             <div className={`mt-1 text-[30px] font-bold tabular ${r.attendance.pct != null && r.attendance.pct < 75 ? "text-down" : "text-ink-900"}`}>
               {r.attendance.pct != null ? `${r.attendance.pct}%` : "—"}
             </div>
-            <div className="text-[12px] text-muted">{r.attendance.present}/{r.attendance.total} {t("attendance.present").toLowerCase()}</div>
+            <div className="text-[12px] text-ink-900">{r.attendance.present}/{r.attendance.total} {t("attendance.present").toLowerCase()}</div>
           </div>
 
           <div>
@@ -40,7 +40,7 @@ export async function MonthlyReportCard({ report, month }: { report: Report; mon
             {r.marks.length ? (
               <table className="w-full text-[14px]">
                 <thead>
-                  <tr className="text-left text-[12px] text-muted">
+                  <tr className="text-left text-[12px] text-ink-900">
                     <th className="pb-1 font-semibold">{t("common.subject")}</th>
                     <th className="pb-1 font-semibold">{t("marks.assessment")}</th>
                     <th className="pb-1 text-right font-semibold">%</th>
@@ -52,7 +52,7 @@ export async function MonthlyReportCard({ report, month }: { report: Report; mon
                   {r.marks.map((m, i) => (
                     <tr key={i} className="border-t border-hair">
                       <td className="py-1.5 text-ink-900">{m.subject_name}</td>
-                      <td className="py-1.5 text-ink-500">{m.assessment_name}</td>
+                      <td className="py-1.5 text-ink-900">{m.assessment_name}</td>
                       <td className="py-1.5 text-right font-semibold tabular text-ink-900">{m.percent}</td>
                       <td className="py-1.5 text-center"><BandChip band={m.band} /></td>
                       <td className="py-1.5 text-right"><DeltaBadge value={m.delta} /></td>
@@ -61,7 +61,7 @@ export async function MonthlyReportCard({ report, month }: { report: Report; mon
                 </tbody>
               </table>
             ) : (
-              <p className="text-[14px] text-ink-500">{t("common.noData")}</p>
+              <p className="text-[14px] text-ink-900">{t("common.noData")}</p>
             )}
           </div>
         </div>
@@ -69,9 +69,9 @@ export async function MonthlyReportCard({ report, month }: { report: Report; mon
         {r.notices.length > 0 && (
           <div className="mt-5 border-t border-hair pt-4">
             <div className="t-label mb-2">{t("report.noticesSent")}</div>
-            <ul className="space-y-1 text-[13px] text-ink-700">
+            <ul className="space-y-1 text-[13px] text-ink-900">
               {r.notices.map((n, i) => (
-                <li key={i} className="flex gap-2"><span className="text-muted tabular">{fmtDate(locale, n.published_at, { day: "numeric", month: "short" })}</span>{n.title}</li>
+                <li key={i} className="flex gap-2"><span className="text-ink-900 tabular">{fmtDate(locale, n.published_at, { day: "numeric", month: "short" })}</span>{n.title}</li>
               ))}
             </ul>
           </div>

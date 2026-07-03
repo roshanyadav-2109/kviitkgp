@@ -54,9 +54,9 @@ export async function GuardianDashboard({ session }: { session: Session }) {
               <div className="flex items-start justify-between">
                 <div>
                   <div className="t-h3 text-ink-900">{child.full_name}</div>
-                  <div className="text-[12px] text-muted">{sectionOf.get(child.id) ?? ""} · {child.admission_no}</div>
+                  <div className="text-[12px] text-ink-900">{sectionOf.get(child.id) ?? ""} · {child.admission_no}</div>
                 </div>
-                <Link href={`/progress?child=${child.id}`} className="inline-flex items-center gap-1 text-[13px] font-medium text-gold-700 hover:underline">
+                <Link href={`/progress?child=${child.id}`} className="inline-flex items-center gap-1 text-[13px] font-medium text-[rgb(37,99,235)] hover:underline">
                   {t("nav.childProgress")} <ArrowRightIcon size={14} />
                 </Link>
               </div>

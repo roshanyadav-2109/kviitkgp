@@ -22,7 +22,7 @@ export async function DashHeader({ name, subtitleKey = "dashboard.overview" }: {
 export function StatCard({ label, value, sub, tone = "ink" }: { label: string; value: React.ReactNode; sub?: string; tone?: "ink" | "up" | "down" | "watch" | "gold" }) {
   const toneCls = { ink: "text-ink-900", up: "text-up", down: "text-down", watch: "text-watch", gold: "text-[rgb(37,99,235)]" }[tone];
   return (
-    <div className="rounded-md border border-hair bg-[rgb(37,99,235)]/[0.04] p-4">
+    <div className="rounded-md border border-hair bg-surface p-4">
       <div className="text-[12px] font-normal text-ink-900">{label}</div>
       <div className={cn("mt-1 text-[30px] font-semibold leading-none tabular", toneCls)}>{value}</div>
       {sub && <div className="mt-1.5 text-[12px] text-ink-900">{sub}</div>}

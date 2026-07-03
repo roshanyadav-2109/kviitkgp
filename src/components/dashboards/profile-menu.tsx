@@ -7,14 +7,14 @@ function LogoutHuman() {
   return (
     <svg viewBox="0 0 128 128" className="h-28 w-28" fill="none" stroke="currentColor" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round">
       <ellipse cx="58" cy="118" rx="32" ry="5" className="fill-ink-900/10" stroke="none" />
-      <circle cx="56" cy="30" r="14" className="text-ink-700" />
-      <path d="M56 44 v34" className="text-ink-700" />
-      <path d="M56 54 l-16 16" className="text-ink-700" />
-      <path d="M56 54 l20 -16" className="text-ink-700" />
-      <path d="M56 78 l-12 28" className="text-ink-700" />
-      <path d="M56 78 l12 28" className="text-ink-700" />
-      <path d="M84 28 q7 5 0 12" className="text-gold-500" strokeWidth={3.5} />
-      <path d="M92 21 q12 9 0 22" className="text-gold-500" strokeWidth={3.5} />
+      <circle cx="56" cy="30" r="14" className="text-ink-900" />
+      <path d="M56 44 v34" className="text-ink-900" />
+      <path d="M56 54 l-16 16" className="text-ink-900" />
+      <path d="M56 54 l20 -16" className="text-ink-900" />
+      <path d="M56 78 l-12 28" className="text-ink-900" />
+      <path d="M56 78 l12 28" className="text-ink-900" />
+      <path d="M84 28 q7 5 0 12" className="text-[rgb(37,99,235)]" strokeWidth={3.5} />
+      <path d="M92 21 q12 9 0 22" className="text-[rgb(37,99,235)]" strokeWidth={3.5} />
     </svg>
   );
 }
@@ -36,7 +36,7 @@ export function ProfileMenu({
       <button
         onClick={() => setOpen(true)}
         aria-label="Menu"
-        className="flex shrink-0 flex-col items-center gap-[3px] rounded-md p-2 text-ink-500 hover:bg-surface"
+        className="flex shrink-0 flex-col items-center gap-[3px] rounded-md p-2 text-ink-900 hover:bg-surface"
       >
         <span className="h-[3px] w-[3px] rounded-full bg-current" />
         <span className="h-[3px] w-[3px] rounded-full bg-current" />
@@ -57,7 +57,7 @@ export function ProfileMenu({
               </form>
               <button
                 onClick={() => setOpen(false)}
-                className="rounded-sm border border-hair bg-surface px-5 py-2.5 text-[13px] font-normal text-ink-700 transition-colors hover:bg-panel"
+                className="rounded-sm border border-hair bg-surface px-5 py-2.5 text-[13px] font-normal text-ink-900 transition-colors hover:bg-panel"
               >
                 {cancelLabel}
               </button>

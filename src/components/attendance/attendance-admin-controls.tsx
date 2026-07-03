@@ -22,14 +22,14 @@ export function AttendanceAdminControls({ period, date, month }: { period: "day"
       onClick={() => push({ period: p }, ["section", p === "day" ? "month" : "date"])}
       aria-pressed={period === p}
       className={cn("h-10 rounded-sm px-3 text-[13px] font-medium transition-colors",
-        period === p ? "bg-ink-900 text-gold-100" : "bg-panel text-ink-700 hover:bg-gold-100")}
+        period === p ? "bg-ink-900 text-gold-100" : "bg-panel text-ink-900 hover:bg-[rgb(37,99,235)]/[0.05]")}
     >
       {label}
     </button>
   );
 
   return (
-    <div className="mb-5 flex flex-wrap items-end gap-3 rounded-md border border-hair bg-surface p-3 shadow-[var(--shadow-card)]">
+    <div className="mb-5 flex flex-wrap items-end gap-3 rounded-md border border-hair bg-surface p-3">
       <div>
         <label className="t-label mb-1 block">{t("common.filter")}</label>
         <div className="flex gap-1.5">

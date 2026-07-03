@@ -41,13 +41,13 @@ export function SectionAnalyticsView({
     <div className="space-y-5">
       {/* Auto-generated conclusions */}
       {data.conclusions.length > 0 && (
-        <Card className="border-gold-500/40 bg-gold-100/50">
+        <Card className="border-hair bg-surface">
           <CardHeader eyebrow={t("progress.autoInsights")} title="" />
           <CardBody className="pt-1">
             <ul className="space-y-2">
               {data.conclusions.map((c, i) => (
                 <li key={i} className="flex gap-2.5 text-[14px] text-ink-900">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-700" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(37,99,235)]" />
                   {t(c.key, c.vars)}
                 </li>
               ))}
@@ -72,7 +72,7 @@ export function SectionAnalyticsView({
             {data.termTrend.length > 1 ? (
               <KVLineChart data={data.termTrend} xKey="term" lines={[{ key: "avg", name: t("progress.average"), color: "#E09E3E" }]} height={280} area />
             ) : (
-              <div className="flex h-[280px] items-center justify-center text-[14px] text-ink-500">{t("common.noData")}</div>
+              <div className="flex h-[280px] items-center justify-center text-[14px] text-ink-900">{t("common.noData")}</div>
             )}
           </CardBody>
         </Card>
@@ -93,7 +93,7 @@ export function SectionAnalyticsView({
             {compBars.length ? (
               <KVBarChart data={compBars} xKey="name" valueKey="avg" horizontal height={280} />
             ) : (
-              <div className="flex h-[280px] items-center justify-center px-6 text-center text-[14px] text-ink-500">
+              <div className="flex h-[280px] items-center justify-center px-6 text-center text-[14px] text-ink-900">
                 {t("progress.subjectCompare")} — {t("common.filter").toLowerCase()} {t("common.subject").toLowerCase()}.
               </div>
             )}
@@ -104,12 +104,12 @@ export function SectionAnalyticsView({
       {/* Top performers & needs support */}
       <div className="grid gap-5 lg:grid-cols-2">
         <Card>
-          <CardHeader eyebrow={t("progress.topPerformers")} title="" action={<TrophyIcon size={18} className="text-gold-700" />} />
+          <CardHeader eyebrow={t("progress.topPerformers")} title="" action={<TrophyIcon size={18} className="text-[rgb(37,99,235)]" />} />
           <CardBody className="pt-1">
             <ol className="space-y-1.5">
               {data.topPerformers.map((s, i) => (
                 <li key={i} className="flex items-center gap-3 rounded-sm px-2 py-1.5 odd:bg-panel/50">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gold-100 text-[12px] font-bold text-gold-700 tabular">{i + 1}</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[rgb(37,99,235)]/[0.1] text-[12px] font-bold text-[rgb(37,99,235)] tabular">{i + 1}</span>
                   <span className="flex-1 truncate text-[14px] text-ink-900">{s.student_name}</span>
                   <span className="text-[14px] font-semibold tabular text-ink-900">{fmtPercent(locale, Number(s.avg_percent), 1)}</span>
                 </li>
@@ -121,7 +121,7 @@ export function SectionAnalyticsView({
         <Card className="border-watch/30">
           <CardHeader eyebrow={t("progress.needsSupport")} title="" action={<AlertIcon size={18} className="text-watch" />} />
           <CardBody className="pt-1">
-            <p className="mb-2 text-[12px] text-muted">{t("progress.needsSupportNote")}</p>
+            <p className="mb-2 text-[12px] text-ink-900">{t("progress.needsSupportNote")}</p>
             {data.needsSupport.length ? (
               <ul className="space-y-2">
                 {data.needsSupport.slice(0, 6).map((s, i) => (
@@ -129,16 +129,16 @@ export function SectionAnalyticsView({
                     <div className="flex items-center justify-between">
                       <span className="text-[14px] font-semibold text-ink-900">{s.student_name}</span>
                       <span className="flex items-center gap-2">
-                        <span className="text-[13px] tabular text-ink-700">{fmtPercent(locale, Number(s.avg_percent), 0)}</span>
+                        <span className="text-[13px] tabular text-ink-900">{fmtPercent(locale, Number(s.avg_percent), 0)}</span>
                         <DeltaBadge value={Math.round(Number(s.recent_trend))} />
                       </span>
                     </div>
-                    <div className="mt-0.5 text-[12px] text-ink-500">{supportReason(t, s)}</div>
+                    <div className="mt-0.5 text-[12px] text-ink-900">{supportReason(t, s)}</div>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="py-2 text-[14px] text-ink-500">{t("common.noData")}</p>
+              <p className="py-2 text-[14px] text-ink-900">{t("common.noData")}</p>
             )}
           </CardBody>
         </Card>
@@ -150,10 +150,10 @@ export function SectionAnalyticsView({
         <CardBody className="pt-2">
           <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
             {roster.map((s) => (
-              <Link key={s.id} href={drillHref(s.id)} className="group flex items-center gap-2.5 rounded-sm border border-hair bg-surface px-3 py-2 transition-colors hover:border-gold-500 hover:bg-gold-100">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-panel text-[11px] font-semibold text-ink-700 tabular">{s.roll ?? "–"}</span>
+              <Link key={s.id} href={drillHref(s.id)} className="group flex items-center gap-2.5 rounded-sm border border-hair bg-surface px-3 py-2 transition-colors hover:border-[rgb(37,99,235)]/40 hover:bg-[rgb(37,99,235)]/[0.05]">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-panel text-[11px] font-semibold text-ink-900 tabular">{s.roll ?? "–"}</span>
                 <span className="flex-1 truncate text-[13px] font-medium text-ink-900">{s.name}</span>
-                <ArrowRightIcon size={15} className="text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-gold-700" />
+                <ArrowRightIcon size={15} className="text-ink-900 transition-transform group-hover:translate-x-0.5 group-hover:text-[rgb(37,99,235)]" />
               </Link>
             ))}
           </div>

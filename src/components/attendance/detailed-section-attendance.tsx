@@ -19,16 +19,16 @@ export async function DetailedSectionAttendance({ students, period, sectionLabel
         <ul className="divide-y divide-hair">
           {students.map((st) => (
             <li key={st.id} className="flex items-center gap-3 py-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-panel text-[11px] font-semibold text-ink-700 tabular">{st.roll ?? "–"}</span>
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-panel text-[11px] font-semibold text-ink-900 tabular">{st.roll ?? "–"}</span>
               <span className="flex-1 truncate text-[14px] text-ink-900">{st.name}</span>
               {period === "day" ? (
                 st.total > 0 ? (
                   <StatusPill status={st.present > 0 ? "up" : "down"}>{st.present > 0 ? t("attendance.present") : t("attendance.absent")}</StatusPill>
                 ) : (
-                  <span className="text-[13px] text-muted">—</span>
+                  <span className="text-[13px] text-ink-900">—</span>
                 )
               ) : (
-                <span className={`text-[13px] tabular ${st.pct != null && st.pct < 75 ? "font-semibold text-down" : "text-ink-700"}`}>
+                <span className={`text-[13px] tabular ${st.pct != null && st.pct < 75 ? "font-semibold text-down" : "text-ink-900"}`}>
                   {st.present}/{st.total}{st.pct != null ? ` · ${st.pct}%` : ""}
                 </span>
               )}

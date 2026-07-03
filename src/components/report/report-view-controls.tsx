@@ -26,7 +26,7 @@ export function ReportViewControls({ view, students, studentId }: { view: "overv
       onClick={() => push({ view: v }, v === "overview" ? ["student"] : [])}
       aria-pressed={view === v}
       className={cn("h-10 rounded-sm px-3 text-[13px] font-medium transition-colors",
-        view === v ? "bg-ink-900 text-gold-100" : "bg-panel text-ink-700 hover:bg-gold-100")}
+        view === v ? "bg-ink-900 text-gold-100" : "bg-panel text-ink-900 hover:bg-[rgb(37,99,235)]/[0.05]")}
     >
       {label}
     </button>

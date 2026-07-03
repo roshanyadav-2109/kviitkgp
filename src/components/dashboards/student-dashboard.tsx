@@ -131,7 +131,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
                 href={l.href}
                 className="group flex shrink-0 items-center gap-2.5 rounded-md border border-hair bg-surface px-4 py-3 transition-colors hover:bg-panel"
               >
-                <Icon size={22} className={linkColor[l.href] ?? "text-ink-700"} />
+                <Icon size={22} className={linkColor[l.href] ?? "text-ink-900"} />
                 <span className="whitespace-nowrap text-[14px] font-normal text-ink-900">{t(l.labelKey)}</span>
               </Link>
             );
@@ -167,7 +167,7 @@ async function AnnouncementsCard() {
       <CardHeader
         title={t("announce.title")}
         action={
-          <Link href="/announcements" className="inline-flex items-center gap-1 text-[12px] font-normal text-gold-700 hover:text-ink-900">
+          <Link href="/announcements" className="inline-flex items-center gap-1 text-[12px] font-normal text-[rgb(37,99,235)] hover:text-ink-900">
             {t("dashboard.viewAll")}
             <ArrowRightIcon size={13} />
           </Link>
@@ -198,7 +198,7 @@ async function EventCalendarCard() {
       <CardHeader
         title={t("announce.events")}
         action={
-          <Link href="/calendar" className="inline-flex items-center gap-1 text-[12px] font-normal text-gold-700 hover:text-ink-900">
+          <Link href="/calendar" className="inline-flex items-center gap-1 text-[12px] font-normal text-[rgb(37,99,235)] hover:text-ink-900">
             {t("dashboard.viewAll")}
             <ArrowRightIcon size={13} />
           </Link>
@@ -217,7 +217,7 @@ async function EventCalendarCard() {
                       <span className="text-[9px] font-semibold uppercase tracking-wide text-gold-300">{fmtDate(locale, d, { month: "short" })}</span>
                     </span>
                     <span className="min-w-0">
-                      <span className="block truncate text-[13px] font-semibold text-ink-900 group-hover:text-gold-700">{e.title}</span>
+                      <span className="block truncate text-[13px] font-semibold text-ink-900 group-hover:text-[rgb(37,99,235)]">{e.title}</span>
                       <span className="block text-[11px] capitalize text-ink-900">{e.event_type}</span>
                     </span>
                   </Link>

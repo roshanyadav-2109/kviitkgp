@@ -20,7 +20,7 @@ export function AnnouncementsList({ items, emptyLabel }: { items: AnnItem[]; emp
               onClick={() => setSel(a)}
               className="flex w-full gap-3 rounded-md p-2.5 text-left transition-colors hover:bg-panel"
             >
-              <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-gold-700" />
+              <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-[rgb(37,99,235)]" />
               <div className="min-w-0">
                 <div className="text-[14px] font-semibold text-ink-900">{a.title}</div>
                 <div className="line-clamp-1 text-[13px] text-ink-900">{a.body}</div>
@@ -38,15 +38,15 @@ export function AnnouncementsList({ items, emptyLabel }: { items: AnnItem[]; emp
             <button
               aria-label="Close"
               onClick={() => setSel(null)}
-              className="absolute right-3 top-3 rounded-sm p-1.5 text-ink-500 hover:bg-panel"
+              className="absolute right-3 top-3 rounded-sm p-1.5 text-ink-900 hover:bg-panel"
             >
               <CloseIcon size={20} />
             </button>
             <div className="pr-8">
-              <div className="text-[12px] font-medium text-muted">{sel.date}</div>
+              <div className="text-[12px] font-medium text-ink-900">{sel.date}</div>
               <h2 className="t-h2 mt-1 text-ink-900">{sel.title}</h2>
             </div>
-            <div className="mt-4 flex-1 overflow-y-auto whitespace-pre-wrap text-[14px] leading-relaxed text-ink-700">
+            <div className="mt-4 flex-1 overflow-y-auto whitespace-pre-wrap text-[14px] leading-relaxed text-ink-900">
               {sel.body}
             </div>
           </div>

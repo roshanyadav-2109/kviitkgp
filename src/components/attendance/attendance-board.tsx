@@ -64,13 +64,13 @@ export function AttendanceBoard({
           <ul className="divide-y divide-hair">
             {roster.map((r) => (
               <li key={r.id} className="flex items-center gap-3 py-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-panel text-[11px] font-semibold text-ink-700 tabular">{r.roll ?? "–"}</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-panel text-[11px] font-semibold text-ink-900 tabular">{r.roll ?? "–"}</span>
                 <span className="flex-1 truncate text-[14px] text-ink-900">{r.name}</span>
                 {readOnly ? (
                   initial[r.id] ? (
                     <StatusPill status={statusStyle[initial[r.id]]}>{t(`attendance.${initial[r.id]}`)}</StatusPill>
                   ) : (
-                    <span className="text-[13px] text-muted">—</span>
+                    <span className="text-[13px] text-ink-900">—</span>
                   )
                 ) : (
                   <div className="flex gap-1">
@@ -78,7 +78,7 @@ export function AttendanceBoard({
                       <button key={s.key} onClick={() => setMarks((m) => ({ ...m, [r.id]: s.key }))}
                         aria-pressed={marks[r.id] === s.key}
                         className={cn("h-8 w-9 rounded-sm text-[12px] font-bold transition-colors",
-                          marks[r.id] === s.key ? s.cls : "bg-panel text-ink-500 hover:bg-gold-100")}>
+                          marks[r.id] === s.key ? s.cls : "bg-panel text-ink-900 hover:bg-[rgb(37,99,235)]/[0.05]")}>
                         {s.short}
                       </button>
                     ))}
@@ -102,7 +102,7 @@ export function AttendanceBoard({
       {/* Below-threshold flags */}
       <Card className={below.length ? "border-down/30" : undefined}>
         <CardHeader eyebrow={t("attendance.percent")} title={t("attendance.belowThreshold")}
-          action={<AlertIcon size={18} className={below.length ? "text-down" : "text-muted"} />} />
+          action={<AlertIcon size={18} className={below.length ? "text-down" : "text-ink-900"} />} />
         <CardBody className="pt-2">
           {below.length ? (
             <ul className="space-y-1.5">
@@ -114,7 +114,7 @@ export function AttendanceBoard({
               ))}
             </ul>
           ) : (
-            <p className="py-2 text-[13px] text-ink-500">{t("common.noData")}</p>
+            <p className="py-2 text-[13px] text-ink-900">{t("common.noData")}</p>
           )}
         </CardBody>
       </Card>

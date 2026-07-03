@@ -26,15 +26,15 @@ export async function TeacherDashboard({ session }: { session: Session }) {
       {!!slippage && slippage > 0 && (
         <Link href="/progress" className="mb-5 flex items-center gap-3 rounded-md border border-watch/30 bg-watch-soft px-4 py-3 transition-colors hover:border-watch">
           <AlertIcon size={20} className="text-watch" />
-          <div className="text-[14px] text-ink-900"><span className="font-semibold">{slippage}</span> {t("progress.slippage").toLowerCase()} — <span className="text-gold-700 underline">{t("progress.needsSupport").toLowerCase()}</span></div>
+          <div className="text-[14px] text-ink-900"><span className="font-semibold">{slippage}</span> {t("progress.slippage").toLowerCase()} — <span className="text-[rgb(37,99,235)] underline">{t("progress.needsSupport").toLowerCase()}</span></div>
         </Link>
       )}
 
       {myClass && (
-        <div className="mb-4 rounded-md border border-gold-500/50 bg-gold-100/50 p-4 shadow-[var(--shadow-card)]">
+        <div className="mb-4 rounded-md border border-hair bg-surface p-4">
           <div className="flex items-center justify-between gap-3">
-            <div className="t-label flex items-center gap-1.5"><StudentsIcon size={14} className="text-gold-700" />{t("dashboard.myClass")}</div>
-            <span className="rounded-xs bg-gold-500 px-2 py-0.5 text-[11px] font-semibold text-ink-900">{t("dashboard.fullAccess")}</span>
+            <div className="t-label flex items-center gap-1.5"><StudentsIcon size={14} className="text-[rgb(37,99,235)]" />{t("dashboard.myClass")}</div>
+            <span className="rounded-xs bg-[rgb(37,99,235)] px-2 py-0.5 text-[11px] font-semibold text-white">{t("dashboard.fullAccess")}</span>
           </div>
           <div className="t-h2 mt-1 text-ink-900">{myClass.label}</div>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -46,8 +46,8 @@ export async function TeacherDashboard({ session }: { session: Session }) {
             ].map((l) => {
               const Icon = l.icon;
               return (
-                <Link key={l.label} href={l.href} className="inline-flex items-center gap-2 rounded-sm border border-hair bg-surface px-3 py-2 text-[13px] font-medium text-ink-900 transition-colors hover:border-gold-500">
-                  <Icon size={16} className="text-gold-700" />{l.label}
+                <Link key={l.label} href={l.href} className="inline-flex items-center gap-2 rounded-sm border border-hair bg-surface px-3 py-2 text-[13px] font-medium text-ink-900 transition-colors hover:border-[rgb(37,99,235)]/40">
+                  <Icon size={16} className="text-[rgb(37,99,235)]" />{l.label}
                 </Link>
               );
             })}
@@ -61,12 +61,12 @@ export async function TeacherDashboard({ session }: { session: Session }) {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {subjectSections.map((m) => (
               <Link key={m.id} href={`/progress?section=${m.id}&year=${yr}${m.subjects[0] ? `&subject=${m.subjects[0].id}` : ""}`}
-                className="group rounded-md border border-hair bg-surface p-3.5 shadow-[var(--shadow-card)] transition-colors hover:border-gold-500 hover:bg-gold-100">
+                className="group rounded-md border border-hair bg-surface p-3.5 transition-colors hover:border-[rgb(37,99,235)]/40 hover:bg-[rgb(37,99,235)]/[0.05]">
                 <div className="flex items-center justify-between">
                   <span className="text-[15px] font-semibold text-ink-900">{m.label}</span>
-                  <span className="t-label text-muted">{t("dashboard.subjectOnly")}</span>
+                  <span className="t-label text-ink-900">{t("dashboard.subjectOnly")}</span>
                 </div>
-                <div className="mt-1 text-[13px] text-ink-500"><span className="text-muted">{t("dashboard.teaches")}: </span>{m.subjects.map((s) => s.name).join(", ") || "—"}</div>
+                <div className="mt-1 text-[13px] text-ink-900"><span className="text-ink-900">{t("dashboard.teaches")}: </span>{m.subjects.map((s) => s.name).join(", ") || "—"}</div>
               </Link>
             ))}
           </div>
