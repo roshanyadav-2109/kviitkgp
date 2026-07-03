@@ -81,22 +81,31 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
   }
 
   const yearId = num(sp.year) ?? scope.currentYearId;
-  const subjectId = num(sp.subject);
-  const subjectName = subjectId ? scope.subjects.find((s) => s.id === subjectId)?.name ?? null : null;
 
   const classId = num(sp.class);
   const level: "class" | "section" = classId ? "class" : "section";
   const section = scope.sections.find((s) => s.id === num(sp.section)) ?? scope.sections[0];
   const cls = classId ? (scope.classes.find((c) => c.id === classId) ?? scope.classes[0]) : null;
   const scopeId = level === "class" && cls ? cls.id : section.id;
-  const examName = str(sp.exam) ?? null;
 
   // Sections that the current scope covers (all of a class, or one section).
   const scopeSectionIds = level === "class" && cls
     ? scope.sections.filter((s) => s.class_id === cls.id).map((s) => s.id)
     : [section.id];
+
+  // Filters carry over across scope changes; keep a chosen subject/exam only when
+  // it still exists in the new scope, otherwise fall back to "All".
+  const availableSubjects = level === "class" && cls
+    ? (scope.subjectsByClass[cls.id] ?? scope.subjects)
+    : (scope.sectionMeta.find((s) => s.id === section.id)?.subjects ?? []);
+  const wantSubject = num(sp.subject);
+  const subjectId = wantSubject != null && availableSubjects.some((s) => s.id === wantSubject) ? wantSubject : null;
+  const subjectName = subjectId ? scope.subjects.find((s) => s.id === subjectId)?.name ?? null : null;
+
   // Exam options for the scope (all subjects, or the chosen subject).
   const exams = await getScopeExams(scopeSectionIds, subjectId, yearId);
+  const wantExam = str(sp.exam);
+  const examName = wantExam && exams.some((e) => e.name === wantExam) ? wantExam : null;
 
   const filters = (
     <FilterBar years={scope.years} classes={scope.classes} sectionMeta={scope.sectionMeta} subjects={scope.subjects} subjectsByClass={scope.subjectsByClass}

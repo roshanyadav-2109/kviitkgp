@@ -45,27 +45,24 @@ export function FilterBar({
     next.set("year", v);
     push(next);
   }
-  // Pick a class → whole-class view (all sections), reset section + subject + exam.
+  // Downstream selections (subject/exam) are carried over on every change; the
+  // server keeps them if still valid in the new scope, else falls back to "All".
+  // Pick a class → whole-class view (all sections).
   function setClass(id: string) {
     const next = new URLSearchParams(params.toString());
     next.set("class", id);
     next.delete("section");
-    next.delete("subject");
-    next.delete("exam");
     push(next);
   }
-  // "" → whole class; otherwise a specific section. Reset subject + exam either way.
+  // "" → whole class; otherwise a specific section.
   function setSection(value: string) {
     const next = new URLSearchParams(params.toString());
-    next.delete("subject");
-    next.delete("exam");
     if (value) { next.set("section", value); next.delete("class"); }
     else { if (currentClassId != null) next.set("class", String(currentClassId)); next.delete("section"); }
     push(next);
   }
   function setSubject(v: string) {
     const next = new URLSearchParams(params.toString());
-    next.delete("exam"); // exams differ per subject
     if (v) next.set("subject", v); else next.delete("subject");
     push(next);
   }
