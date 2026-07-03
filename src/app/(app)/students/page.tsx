@@ -32,13 +32,13 @@ export default async function StudentsPage({ searchParams }: { searchParams: SP 
           <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
             {roster.map((s) => (
               <Link key={s.id} href={`/progress?studentId=${s.id}&section=${section.id}&year=${yearId}`}
-                className="group flex items-center gap-2.5 rounded-sm border border-hair bg-surface px-3 py-2 transition-colors hover:border-gold-500 hover:bg-gold-100">
+                className="group flex items-center gap-2.5 rounded-sm border border-hair bg-surface px-3 py-2 transition-colors hover:border-black">
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-panel text-[11px] font-semibold text-ink-700 tabular">{s.roll ?? "–"}</span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[13px] font-medium text-ink-900">{s.name}</span>
                   <span className="block truncate text-[11px] text-muted tabular">{s.admissionNo}</span>
                 </span>
-                <ArrowRightIcon size={15} className="text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-gold-700" />
+                <ArrowRightIcon size={15} className="text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-ink-900" />
               </Link>
             ))}
           </div>
