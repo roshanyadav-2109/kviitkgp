@@ -99,7 +99,7 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
     const data = await getClassAnalytics(cls.id, sectionIds, yearId, subjectId);
     return (
       <div>
-        <PageHeader eyebrow={`${t("common.class")} ${cls.name}`} title={t("progress.title")}
+        <PageHeader title={t("progress.title")}
           description={`${sectionIds.length} ${t("common.section").toLowerCase()}(s)`} />
         {filters}
         <ClassAnalyticsView data={data} subjectName={subjectName} />
@@ -121,7 +121,7 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
     ]);
     return (
       <div>
-        <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("progress.title")}
+        <PageHeader title={t("progress.title")}
           description={data.student ? `${data.student.full_name} · ${data.student.admission_no}` : undefined} />
         {filters}
         <Link href={`/progress?${backQs.toString()}`} className="mb-4 inline-flex items-center gap-1 text-[13px] font-medium text-gold-700 hover:underline">
@@ -139,7 +139,7 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
 
   return (
     <div>
-      <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("progress.title")}
+      <PageHeader title={t("progress.title")}
         description={`${scope.isAdmin ? t("x.progSchoolScope") : t("x.progAllottedScope")} · ${t("x.scopeSections", { n: scope.sections.length })}`} />
       {filters}
       <SectionAnalyticsView data={analytics} roster={roster} subjectName={subjectName} />

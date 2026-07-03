@@ -18,19 +18,6 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
 
   return (
     <div className="space-y-5">
-      {data.conclusions.length > 0 && (
-        <Card className="border-hair bg-surface">
-          <CardHeader title={t("progress.autoInsights")} />
-          <CardBody className="pt-1">
-            <ul className="space-y-2">
-              {data.conclusions.map((c, i) => (
-                <li key={i} className="flex gap-2.5 text-[14px] text-ink-900"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(37,99,235)]" />{t(c.key, c.vars)}</li>
-              ))}
-            </ul>
-          </CardBody>
-        </Card>
-      )}
-
       <div className="grid gap-5 lg:grid-cols-2">
         {/* Section comparison — the headline of a whole-class view */}
         <Card>
@@ -49,6 +36,22 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
           <CardHeader title={t("progress.subjectCompare")} />
           <CardBody className="pt-2">
             <KVBarChart data={data.subjectAverages} xKey="subject" valueKey="avg" horizontal height={260} />
+          </CardBody>
+        </Card>
+
+        {/* Subject-wise ranking */}
+        <Card>
+          <CardHeader title={t("progress.subjectRanking")} />
+          <CardBody className="pt-1">
+            <ol className="space-y-1.5">
+              {[...data.subjectAverages].sort((a, b) => b.avg - a.avg).map((s, i) => (
+                <li key={s.subject} className="flex items-center gap-3 rounded-sm px-2 py-1.5 odd:bg-panel/50">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[rgb(37,99,235)]/[0.1] text-[12px] font-bold text-[rgb(37,99,235)] tabular">{i + 1}</span>
+                  <span className="flex-1 truncate text-[14px] text-ink-900">{s.subject}</span>
+                  <span className="text-[14px] font-semibold tabular text-ink-900">{fmtPercent(locale, s.avg, 1)}</span>
+                </li>
+              ))}
+            </ol>
           </CardBody>
         </Card>
 

@@ -13,8 +13,6 @@ type Row = { id: number; name: string; roll: number | null };
 const STATUSES: { key: AttStatus; short: string; cls: string }[] = [
   { key: "present", short: "P", cls: "bg-up text-white" },
   { key: "absent", short: "A", cls: "bg-down text-white" },
-  { key: "late", short: "L", cls: "bg-watch text-white" },
-  { key: "leave", short: "Lv", cls: "bg-ink-500 text-white" },
 ];
 
 const statusStyle: Record<AttStatus, Status> = { present: "up", absent: "down", late: "watch", leave: "flat" };
@@ -59,7 +57,12 @@ export function AttendanceBoard({
     <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
       <Card>
         <CardHeader eyebrow={fmtDate(locale, date, { weekday: "long", day: "numeric", month: "long" })} title={readOnly ? t("attendance.title") : t("attendance.markToday")}
-          action={readOnly ? undefined : <Button size="sm" variant="subtle" onClick={() => setAll("present")}>{t("attendance.markAllPresent")}</Button>} />
+          action={readOnly ? undefined : (
+            <div className="flex gap-2">
+              <Button size="sm" variant="subtle" onClick={() => setAll("present")}>{t("attendance.markAllPresent")}</Button>
+              <Button size="sm" variant="subtle" onClick={() => setAll("absent")}>{t("attendance.markAllAbsent")}</Button>
+            </div>
+          )} />
         <CardBody className="pt-2">
           <ul className="divide-y divide-hair">
             {roster.map((r) => (
