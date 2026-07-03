@@ -132,7 +132,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
                 className="group flex shrink-0 items-center gap-2.5 rounded-md border border-hair bg-surface px-4 py-3 transition-colors hover:bg-panel"
               >
                 <Icon size={22} className={linkColor[l.href] ?? "text-ink-700"} />
-                <span className="whitespace-nowrap text-[14px] font-semibold text-ink-900">{t(l.labelKey)}</span>
+                <span className="whitespace-nowrap text-[14px] font-normal text-ink-900">{t(l.labelKey)}</span>
               </Link>
             );
           })}

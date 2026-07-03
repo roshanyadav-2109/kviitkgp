@@ -44,24 +44,11 @@ export function AppShell({
             onClick={() => setOpen(false)}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex items-center gap-3 rounded-sm px-3 py-2 text-[14px] font-medium transition-colors",
-              dark
-                ? active
-                  ? "bg-gold-500 text-ink-900"
-                  : "text-gold-100/80 hover:bg-white/10 hover:text-gold-100"
-                : active
-                  ? "bg-gold-100 text-ink-900 ring-1 ring-gold-300"
-                  : "text-ink-500 hover:bg-panel hover:text-ink-900",
+              "flex items-center gap-3 rounded-sm px-3 py-2 text-[14px] font-normal transition-colors",
+              active ? "bg-gold-100 text-ink-900 ring-1 ring-gold-300" : "text-ink-500 hover:bg-panel hover:text-ink-900",
             )}
           >
-            <Icon
-              size={18}
-              className={cn(
-                active
-                  ? dark ? "text-ink-900" : "text-gold-700"
-                  : dark ? "text-gold-500" : "text-muted",
-              )}
-            />
+            <Icon size={18} className={active ? "text-gold-700" : "text-muted"} />
             {t(item.labelKey)}
           </Link>
         );
@@ -70,22 +57,22 @@ export function AppShell({
   );
 
   const brandHeader = (
-    <div className={cn("flex h-16 items-center gap-2.5 px-4", dark ? "" : "border-b border-hair")}>
+    <div className="flex h-16 items-center gap-2.5 border-b border-hair px-4">
       <KVEmblem size={36} />
       <div className="leading-tight">
-        <div className={cn("text-[13px] font-bold", dark ? "text-gold-100" : "text-ink-900")}>Kendriya Vidyalaya No 1</div>
-        <div className={cn("text-[11px]", dark ? "text-gold-100/50" : "text-muted")}>IIT Kharagpur</div>
+        <div className="text-[13px] font-bold text-ink-900">Kendriya Vidyalaya No 1</div>
+        <div className="text-[11px] text-muted">IIT Kharagpur</div>
       </div>
     </div>
   );
 
-  // Dark rail footer: vendor wordmark ("hebrew" over "technologies"). "hebrew"
-  // sets the width; "technologies" spreads its letters to fill that exact width.
+  // Rail footer: vendor wordmark ("hebrew" over "technologies"). "hebrew" sets
+  // the width; "technologies" spreads its letters to fill that exact width.
   const brandFooter = (
     <div className="px-4 py-4 text-center">
       <div className="inline-block">
-        <div className="text-[22px] font-normal lowercase leading-none text-white">hebrew</div>
-        <div className="mt-1.5 flex justify-between text-[12px] font-normal lowercase leading-none text-white/70" aria-hidden>
+        <div className="text-[22px] font-normal lowercase leading-none text-ink-900">hebrew</div>
+        <div className="mt-1.5 flex justify-between text-[12px] font-normal lowercase leading-none text-muted" aria-hidden>
           {"technologies".split("").map((ch, i) => (
             <span key={i}>{ch}</span>
           ))}
@@ -102,7 +89,7 @@ export function AppShell({
         className={cn(
           "sticky hidden flex-col lg:flex",
           dark
-            ? "top-3 m-3 h-[calc(100dvh-1.5rem)] overflow-hidden rounded-md bg-gradient-to-b from-ink-900 to-ink-700 ring-1 ring-ink-900/60"
+            ? "top-3 m-3 h-[calc(100dvh-1.5rem)] overflow-hidden rounded-md border border-hair bg-surface"
             : "top-0 h-dvh border-r border-hair bg-surface",
         )}
       >
@@ -117,21 +104,16 @@ export function AppShell({
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-ink-900/30" onClick={() => setOpen(false)} />
-          <aside
-            className={cn(
-              "absolute left-0 top-0 flex h-full w-72 flex-col shadow-[var(--shadow-pop)]",
-              dark ? "bg-gradient-to-b from-ink-900 to-ink-700" : "bg-surface",
-            )}
-          >
-            <div className={cn("flex h-16 items-center justify-between px-4", dark ? "border-b border-white/10" : "border-b border-hair")}>
+          <aside className="absolute left-0 top-0 flex h-full w-72 flex-col bg-surface shadow-[var(--shadow-pop)]">
+            <div className="flex h-16 items-center justify-between border-b border-hair px-4">
               <div className="flex items-center gap-2.5">
                 <KVEmblem size={32} />
-                <span className={cn("text-[13px] font-bold", dark ? "text-gold-100" : "text-ink-900")}>Kendriya Vidyalaya No 1</span>
+                <span className="text-[13px] font-bold text-ink-900">Kendriya Vidyalaya No 1</span>
               </div>
               <button
                 aria-label={t("common.close")}
                 onClick={() => setOpen(false)}
-                className={cn("rounded-sm p-1.5", dark ? "text-gold-100/70 hover:bg-white/10" : "text-ink-500 hover:bg-panel")}
+                className="rounded-sm p-1.5 text-ink-500 hover:bg-panel"
               >
                 <CloseIcon size={20} />
               </button>
@@ -194,13 +176,9 @@ export function AppShell({
           )}
         </header>
 
-        {/* Every tab's content sits in one common block beside the sidebar. */}
-        <main className={cn("w-full flex-1", dark ? "p-3 lg:py-3 lg:pl-0 lg:pr-3" : "mx-auto max-w-6xl px-4 py-6 sm:px-6")}>
-          {dark ? (
-            <div className="rounded-md bg-surface p-4 lg:min-h-[calc(100dvh-1.5rem)] lg:p-6">{children}</div>
-          ) : (
-            children
-          )}
+        {/* Each section is its own block on the page — no shared wrapper. */}
+        <main className={cn("w-full flex-1", dark ? "p-3 lg:py-3 lg:pl-1 lg:pr-3" : "mx-auto max-w-6xl px-4 py-6 sm:px-6")}>
+          {children}
         </main>
       </div>
     </div>
