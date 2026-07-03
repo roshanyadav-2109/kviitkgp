@@ -29,6 +29,7 @@ export function AppShell({
   // Every role gets the white floating rail; only the student carries identity
   // in their dashboard (so the top-bar identity menu is hidden for them).
   const isStudent = role === "student";
+  const isDashboard = pathname === "/";
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
@@ -75,7 +76,8 @@ export function AppShell({
 
   // Non-students carry their identity + sign-out in a card at the TOP-RIGHT
   // (like the student's dashboard profile card).
-  const personMenu = !isStudent ? (
+  // The identity/sign-out card lives only on the dashboard (like the student's).
+  const personMenu = !isStudent && isDashboard ? (
     <>
       <button onClick={() => setMenuOpen(true)} aria-haspopup="dialog" className="flex items-center gap-2.5 rounded-md border border-hair bg-surface px-2.5 py-1.5 hover:bg-panel">
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-[12px] font-semibold text-white">{initials}</span>
@@ -152,7 +154,7 @@ export function AppShell({
 
       <div className="flex min-w-0 flex-col">
         {/* No full navbar — just the mobile hamburger + a person card top-right. */}
-        <header className={cn("sticky top-0 z-30 flex h-14 items-center gap-3 px-3 sm:px-5", isStudent && "lg:hidden")}>
+        <header className={cn("sticky top-0 z-30 flex h-14 items-center gap-3 px-3 sm:px-5", !personMenu && "lg:hidden")}>
           <button aria-label="Menu" onClick={() => setOpen(true)} className="rounded-sm p-1.5 text-ink-700 hover:bg-panel lg:hidden">
             <MenuIcon size={20} />
           </button>
