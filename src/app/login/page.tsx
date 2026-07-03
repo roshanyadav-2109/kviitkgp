@@ -71,7 +71,7 @@ export default function LoginPage() {
   const rowBase = "flex w-full items-center gap-3 rounded-sm border border-hair bg-surface px-4 py-2.5 text-[14px] font-normal text-ink-900 transition-colors hover:bg-panel disabled:opacity-50";
 
   return (
-    <div className="grid min-h-dvh bg-panel lg:h-dvh lg:grid-cols-[1.05fr_1fr]">
+    <div className="grid min-h-dvh lg:h-dvh lg:grid-cols-[1.05fr_1fr]">
       {/* ── Left: image frame ────────────────────────────────────────────────── */}
       <aside className="hidden p-3 lg:block">
         <div className="h-full w-full overflow-hidden rounded-md border border-hair bg-ink-900">
