@@ -44,11 +44,12 @@ export function AppShell({
             onClick={() => setOpen(false)}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex items-center gap-3 rounded-sm px-3 py-2 text-[14px] font-normal transition-colors",
-              active ? "bg-gold-100 text-ink-900 ring-1 ring-gold-300" : "text-ink-500 hover:bg-panel hover:text-ink-900",
+              "relative flex items-center gap-3 rounded-sm px-3 py-2 text-[14px] font-normal transition-colors",
+              active ? "text-ink-900" : "text-ink-500 hover:bg-panel hover:text-ink-900",
             )}
           >
-            <Icon size={18} className={active ? "text-gold-700" : "text-muted"} />
+            {active && <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-[rgb(37,99,235)]" />}
+            <Icon size={18} className={active ? "text-[rgb(37,99,235)]" : "text-muted"} />
             {t(item.labelKey)}
           </Link>
         );
@@ -57,7 +58,7 @@ export function AppShell({
   );
 
   const brandHeader = (
-    <div className="flex h-16 items-center gap-2.5 border-b border-hair px-4">
+    <div className="flex h-16 items-center gap-2.5 px-4">
       <KVEmblem size={36} />
       <div className="leading-tight">
         <div className="text-[13px] font-bold text-ink-900">Kendriya Vidyalaya No 1</div>
@@ -71,7 +72,7 @@ export function AppShell({
   const brandFooter = (
     <div className="px-4 py-4 text-center">
       <div className="inline-block">
-        <div className="text-[22px] font-normal lowercase leading-none text-ink-900">hebrew</div>
+        <div className="text-[24px] font-medium lowercase leading-none tracking-[0.08em] text-ink-900">hebrew</div>
         <div className="mt-1.5 flex justify-between text-[12px] font-normal lowercase leading-none text-muted" aria-hidden>
           {"technologies".split("").map((ch, i) => (
             <span key={i}>{ch}</span>
