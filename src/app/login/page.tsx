@@ -1,12 +1,20 @@
 "use client";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { Provider } from "@supabase/supabase-js";
-import { ArrowRightIcon } from "@/components/icons";
+import { ArrowRightIcon, DashboardIcon, MarksIcon, StudentsIcon, ProgressIcon, AllotmentIcon, CloseIcon, type IconComponent } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
 import { useT } from "@/i18n/provider";
 import { KVEmblem } from "@/components/brand";
 import { DEMO_ACCOUNTS, DEMO_PASSWORD } from "@/lib/demo";
+
+// A suitable icon per demo role.
+const ROLE_ICON: Record<string, IconComponent> = {
+  principal: DashboardIcon,
+  teacher: MarksIcon,
+  guardian: StudentsIcon,
+  student: ProgressIcon,
+  office: AllotmentIcon,
+};
 
 // ── Provider brand marks (inline so they need no external assets) ──────────────
 function GoogleMark({ size = 20 }: { size?: number }) {
@@ -39,10 +47,10 @@ function ZohoMark() {
   );
 }
 
-const PROVIDERS: { key: string; provider: Provider; label: string; Mark: (p: { size?: number }) => React.ReactElement }[] = [
-  { key: "google", provider: "google", label: "Continue with Google", Mark: GoogleMark },
-  { key: "microsoft", provider: "azure", label: "Continue with Microsoft", Mark: MicrosoftMark },
-  { key: "zoho", provider: "zoho" as Provider, label: "Continue with Zoho", Mark: ZohoMark },
+const PROVIDERS: { key: string; label: string; Mark: (p: { size?: number }) => React.ReactElement }[] = [
+  { key: "google", label: "Continue with Google", Mark: GoogleMark },
+  { key: "microsoft", label: "Continue with Microsoft", Mark: MicrosoftMark },
+  { key: "zoho", label: "Continue with Zoho", Mark: ZohoMark },
 ];
 
 export default function LoginPage() {
@@ -52,6 +60,7 @@ export default function LoginPage() {
   const supabase = createClient();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
 
   async function signIn(em: string, pw: string, key: string) {
     setBusy(key); setError(false);
@@ -59,13 +68,6 @@ export default function LoginPage() {
     if (error) { setError(true); setBusy(null); return; }
     router.push(params.get("next") || "/");
     router.refresh();
-  }
-
-  async function oauth(provider: Provider, key: string) {
-    setBusy(key); setError(false);
-    const redirectTo = typeof window !== "undefined" ? `${window.location.origin}${params.get("next") || "/"}` : undefined;
-    const { error } = await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } });
-    if (error) { setError(true); setBusy(null); }
   }
 
   const rowBase = "flex w-full items-center gap-3 rounded-sm border border-hair bg-surface px-4 py-2.5 text-[14px] font-normal text-ink-900 transition-colors hover:bg-panel disabled:opacity-50";
@@ -90,7 +92,7 @@ export default function LoginPage() {
               </span>
               <div className="text-[15px] font-semibold leading-snug text-ink-900">Kendriya Vidyalaya No 1, IIT Kharagpur</div>
             </div>
-            <h1 className="font-display mt-3 text-center text-[42px] font-medium leading-[1.02] tracking-[-0.02em] text-ink-900">Welcomes</h1>
+            <h1 className="font-display mt-3 text-center text-[42px] font-medium leading-[1.02] tracking-[-0.02em] text-ink-900">Welcomes <span className="text-[22px] font-normal text-ink-500">you</span></h1>
           </div>
 
           {error && (
@@ -99,8 +101,8 @@ export default function LoginPage() {
 
           {/* Provider sign-in */}
           <div className="space-y-2">
-            {PROVIDERS.map(({ key, provider, label, Mark }) => (
-              <button key={key} onClick={() => oauth(provider, key)} disabled={busy !== null} className={rowBase}>
+            {PROVIDERS.map(({ key, label, Mark }) => (
+              <button key={key} onClick={() => setShowDemo(true)} disabled={busy !== null} className={rowBase}>
                 <span className="flex w-7 shrink-0 justify-center"><Mark size={20} /></span>
                 <span className="flex-1 text-left font-semibold">{label}</span>
                 {busy === key && <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-hair border-t-ink-900" />}
@@ -135,6 +137,38 @@ export default function LoginPage() {
           </div>
         </div>
       </main>
+
+      {/* Not-public-yet notice for provider sign-in → offer the demo logins */}
+      {showDemo && (
+        <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-ink-900/40 backdrop-blur-md" onClick={() => setShowDemo(false)} />
+          <div className="relative z-10 flex h-[80vh] w-[92vw] flex-col items-center justify-center rounded-md bg-surface p-8 text-center shadow-[var(--shadow-pop)] sm:h-[70vh] sm:w-[70vw]">
+            <button onClick={() => setShowDemo(false)} aria-label="Close" className="absolute right-4 top-4 rounded-sm p-1.5 text-ink-500 hover:bg-panel">
+              <CloseIcon size={20} />
+            </button>
+            <div className="text-[40px] leading-none">🙈</div>
+            <h2 className="font-display mt-4 text-[28px] font-medium text-ink-900">Uh oh — we&apos;re not public yet!</h2>
+            <p className="mt-2 text-[14px] text-ink-500">Try one of the demo logins instead.</p>
+
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              {DEMO_ACCOUNTS.map((a) => {
+                const Icon = ROLE_ICON[a.role] ?? ProgressIcon;
+                return (
+                  <button key={a.email} onClick={() => signIn(a.email, DEMO_PASSWORD, a.email)} disabled={busy !== null}
+                    className="flex w-[128px] flex-col items-center gap-2 rounded-sm border border-hair bg-surface px-3 py-4 transition-colors hover:border-black hover:bg-panel disabled:opacity-50">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-panel text-ink-900">
+                      {busy === a.email
+                        ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-hair border-t-ink-900" />
+                        : <Icon size={22} />}
+                    </span>
+                    <span className="text-[13px] font-semibold text-ink-900">{t(`roles.${a.role}`)}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
