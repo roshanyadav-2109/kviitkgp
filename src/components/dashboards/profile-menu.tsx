@@ -51,7 +51,7 @@ export function ProfileMenu({
             <p className="mt-6 t-h3 text-ink-900">{promptLabel}</p>
             <div className="mt-7 flex gap-3">
               <form action={signOut}>
-                <button className="rounded-sm bg-ink-900 px-5 py-2.5 text-[13px] font-normal text-gold-100 transition-colors hover:bg-ink-700">
+                <button className="rounded-sm bg-black px-5 py-2.5 text-[13px] font-normal text-white transition-colors hover:bg-[rgb(38,38,38)]">
                   {confirmLabel}
                 </button>
               </form>

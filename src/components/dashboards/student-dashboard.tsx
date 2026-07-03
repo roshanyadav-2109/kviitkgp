@@ -143,7 +143,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
       <div className="rounded-sm border border-hair bg-surface p-5">
         <h3 className="t-h3 text-ink-900">{t("progress.title")}</h3>
         <p className="mt-1.5 text-[14px] leading-relaxed text-ink-900">{t("dashboard.progressCta")}</p>
-        <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-ink-900 px-3.5 py-2 text-[13px] font-normal text-gold-100 transition-colors hover:bg-ink-700">
+        <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-black px-3.5 py-2 text-[13px] font-normal text-white transition-colors hover:bg-[rgb(38,38,38)]">
           {t("nav.myProgress")}
           <ArrowRightIcon size={14} />
         </Link>
