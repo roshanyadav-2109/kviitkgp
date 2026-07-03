@@ -94,6 +94,7 @@ const hi: Messages = {
     myClass: "मेरी कक्षा",
     fullAccess: "पूर्ण पहुँच · सभी विषय",
     mySubjects: "मेरे विषय",
+    otherSubjects: "अन्य विषय कक्षाएँ",
     subjectOnly: "विषय पहुँच",
     teaches: "पढ़ाते हैं",
   },

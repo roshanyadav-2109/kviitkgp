@@ -93,6 +93,7 @@ const en = {
     myClass: "My class",
     fullAccess: "Full access · all subjects",
     mySubjects: "My subjects",
+    otherSubjects: "Other Subject Classes",
     subjectOnly: "Subject access",
     teaches: "Teaches",
   },

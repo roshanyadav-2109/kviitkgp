@@ -94,6 +94,7 @@ const bn: Messages = {
     myClass: "আমার শ্রেণি",
     fullAccess: "সম্পূর্ণ প্রবেশ · সব বিষয়",
     mySubjects: "আমার বিষয়",
+    otherSubjects: "অন্যান্য বিষয় শ্রেণি",
     subjectOnly: "বিষয় প্রবেশ",
     teaches: "পড়ান",
   },

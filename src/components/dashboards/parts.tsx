@@ -4,7 +4,8 @@ import { getT } from "@/i18n/server";
 import { fmtDate } from "@/i18n/format";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty";
-import { AnnounceIcon, CalendarIcon } from "@/components/icons";
+import { CalendarIcon } from "@/components/icons";
+import { AnnouncementsList } from "@/components/dashboards/announcements-list";
 import { navFor, type NavRole } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
@@ -54,26 +55,12 @@ export async function AnnouncementsPanel() {
     .select("id, title, body, published_at")
     .order("published_at", { ascending: false })
     .limit(4);
+  const items = (data ?? []).map((a) => ({ id: a.id, title: a.title, body: a.body, date: fmtDate(locale, a.published_at) }));
   return (
     <Card>
       <CardHeader title={t("announce.title")} />
       <CardBody className="pt-2">
-        {data && data.length ? (
-          <ul className="divide-y divide-hair">
-            {data.map((a) => (
-              <li key={a.id} className="flex gap-3 py-3">
-                <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-[rgb(217,119,6)]" />
-                <div className="min-w-0">
-                  <div className="text-[14px] font-semibold text-ink-900">{a.title}</div>
-                  <div className="line-clamp-1 text-[13px] text-ink-900">{a.body}</div>
-                  <div className="mt-0.5 text-[12px] text-ink-900">{fmtDate(locale, a.published_at)}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <EmptyState icon={AnnounceIcon} title={t("common.noData")} />
-        )}
+        <AnnouncementsList items={items} emptyLabel={t("common.noData")} />
       </CardBody>
     </Card>
   );
@@ -128,8 +115,8 @@ export async function QuickLinks({ role }: { role: NavRole }) {
               href={l.href}
               className="group flex items-center gap-3 rounded-md border border-hair bg-surface p-3.5 transition-colors hover:border-[rgb(37,99,235)]/40 hover:bg-[rgb(37,99,235)]/[0.05]"
             >
-              <Icon size={22} className={NAV_COLOR[l.href] ?? "text-ink-900"} />
-              <span className="text-[14px] font-normal text-ink-900">{t(l.labelKey)}</span>
+              <Icon size={24} className={NAV_COLOR[l.href] ?? "text-ink-900"} />
+              <span className="text-[15px] font-medium text-ink-900">{t(l.labelKey)}</span>
             </Link>
           );
         })}
