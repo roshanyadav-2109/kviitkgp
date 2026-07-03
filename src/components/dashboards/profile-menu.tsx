@@ -38,10 +38,10 @@ export function SignOutModal({
   return (
     <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-ink-900/40 backdrop-blur-md" onClick={onClose} />
-      <div className="relative z-10 flex h-[80vh] w-[92vw] flex-col items-center justify-center rounded-sm bg-surface p-8 text-center shadow-[var(--shadow-pop)] sm:h-[70vh] sm:w-[70vw]">
+      <div className="relative z-10 flex max-h-[85vh] w-[92vw] flex-col items-center justify-center overflow-y-auto rounded-sm bg-surface p-6 text-center shadow-[var(--shadow-pop)] sm:h-[70vh] sm:w-[70vw] sm:p-8">
         <LogoutHuman />
         <p className="mt-6 t-h3 text-ink-900">{promptLabel}</p>
-        <div className="mt-7 flex gap-3">
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
           <form action={signOut}>
             <button className="rounded-sm bg-black px-5 py-2.5 text-[13px] font-normal text-white transition-colors hover:bg-[rgb(38,38,38)]">
               {confirmLabel}

@@ -146,20 +146,20 @@ export default function LoginPage() {
       {showDemo && (
         <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-ink-900/40 backdrop-blur-md" onClick={() => setShowDemo(false)} />
-          <div className="relative z-10 flex h-[80vh] w-[92vw] flex-col items-center justify-center rounded-md bg-surface p-8 text-center shadow-[var(--shadow-pop)] sm:h-[70vh] sm:w-[70vw]">
-            <button onClick={() => setShowDemo(false)} aria-label="Close" className="absolute right-4 top-4 rounded-sm p-1.5 text-ink-500 hover:bg-panel">
+          <div className="relative z-10 flex max-h-[88vh] w-[92vw] flex-col items-center justify-center overflow-y-auto rounded-md bg-surface p-5 text-center shadow-[var(--shadow-pop)] sm:h-[70vh] sm:w-[70vw] sm:p-8">
+            <button onClick={() => setShowDemo(false)} aria-label="Close" className="absolute right-3 top-3 rounded-sm p-1.5 text-ink-500 hover:bg-panel">
               <CloseIcon size={20} />
             </button>
-            <div className="text-[40px] leading-none">🙈</div>
-            <h2 className="font-display mt-4 text-[28px] font-medium text-ink-900">Uh oh — we&apos;re not public yet!</h2>
-            <p className="mt-2 text-[14px] text-ink-500">Try one of the demo logins instead.</p>
+            <div className="text-[36px] leading-none">🙈</div>
+            <h2 className="font-display mt-3 text-[22px] font-medium leading-tight text-ink-900 sm:text-[28px]">Uh oh — we&apos;re not public yet!</h2>
+            <p className="mt-2 text-[13px] text-ink-500 sm:text-[14px]">Try one of the demo logins instead.</p>
 
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <div className="mt-6 grid w-full max-w-md grid-cols-2 gap-2.5 sm:mt-8 sm:flex sm:flex-wrap sm:justify-center">
               {DEMO_ACCOUNTS.map((a) => {
                 const Icon = ROLE_ICON[a.role] ?? ProgressIcon;
                 return (
                   <button key={a.email} onClick={() => signIn(a.email, DEMO_PASSWORD, a.email)} disabled={busy !== null}
-                    className="flex w-[128px] flex-col items-center gap-2 rounded-sm border border-hair bg-surface px-3 py-4 transition-colors hover:border-black hover:bg-panel disabled:opacity-50">
+                    className="flex w-full flex-col items-center gap-2 rounded-sm border border-hair bg-surface px-3 py-3.5 transition-colors hover:border-black hover:bg-panel disabled:opacity-50 sm:w-[128px]">
                     <span className="flex h-11 w-11 items-center justify-center rounded-full bg-panel text-ink-900">
                       {busy === a.email
                         ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-hair border-t-ink-900" />
