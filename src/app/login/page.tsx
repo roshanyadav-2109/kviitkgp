@@ -73,18 +73,11 @@ export default function LoginPage() {
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-[1.05fr_1fr]">
-      {/* ── Left: video frame (drop the clip at /public/kv-login.mp4) ─────────── */}
+      {/* ── Left: image frame ────────────────────────────────────────────────── */}
       <aside className="hidden p-3 lg:block">
         <div className="h-full w-full overflow-hidden rounded-md border border-hair bg-ink-900">
-          <video
-            className="h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            src="/kv-login.mp4"
-          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/kv-login.webp" alt="Kendriya Vidyalaya No 1, IIT Kharagpur" className="h-full w-full object-cover" />
         </div>
       </aside>
 
