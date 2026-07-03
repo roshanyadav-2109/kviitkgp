@@ -1,16 +1,17 @@
 import { getT } from "@/i18n/server";
-import { fmtDate, fmtMonth } from "@/i18n/format";
+import { fmtDate } from "@/i18n/format";
 import { Card, CardBody } from "@/components/ui/card";
 import { BandChip, DeltaBadge } from "@/components/ui/status";
 import { KVEmblem } from "@/components/brand";
+import type { StudentReport } from "@/lib/data/report";
 
-type Report = Awaited<ReturnType<typeof import("@/lib/data/report").getStudentMonthly>>;
-
-// The printable per-student monthly report card. Shared by the owner view and
-// the staff "individual student" report.
-export async function MonthlyReportCard({ report, month }: { report: Report; month: string }) {
+// The printable per-student report card. Shared by the owner view and the staff
+// "student detail" report — monthly, yearly, or a single exam (periodLabel says
+// which). Attendance is shown only when the report carries it (not for exams).
+export async function ReportCard({ report, periodLabel }: { report: StudentReport; periodLabel: string }) {
   const { t, locale } = await getT();
   const r = report;
+  const att = r.attendance;
   return (
     <Card className="print-area">
       <CardBody>
@@ -18,7 +19,7 @@ export async function MonthlyReportCard({ report, month }: { report: Report; mon
           <KVEmblem size={44} />
           <div className="flex-1">
             <div className="t-h3 text-ink-900">Kendriya Vidyalaya No 1, IIT Kharagpur</div>
-            <div className="text-[13px] text-ink-900">{t("report.title")} · {fmtMonth(locale, `${month}-01`)}</div>
+            <div className="text-[13px] text-ink-900">{t("report.title")} · {periodLabel}</div>
           </div>
           <div className="text-right">
             <div className="text-[14px] font-semibold text-ink-900">{r.student?.full_name}</div>
@@ -26,17 +27,19 @@ export async function MonthlyReportCard({ report, month }: { report: Report; mon
           </div>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-[200px_1fr]">
-          <div className="rounded-md bg-panel/50 p-4">
-            <div className="t-label">{t("report.attendanceThisMonth")}</div>
-            <div className={`mt-1 text-[30px] font-bold tabular ${r.attendance.pct != null && r.attendance.pct < 75 ? "text-down" : "text-ink-900"}`}>
-              {r.attendance.pct != null ? `${r.attendance.pct}%` : "—"}
+        <div className={att ? "grid gap-5 sm:grid-cols-[200px_1fr]" : ""}>
+          {att && (
+            <div className="rounded-md bg-panel/50 p-4">
+              <div className="t-label">{t("report.attendance")}</div>
+              <div className={`mt-1 text-[30px] font-normal tabular ${att.pct != null && att.pct < 75 ? "text-down" : "text-ink-900"}`}>
+                {att.pct != null ? `${att.pct}%` : "—"}
+              </div>
+              <div className="text-[12px] text-ink-900">{att.present}/{att.total} {t("attendance.present").toLowerCase()}</div>
             </div>
-            <div className="text-[12px] text-ink-900">{r.attendance.present}/{r.attendance.total} {t("attendance.present").toLowerCase()}</div>
-          </div>
+          )}
 
           <div>
-            <div className="t-label mb-2">{t("report.marksThisMonth")}</div>
+            <div className="t-label mb-2">{t("report.marks")}</div>
             {r.marks.length ? (
               <table className="w-full text-[14px]">
                 <thead>
