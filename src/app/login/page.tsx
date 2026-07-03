@@ -136,7 +136,7 @@ export default function LoginPage() {
             ))}
           </div>
 
-          <a href="https://hebrewtechnologies.com" target="_blank" rel="noreferrer" className="mt-6 block text-center text-[12px] font-normal text-muted hover:text-ink-900">
+          <a href="https://hebrewtechnologies.com" target="_blank" rel="noreferrer" className="mt-6 block text-center text-[15px] font-normal text-ink-900 hover:underline">
             hebrew technologies
           </a>
         </div>
