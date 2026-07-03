@@ -1,8 +1,10 @@
 "use client";
+import { useRef, useState, useEffect } from "react";
 import {
   ResponsiveContainer, LineChart, Line, BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, Cell, Area, AreaChart, LabelList,
 } from "recharts";
+import { ArrowRightIcon } from "@/components/icons";
 
 // Token values (Recharts needs concrete colours).
 export const C = {
@@ -18,10 +20,10 @@ export const C = {
   watch: "#DB7A1C",
   down: "#C0442E",
 };
-// A restrained multi-series palette (kept warm/earthy, not rainbow).
-export const SERIES = [C.gold, C.ink, C.up, C.watch, C.down, C.gold700, C.ink500];
+// Bright, jewel-toned multi-series palette — vivid and premium.
+export const SERIES = ["#2563eb", "#059669", "#7c3aed", "#db2777", "#d97706", "#0891b2", "#dc2626"];
 
-const axis = { stroke: C.hair, tick: { fill: C.ink500, fontSize: 12 }, tickLine: false };
+const axis = { stroke: "#111827", tick: { fill: "#111827", fontSize: 12, fontWeight: 500 }, tickLine: false };
 
 function TooltipBox({ active, payload, label }: { active?: boolean; payload?: Array<{ name?: string; value?: number; color?: string }>; label?: string }) {
   if (!active || !payload?.length) return null;
@@ -41,6 +43,48 @@ function TooltipBox({ active, payload, label }: { active?: boolean; payload?: Ar
 
 type LineDef = { key: string; name: string; color?: string };
 
+// Horizontal scroll wrapper: a subtle edge fade + a chevron on the side(s)
+// where more content is available; both hide once you reach that edge.
+function HScroll({ minWidth, children }: { minWidth?: number; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [edge, setEdge] = useState({ left: false, right: false });
+  const update = () => {
+    const el = ref.current;
+    if (!el) return;
+    setEdge({ left: el.scrollLeft > 4, right: el.scrollLeft + el.clientWidth < el.scrollWidth - 4 });
+  };
+  useEffect(() => {
+    update();
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [minWidth]);
+  if (!minWidth) return <>{children}</>;
+  const scroll = (d: number) => ref.current?.scrollBy({ left: d, behavior: "smooth" });
+  const btn = "absolute top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-hair bg-surface text-ink-900 shadow-[var(--shadow-pop)]";
+  return (
+    <div className="relative">
+      <div ref={ref} onScroll={update} className="overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div style={{ minWidth }}>{children}</div>
+      </div>
+      {edge.left && (
+        <>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-surface to-transparent" />
+          <button aria-label="Scroll left" onClick={() => scroll(-240)} className={`${btn} left-1 rotate-180`}><ArrowRightIcon size={15} /></button>
+        </>
+      )}
+      {edge.right && (
+        <>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-surface to-transparent" />
+          <button aria-label="Scroll right" onClick={() => scroll(240)} className={`${btn} right-1`}><ArrowRightIcon size={15} /></button>
+        </>
+      )}
+    </div>
+  );
+}
+
 export function KVLineChart({
   data, xKey, lines, height = 260, area = false, yDomain = [0, 100],
 }: {
@@ -52,33 +96,61 @@ export function KVLineChart({
   yDomain?: [number, number];
 }) {
   const Chart = area ? AreaChart : LineChart;
-  // When the x-axis has many points, give the plot a min width and let it scroll
-  // horizontally rather than cramming every label together.
-  const minWidth = data.length > 6 ? data.length * 60 : undefined;
+  // Many points → give the plot a min width (scrolls) and angle the labels so
+  // they don't overlap.
+  const many = data.length > 6;
+  const minWidth = many ? data.length * 64 : undefined;
   return (
-    <div className="overflow-x-auto">
-      <div style={minWidth ? { minWidth } : undefined}>
-        <ResponsiveContainer width="100%" height={height}>
-          <Chart data={data} margin={{ top: 8, right: 12, left: -12, bottom: 4 }}>
-            <CartesianGrid stroke={C.hair} strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey={xKey} {...axis} interval={minWidth ? 0 : "preserveStartEnd"} />
-            <YAxis domain={yDomain} {...axis} width={40} />
-            <Tooltip content={<TooltipBox />} cursor={{ stroke: C.gold300 }} />
-            {lines.map((l, i) =>
-              area ? (
-                <Area key={l.key} type="monotone" dataKey={l.key} name={l.name}
-                  stroke={l.color ?? SERIES[i % SERIES.length]} fill={l.color ?? SERIES[i % SERIES.length]}
-                  fillOpacity={0.12} strokeWidth={2} dot={{ r: 2.5 }} activeDot={{ r: 4 }} />
-              ) : (
-                <Line key={l.key} type="monotone" dataKey={l.key} name={l.name}
-                  stroke={l.color ?? SERIES[i % SERIES.length]} strokeWidth={2}
-                  dot={{ r: 2.5, strokeWidth: 0, fill: l.color ?? SERIES[i % SERIES.length] }} activeDot={{ r: 4 }} />
-              ),
-            )}
-          </Chart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+    <HScroll minWidth={minWidth}>
+      <ResponsiveContainer width="100%" height={height}>
+        <Chart data={data} margin={{ top: 8, right: 12, left: -12, bottom: many ? 22 : 4 }}>
+          <CartesianGrid stroke={C.hair} strokeDasharray="3 3" vertical={false} />
+          <XAxis dataKey={xKey} {...axis} interval={many ? 0 : "preserveStartEnd"} angle={many ? -35 : 0} textAnchor={many ? "end" : "middle"} height={many ? 58 : 30} tickMargin={many ? 8 : 3} />
+          <YAxis domain={yDomain} {...axis} width={40} />
+          <Tooltip content={<TooltipBox />} cursor={{ stroke: "#2563eb", strokeOpacity: 0.3 }} />
+          {lines.map((l, i) =>
+            area ? (
+              <Area key={l.key} type="monotone" dataKey={l.key} name={l.name}
+                stroke={l.color ?? SERIES[i % SERIES.length]} fill={l.color ?? SERIES[i % SERIES.length]}
+                fillOpacity={0.12} strokeWidth={2.25} dot={{ r: 2.5 }} activeDot={{ r: 4 }} />
+            ) : (
+              <Line key={l.key} type="monotone" dataKey={l.key} name={l.name}
+                stroke={l.color ?? SERIES[i % SERIES.length]} strokeWidth={2.25}
+                dot={{ r: 2.5, strokeWidth: 0, fill: l.color ?? SERIES[i % SERIES.length] }} activeDot={{ r: 4 }} />
+            ),
+          )}
+        </Chart>
+      </ResponsiveContainer>
+    </HScroll>
+  );
+}
+
+// Grouped bars: one bar per series at each x label (line-chart alternative).
+export function KVGroupedBarChart({
+  data, xKey, bars, height = 260, yDomain = [0, 100],
+}: {
+  data: Record<string, unknown>[];
+  xKey: string;
+  bars: LineDef[];
+  height?: number;
+  yDomain?: [number, number];
+}) {
+  const many = data.length > 6;
+  const minWidth = many ? data.length * Math.max(bars.length * 16, 64) : undefined;
+  return (
+    <HScroll minWidth={minWidth}>
+      <ResponsiveContainer width="100%" height={height}>
+        <BarChart data={data} margin={{ top: 8, right: 12, left: -12, bottom: many ? 22 : 4 }}>
+          <CartesianGrid stroke={C.hair} strokeDasharray="3 3" vertical={false} />
+          <XAxis dataKey={xKey} {...axis} interval={many ? 0 : "preserveStartEnd"} angle={many ? -35 : 0} textAnchor={many ? "end" : "middle"} height={many ? 58 : 30} tickMargin={many ? 8 : 3} />
+          <YAxis domain={yDomain} {...axis} width={40} />
+          <Tooltip content={<TooltipBox />} cursor={{ fill: "#2563eb", fillOpacity: 0.06 }} />
+          {bars.map((b, i) => (
+            <Bar key={b.key} dataKey={b.key} name={b.name} fill={b.color ?? SERIES[i % SERIES.length]} radius={[3, 3, 0, 0]} maxBarSize={16} />
+          ))}
+        </BarChart>
+      </ResponsiveContainer>
+    </HScroll>
   );
 }
 
@@ -116,7 +188,7 @@ export function KVBarChart({
         <Bar dataKey={valueKey} radius={horizontal ? [0, 4, 4, 0] : [4, 4, 0, 0]} maxBarSize={44}>
           {showValues && (
             <LabelList dataKey={valueKey} position={horizontal ? "right" : "top"} className="tabular"
-              style={{ fill: C.ink500, fontSize: 11, fontWeight: 600 }} />
+              style={{ fill: "#111827", fontSize: 11, fontWeight: 600 }} />
           )}
           {data.map((d, i) => (
             <Cell key={i} fill={colorByBand ? bandColor[String(d[xKey])] ?? C.gold : C.gold} />
@@ -125,7 +197,5 @@ export function KVBarChart({
       </BarChart>
     </ResponsiveContainer>
   );
-  return minWidth ? (
-    <div className="overflow-x-auto"><div style={{ minWidth }}>{chart}</div></div>
-  ) : chart;
+  return <HScroll minWidth={minWidth}>{chart}</HScroll>;
 }

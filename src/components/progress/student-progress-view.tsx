@@ -1,18 +1,21 @@
 "use client";
+import { useState } from "react";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { DeltaBadge, BandChip } from "@/components/ui/status";
 import { EmptyState } from "@/components/ui/empty";
-import { KVLineChart, KVBarChart, SERIES } from "@/components/charts";
-import { ProgressIcon, NotebookIcon } from "@/components/icons";
+import { KVLineChart, KVBarChart, KVGroupedBarChart, SERIES } from "@/components/charts";
+import { ProgressIcon, NotebookIcon, ViewsIcon } from "@/components/icons";
 import { SessionDetail } from "@/components/progress/session-detail";
 import { useI18n } from "@/i18n/provider";
 import { fmtDate, fmtPercent } from "@/i18n/format";
+import { cn } from "@/lib/utils";
 
 type Progress = Awaited<ReturnType<typeof import("@/lib/data/analytics").getStudentProgress>>;
 type Standing = Awaited<ReturnType<typeof import("@/lib/data/analytics").getStudentStanding>>;
 
 export function StudentProgressView({ data, standing }: { data: Progress; standing?: Standing }) {
   const { t, locale } = useI18n();
+  const [chartType, setChartType] = useState<"line" | "bar">("line");
   if (!data.hasData || !data.student) {
     return <EmptyState icon={ProgressIcon} title={t("progress.noMarks")} hint={t("progress.pickStudent")} />;
   }
@@ -51,9 +54,27 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
           groupAvg={standing?.classAvg} groupLabel={t("progress.classAvg")} locale={locale} t={t} />
       </div>
 
-      {/* Subject trend lines */}
+      {/* Subject trends — line or grouped bar */}
       <Card>
-        <CardBody><KVLineChart data={data.chartData} xKey="label" lines={lines} height={240} /></CardBody>
+        <CardBody>
+          <div className="mb-3 flex justify-end gap-1.5">
+            {(["line", "bar"] as const).map((k) => (
+              <button
+                key={k}
+                aria-label={k === "line" ? "Line chart" : "Bar chart"}
+                aria-pressed={chartType === k}
+                onClick={() => setChartType(k)}
+                className={cn("flex h-7 w-8 items-center justify-center rounded-sm border transition-colors",
+                  chartType === k ? "border-black bg-black text-white" : "border-hair text-ink-900 hover:bg-panel")}
+              >
+                {k === "line" ? <ProgressIcon size={15} /> : <ViewsIcon size={15} />}
+              </button>
+            ))}
+          </div>
+          {chartType === "line"
+            ? <KVLineChart data={data.chartData} xKey="label" lines={lines} height={240} />
+            : <KVGroupedBarChart data={data.chartData} xKey="label" bars={lines} height={240} />}
+        </CardBody>
       </Card>
 
       {/* Per-subject latest with delta */}

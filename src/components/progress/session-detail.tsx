@@ -18,8 +18,8 @@ export function SessionDetail({ sessions }: { sessions: Sessions }) {
           const active = s.yearId === sess.yearId;
           return (
             <button key={s.yearId} onClick={() => setYearId(s.yearId)}
-              className={`rounded-sm border px-3 py-1.5 text-[13px] font-medium transition-colors ${active ? "border-gold-500 bg-gold-100 text-ink-900" : "border-hair bg-surface text-ink-500 hover:bg-panel"}`}>
-              {s.yearName}{s.isCurrent ? " ★" : ""}
+              className={`rounded-sm border px-3 py-1.5 text-[13px] font-medium transition-colors ${active ? "border-black bg-black text-white" : "border-hair bg-surface text-ink-900 hover:bg-panel"}`}>
+              {s.yearName}
             </button>
           );
         })}
