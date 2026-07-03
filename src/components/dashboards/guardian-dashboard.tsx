@@ -49,7 +49,7 @@ export async function GuardianDashboard({ session }: { session: Session }) {
                     </div>
                   </div>
                   <Link href={`/progress?child=${child.id}`} aria-label={t("nav.childProgress")}
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-black text-white transition-colors hover:bg-[rgb(38,38,38)]">
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-[rgb(37,99,235)] text-white transition-colors hover:bg-[rgb(29,78,216)]">
                     <ArrowRightIcon size={16} />
                   </Link>
                 </div>
