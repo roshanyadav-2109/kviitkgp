@@ -124,26 +124,28 @@ export default async function ReportsPage({ searchParams }: { searchParams: SP }
       <Card className="print-area">
         <CardHeader eyebrow={`${section.class_name}-${section.name} · ${periodLabel}`} title={yearName} />
         <CardBody className="pt-2">
-          <table className="w-full text-[14px]">
-            <thead>
-              <tr className="text-left text-[12px] text-muted">
-                <th className="pb-2 font-semibold">#</th>
-                <th className="pb-2 font-semibold">{t("common.student")}</th>
-                <th className="pb-2 text-right font-semibold">{t("report.marks")}</th>
-                {showAtt && <th className="pb-2 text-right font-semibold">{t("attendance.percent")}</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.id} className="border-t border-hair">
-                  <td className="py-2 text-muted tabular">{r.roll ?? "–"}</td>
-                  <td className="py-2 text-ink-900">{r.name}</td>
-                  <td className="py-2 text-right font-normal tabular text-ink-900">{r.avg != null ? fmtPercent(locale, r.avg, 1) : "—"}</td>
-                  {showAtt && <td className={`py-2 text-right tabular ${r.attPct != null && r.attPct < 75 ? "font-semibold text-down" : "text-ink-700"}`}>{r.attPct != null ? `${r.attPct}%` : "—"}</td>}
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[360px] text-[14px]">
+              <thead>
+                <tr className="text-left text-[12px] text-muted">
+                  <th className="pb-2 font-semibold">#</th>
+                  <th className="pb-2 font-semibold">{t("common.student")}</th>
+                  <th className="pb-2 text-right font-semibold">{t("report.marks")}</th>
+                  {showAtt && <th className="pb-2 text-right font-semibold">{t("attendance.percent")}</th>}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr key={r.id} className="border-t border-hair">
+                    <td className="py-2 text-muted tabular">{r.roll ?? "–"}</td>
+                    <td className="py-2 text-ink-900">{r.name}</td>
+                    <td className="py-2 text-right font-normal tabular text-ink-900">{r.avg != null ? fmtPercent(locale, r.avg, 1) : "—"}</td>
+                    {showAtt && <td className={`py-2 text-right tabular ${r.attPct != null && r.attPct < 75 ? "font-semibold text-down" : "text-ink-700"}`}>{r.attPct != null ? `${r.attPct}%` : "—"}</td>}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           {!rows.length && <p className="py-3 text-[13px] text-ink-900">{t("common.noData")}</p>}
         </CardBody>
       </Card>

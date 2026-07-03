@@ -41,7 +41,7 @@ export async function ReportCard({ report, periodLabel }: { report: StudentRepor
           <div>
             <div className="t-label mb-2">{t("report.marks")}</div>
             {r.marks.length ? (
-              <table className="w-full text-[14px]">
+              <div className="overflow-x-auto"><table className="w-full min-w-[420px] text-[14px]">
                 <thead>
                   <tr className="text-left text-[12px] text-ink-900">
                     <th className="pb-1 font-semibold">{t("common.subject")}</th>
@@ -62,7 +62,7 @@ export async function ReportCard({ report, periodLabel }: { report: StudentRepor
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table></div>
             ) : (
               <p className="text-[14px] text-ink-900">{t("common.noData")}</p>
             )}
