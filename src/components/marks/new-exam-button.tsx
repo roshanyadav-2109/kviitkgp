@@ -45,10 +45,7 @@ export function NewExamButton({ classId, subjectId, yearId, className }: {
 
   return (
     <div className="mb-5 rounded-md border border-hair bg-surface p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="t-h3 text-ink-900">{t("x.newExamFor", { cls: className })}</h3>
-        <button onClick={() => setOpen(false)} className="text-[13px] text-muted hover:text-ink-700">{t("common.cancel")}</button>
-      </div>
+      <h3 className="t-h3 mb-3 text-ink-900">{t("x.newExamFor", { cls: className })}</h3>
       <p className="mb-3 text-[12px] text-muted">{t("x.newExamHint")}</p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="lg:col-span-2">
@@ -71,6 +68,7 @@ export function NewExamButton({ classId, subjectId, yearId, className }: {
       </div>
       <div className="mt-4 flex items-center gap-3">
         <Button onClick={submit} disabled={pending}>{pending ? t("common.saving") : t("x.createExam")}</Button>
+        <Button variant="ghost" onClick={() => setOpen(false)} disabled={pending}>{t("common.cancel")}</Button>
         {msg && <span className="text-[13px] font-medium text-up">{msg}</span>}
         {err && <span className="text-[13px] font-medium text-down">{err}</span>}
       </div>
