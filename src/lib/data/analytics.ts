@@ -267,19 +267,18 @@ export async function getStudentStanding(studentId: number, yearId: number) {
 
 function shortName(assessment: string): string {
   const map: Record<string, string> = {
-    "Periodic Test 1": "PT1", "Periodic Test 2": "PT2", "Periodic Test 3": "PT3",
-    "Periodic Test 4": "PT4", "Half-Yearly": "HY", "Annual": "Annual",
+    "Periodic Test 1": "PT1", "Periodic Test 2": "PT2", "Periodic Test 3": "PT3", "Periodic Test 4": "PT4",
+    "Half-Yearly Examination": "HY", "Half-Yearly": "HY",
+    "Final Examination": "Final", "Annual": "Annual",
   };
-  return map[assessment] ?? assessment;
+  if (map[assessment]) return map[assessment];
+  const m = assessment.match(/Monthly Test\s*[—–-]\s*([A-Za-z]{3})/); // "Monthly Test — July" -> "Jul"
+  if (m) return m[1];
+  return assessment.length > 10 ? assessment.slice(0, 9) + "…" : assessment;
 }
 
 function shortLabel(assessment: string, year: string): string {
-  const yy = year.slice(2, 4); // '2024-25' -> '24'
-  const map: Record<string, string> = {
-    "Periodic Test 1": "PT1", "Periodic Test 2": "PT2", "Periodic Test 3": "PT3",
-    "Periodic Test 4": "PT4", "Half-Yearly": "HY", "Annual": "Ann",
-  };
-  return `${map[assessment] ?? assessment} '${yy}`;
+  return `${shortName(assessment)} '${year.slice(2, 4)}`; // '2024-25' -> '24'
 }
 
 // Children of the signed-in guardian (for the child switcher).

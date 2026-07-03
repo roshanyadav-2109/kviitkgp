@@ -97,9 +97,9 @@ export function KVLineChart({
   return (
     <HScroll minWidth={minWidth}>
       <ResponsiveContainer width="100%" height={height}>
-        <Chart data={data} margin={{ top: 8, right: 12, left: -12, bottom: many ? 22 : 4 }}>
+        <Chart data={data} margin={{ top: 8, right: 12, left: -12, bottom: 4 }}>
           <CartesianGrid stroke={C.hair} strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey={xKey} {...axis} interval={many ? 0 : "preserveStartEnd"} angle={many ? -35 : 0} textAnchor={many ? "end" : "middle"} height={many ? 58 : 30} tickMargin={many ? 8 : 3} />
+          <XAxis dataKey={xKey} {...axis} interval={many ? 0 : "preserveStartEnd"} height={30} tickMargin={6} />
           <YAxis domain={yDomain} {...axis} width={40} />
           <Tooltip content={<TooltipBox />} cursor={{ stroke: "#2563eb", strokeOpacity: 0.3 }} />
           {lines.map((l, i) =>
@@ -134,9 +134,9 @@ export function KVGroupedBarChart({
   return (
     <HScroll minWidth={minWidth}>
       <ResponsiveContainer width="100%" height={height}>
-        <BarChart data={data} margin={{ top: 8, right: 12, left: -12, bottom: many ? 22 : 4 }}>
+        <BarChart data={data} margin={{ top: 8, right: 12, left: -12, bottom: 4 }}>
           <CartesianGrid stroke={C.hair} strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey={xKey} {...axis} interval={many ? 0 : "preserveStartEnd"} angle={many ? -35 : 0} textAnchor={many ? "end" : "middle"} height={many ? 58 : 30} tickMargin={many ? 8 : 3} />
+          <XAxis dataKey={xKey} {...axis} interval={many ? 0 : "preserveStartEnd"} height={30} tickMargin={6} />
           <YAxis domain={yDomain} {...axis} width={40} />
           <Tooltip content={<TooltipBox />} cursor={{ fill: "#2563eb", fillOpacity: 0.06 }} />
           {bars.map((b, i) => (
