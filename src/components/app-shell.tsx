@@ -2,12 +2,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MenuIcon, CloseIcon, LogoutIcon } from "@/components/icons";
+import { MenuIcon, CloseIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { navFor, type NavRole } from "@/lib/nav";
 import { useT } from "@/i18n/provider";
 import { KVEmblem } from "@/components/brand";
-import { signOut } from "@/lib/actions";
+import { SignOutModal } from "@/components/dashboards/profile-menu";
 
 export function AppShell({
   name,
@@ -76,8 +76,8 @@ export function AppShell({
   // Non-students carry their identity + sign-out in a card at the TOP-RIGHT
   // (like the student's dashboard profile card).
   const personMenu = !isStudent ? (
-    <div className="relative">
-      <button onClick={() => setMenuOpen((v) => !v)} aria-haspopup="menu" aria-expanded={menuOpen} className="flex items-center gap-2.5 rounded-md border border-hair bg-surface px-2.5 py-1.5 hover:bg-panel">
+    <>
+      <button onClick={() => setMenuOpen(true)} aria-haspopup="dialog" className="flex items-center gap-2.5 rounded-md border border-hair bg-surface px-2.5 py-1.5 hover:bg-panel">
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-[12px] font-semibold text-white">{initials}</span>
         <span className="hidden text-left leading-tight sm:block">
           <span className="block truncate text-[13px] font-semibold text-ink-900">{name}</span>
@@ -87,20 +87,14 @@ export function AppShell({
           <span className="h-1 w-1 rounded-full bg-current" /><span className="h-1 w-1 rounded-full bg-current" /><span className="h-1 w-1 rounded-full bg-current" />
         </span>
       </button>
-      {menuOpen && (
-        <>
-          <div className="fixed inset-0 z-30" onClick={() => setMenuOpen(false)} />
-          <div role="menu" className="absolute right-0 top-full z-40 mt-1.5 w-52 rounded-lg border border-hair bg-surface p-1.5 shadow-[var(--shadow-pop)]">
-            <form action={signOut}>
-              <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-[13px] font-normal text-ink-900 hover:bg-panel">
-                <LogoutIcon size={16} className="text-ink-900" />
-                {t("common.signOut")}
-              </button>
-            </form>
-          </div>
-        </>
-      )}
-    </div>
+      <SignOutModal
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        promptLabel={t("dashboard.logoutPrompt")}
+        confirmLabel={t("dashboard.confirmSignOut")}
+        cancelLabel={t("dashboard.cancel")}
+      />
+    </>
   ) : null;
 
   // Rail footer: vendor wordmark ("hebrew" over "technologies"). "hebrew" sets

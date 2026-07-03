@@ -19,8 +19,47 @@ function LogoutHuman() {
   );
 }
 
-// Vertical three-dot button beside the student's name. Opens a rectangular
-// (~60% of screen) logout-confirmation modal with a human artifact.
+// Shared logout-confirmation modal (rectangular, ~70% of screen) with a human
+// artifact. Used by the student profile card and the staff top-right card.
+export function SignOutModal({
+  open,
+  onClose,
+  promptLabel,
+  confirmLabel,
+  cancelLabel,
+}: {
+  open: boolean;
+  onClose: () => void;
+  promptLabel: string;
+  confirmLabel: string;
+  cancelLabel: string;
+}) {
+  if (!open) return null;
+  return (
+    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-ink-900/40 backdrop-blur-md" onClick={onClose} />
+      <div className="relative z-10 flex h-[80vh] w-[92vw] flex-col items-center justify-center rounded-sm bg-surface p-8 text-center shadow-[var(--shadow-pop)] sm:h-[70vh] sm:w-[70vw]">
+        <LogoutHuman />
+        <p className="mt-6 t-h3 text-ink-900">{promptLabel}</p>
+        <div className="mt-7 flex gap-3">
+          <form action={signOut}>
+            <button className="rounded-sm bg-black px-5 py-2.5 text-[13px] font-normal text-white transition-colors hover:bg-[rgb(38,38,38)]">
+              {confirmLabel}
+            </button>
+          </form>
+          <button
+            onClick={onClose}
+            className="rounded-sm border border-hair bg-surface px-5 py-2.5 text-[13px] font-normal text-ink-900 transition-colors hover:bg-panel"
+          >
+            {cancelLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Vertical three-dot button beside the student's name. Opens the logout modal.
 export function ProfileMenu({
   promptLabel,
   confirmLabel,
@@ -42,29 +81,7 @@ export function ProfileMenu({
         <span className="h-[3px] w-[3px] rounded-full bg-current" />
         <span className="h-[3px] w-[3px] rounded-full bg-current" />
       </button>
-
-      {open && (
-        <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-ink-900/40 backdrop-blur-md" onClick={() => setOpen(false)} />
-          <div className="relative z-10 flex h-[80vh] w-[92vw] flex-col items-center justify-center rounded-sm bg-surface p-8 text-center shadow-[var(--shadow-pop)] sm:h-[70vh] sm:w-[70vw]">
-            <LogoutHuman />
-            <p className="mt-6 t-h3 text-ink-900">{promptLabel}</p>
-            <div className="mt-7 flex gap-3">
-              <form action={signOut}>
-                <button className="rounded-sm bg-black px-5 py-2.5 text-[13px] font-normal text-white transition-colors hover:bg-[rgb(38,38,38)]">
-                  {confirmLabel}
-                </button>
-              </form>
-              <button
-                onClick={() => setOpen(false)}
-                className="rounded-sm border border-hair bg-surface px-5 py-2.5 text-[13px] font-normal text-ink-900 transition-colors hover:bg-panel"
-              >
-                {cancelLabel}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <SignOutModal open={open} onClose={() => setOpen(false)} promptLabel={promptLabel} confirmLabel={confirmLabel} cancelLabel={cancelLabel} />
     </>
   );
 }
