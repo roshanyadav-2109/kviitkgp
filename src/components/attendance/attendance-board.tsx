@@ -13,6 +13,7 @@ type Row = { id: number; name: string; roll: number | null };
 const STATUSES: { key: AttStatus; short: string; cls: string }[] = [
   { key: "present", short: "P", cls: "bg-up text-white" },
   { key: "absent", short: "A", cls: "bg-down text-white" },
+  { key: "holiday", short: "H", cls: "bg-black text-white" },
 ];
 
 const statusStyle: Record<AttStatus, Status> = { present: "up", absent: "down", late: "watch", leave: "flat", holiday: "flat" };
