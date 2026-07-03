@@ -24,12 +24,12 @@ export const NAV_COLOR: Record<string, string> = {
   "/promotion": "text-[rgb(5,150,105)]",
 };
 
-export async function DashHeader({ name, subtitleKey = "dashboard.overview" }: { name: string; subtitleKey?: string }) {
+export async function DashHeader({ name, subtitleKey = "dashboard.overview", emoji }: { name: string; subtitleKey?: string; emoji?: string }) {
   const { t } = await getT();
   const firstName = name.split(" ").slice(-1)[0];
   return (
     <div className="mb-6">
-      <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
+      <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}{emoji ? ` ${emoji}` : ""}</h1>
       <p className="mt-1 text-[14px] text-ink-900">{t(subtitleKey)}</p>
     </div>
   );

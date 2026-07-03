@@ -104,7 +104,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
   return (
     <section className="flex flex-col gap-3">
       <div>
-        <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
+        <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })} 👋</h1>
         <p className="mt-1 text-[14px] text-ink-900">{t("dashboard.overview")}</p>
       </div>
 

@@ -14,7 +14,7 @@ export async function GuardianDashboard({ session }: { session: Session }) {
   const year = await getCurrentYear();
   const children = await getMyChildren();
   if (!children.length || !year) {
-    return (<div><DashHeader name={session.fullName} /><EmptyState icon={ProgressIcon} title={t("common.noData")} /></div>);
+    return (<div><DashHeader name={session.fullName} emoji="🙏" /><EmptyState icon={ProgressIcon} title={t("common.noData")} /></div>);
   }
   const supabase = await createClient();
   const childIds = children.map((c) => c.id);
@@ -31,7 +31,7 @@ export async function GuardianDashboard({ session }: { session: Session }) {
 
   return (
     <div>
-      <DashHeader name={session.fullName} />
+      <DashHeader name={session.fullName} emoji="🙏" />
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
         {children.map((child) => {
