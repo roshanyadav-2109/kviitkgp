@@ -115,7 +115,7 @@ export async function QuickLinks({ role }: { role: NavRole }) {
               href={l.href}
               className="group flex items-center gap-3 rounded-md border border-hair bg-surface p-3.5 transition-colors hover:border-[rgb(37,99,235)]/40 hover:bg-[rgb(37,99,235)]/[0.05]"
             >
-              <Icon size={24} className={NAV_COLOR[l.href] ?? "text-ink-900"} />
+              <Icon size={24} className="text-ink-900" />
               <span className="text-[15px] font-medium text-ink-900">{t(l.labelKey)}</span>
             </Link>
           );
