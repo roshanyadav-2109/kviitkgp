@@ -3,15 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { getT } from "@/i18n/server";
 import { fmtRelative } from "@/i18n/format";
 import { EmptyState } from "@/components/ui/empty";
-import { AnnounceIcon, UserIconC } from "@/components/icons";
+import { AnnounceIcon } from "@/components/icons";
 import { AnnouncementForm } from "@/components/announcements/announcement-form";
 import { getStaffScope } from "@/lib/data/scope";
-import { cn } from "@/lib/utils";
 
 const posterKey: Record<string, string> = { principal: "announce.byPrincipal", office: "announce.byOffice", class_teacher: "announce.byClassTeacher", subject_teacher: "announce.byTeacher" };
 const scopeKey: Record<string, string> = { school: "announce.scopeSchool", class: "announce.scopeClass", section: "announce.scopeSection" };
-// Distinct filled tag colours per scope (white text on top).
-const scopeColor: Record<string, string> = { school: "bg-[rgb(79,70,229)]", class: "bg-[rgb(13,148,136)]", section: "bg-[rgb(194,65,12)]" };
 
 export default async function AnnouncementsPage() {
   const session = (await getSession())!;
@@ -26,41 +23,51 @@ export default async function AnnouncementsPage() {
   const isStaff = !!session.staffId;
   const scope = isStaff ? await getStaffScope() : null;
 
-  const feed = (
-    <div className="space-y-4">
-      {items && items.length ? (
-        items.map((a) => {
-          const staff = a.staff as unknown as { full_name: string; role: string } | null;
-          return (
-            <article key={a.id} className="rounded-md border border-hair bg-surface p-5">
-              <div className="flex items-start gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[rgb(229,231,235)] text-[rgb(120,122,130)]">
-                  <UserIconC size={24} />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="font-bold text-ink-900">{t(posterKey[staff?.role ?? ""] ?? "announce.byOffice")}</div>
-                  <div className="mt-0.5 text-[12px] text-muted">{fmtRelative(locale, a.published_at)}</div>
-                </div>
-                <span className={cn("shrink-0 rounded-sm px-2.5 py-0.5 text-[11px] font-normal text-white", scopeColor[a.scope] ?? scopeColor.school)}>
-                  {t(scopeKey[a.scope] ?? "announce.scopeSchool")}
-                </span>
+  const feed = items && items.length ? (
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {items.map((a) => {
+        const role = (a.staff as unknown as { full_name: string; role: string } | null)?.role ?? "subject_teacher";
+        return (
+          <article key={a.id} className="flex flex-col rounded-lg border border-hair bg-surface p-5">
+            {/* Sender */}
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-black text-white">
+                <AnnounceIcon size={17} />
+              </span>
+              <div className="min-w-0">
+                <div className="text-[14px] font-bold text-ink-900">{t(posterKey[role] ?? "announce.byOffice")}</div>
+                <div className="text-[12px] text-ink-900">{fmtRelative(locale, a.published_at)}</div>
               </div>
+            </div>
 
-              <h2 className="mt-4 text-[16px] font-bold leading-snug text-ink-900">{a.title}</h2>
-              <div className="mt-1.5 whitespace-pre-wrap text-[14px] leading-relaxed text-ink-700">{a.body}</div>
-            </article>
-          );
-        })
-      ) : (
-        <EmptyState icon={AnnounceIcon} title={t("common.noData")} hint={isStaff ? t("announce.new") : undefined} />
-      )}
+            {/* Title + fading body, with a right accent bar */}
+            <div className="mt-4 flex gap-3">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-[16px] font-bold leading-snug text-ink-900">{a.title}</h2>
+                <div className="relative mt-1.5 max-h-[5.5rem] overflow-hidden">
+                  <p className="whitespace-pre-wrap text-[14px] leading-relaxed text-ink-900">{a.body}</p>
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-7 bg-gradient-to-t from-surface to-transparent" />
+                </div>
+              </div>
+              <span aria-hidden className="w-[3px] shrink-0 self-stretch rounded-full bg-[rgb(37,99,235)]/25" />
+            </div>
+
+            <div className="mt-4 border-t border-dashed border-hair" />
+            <div className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-ink-900">
+              {t(scopeKey[a.scope] ?? "announce.scopeSchool")}
+            </div>
+          </article>
+        );
+      })}
     </div>
+  ) : (
+    <EmptyState icon={AnnounceIcon} title={t("common.noData")} hint={isStaff ? t("announce.new") : undefined} />
   );
 
   if (!isStaff || !scope) return feed;
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[1fr_360px]">
+    <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
       {feed}
       <AnnouncementForm sections={scope.sections} allowSchool={scope.isAdmin} />
     </div>
