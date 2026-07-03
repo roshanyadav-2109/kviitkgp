@@ -74,28 +74,29 @@ export function AppShell({
 
   const initials = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
-  // Non-students carry their identity + sign-out in the sidebar (no top bar).
-  const sidebarUser = !isStudent ? (
-    <div className="relative border-t border-hair p-3">
-      <button onClick={() => setMenuOpen((v) => !v)} aria-haspopup="menu" aria-expanded={menuOpen} className="flex w-full items-center gap-2.5 rounded-md p-1.5 hover:bg-panel">
+  // Non-students carry their identity + sign-out in a card at the TOP-RIGHT
+  // (like the student's dashboard profile card).
+  const personMenu = !isStudent ? (
+    <div className="relative">
+      <button onClick={() => setMenuOpen((v) => !v)} aria-haspopup="menu" aria-expanded={menuOpen} className="flex items-center gap-2.5 rounded-md border border-hair bg-surface px-2.5 py-1.5 hover:bg-panel">
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-[12px] font-semibold text-white">{initials}</span>
-        <span className="min-w-0 flex-1 text-left leading-tight">
+        <span className="hidden text-left leading-tight sm:block">
           <span className="block truncate text-[13px] font-semibold text-ink-900">{name}</span>
-          <span className="block truncate text-[12px] text-ink-500">{roleLabel}</span>
+          <span className="block truncate text-[12px] text-ink-900">{roleLabel}</span>
         </span>
-        <span className="flex flex-col items-center gap-[3px] pr-1 text-ink-500" aria-hidden>
+        <span className="flex flex-col items-center gap-[3px] text-ink-900" aria-hidden>
           <span className="h-1 w-1 rounded-full bg-current" /><span className="h-1 w-1 rounded-full bg-current" /><span className="h-1 w-1 rounded-full bg-current" />
         </span>
       </button>
       {menuOpen && (
         <>
           <div className="fixed inset-0 z-30" onClick={() => setMenuOpen(false)} />
-          <div role="menu" className="absolute bottom-full left-3 right-3 z-40 mb-1 rounded-lg border border-hair bg-surface p-1.5 shadow-[var(--shadow-pop)]">
+          <div role="menu" className="absolute right-0 top-full z-40 mt-1.5 w-52 rounded-lg border border-hair bg-surface p-1.5 shadow-[var(--shadow-pop)]">
             <div className="px-1.5 pb-1.5"><LocaleSwitcher /></div>
             <div className="my-1 border-t border-hair" />
             <form action={signOut}>
-              <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-[13px] font-normal text-ink-700 hover:bg-panel">
-                <LogoutIcon size={16} className="text-muted" />
+              <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-[13px] font-normal text-ink-900 hover:bg-panel">
+                <LogoutIcon size={16} className="text-ink-900" />
                 {t("common.signOut")}
               </button>
             </form>
@@ -129,7 +130,6 @@ export function AppShell({
         <div className="flex-1 overflow-y-auto">
           {navList}
         </div>
-        {sidebarUser}
         {brandFooter}
       </aside>
 
@@ -160,12 +160,15 @@ export function AppShell({
       )}
 
       <div className="flex min-w-0 flex-col">
-        {/* Top bar — mobile only (hamburger). No desktop navbar. */}
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-hair bg-white/85 px-4 backdrop-blur sm:px-6 lg:hidden">
-          <button aria-label="Menu" onClick={() => setOpen(true)} className="rounded-sm p-1.5 text-ink-700 hover:bg-panel">
+        {/* No full navbar — just the mobile hamburger + a person card top-right. */}
+        <header className={cn("sticky top-0 z-30 flex h-14 items-center gap-3 px-3 sm:px-5", isStudent && "lg:hidden")}>
+          <button aria-label="Menu" onClick={() => setOpen(true)} className="rounded-sm p-1.5 text-ink-700 hover:bg-panel lg:hidden">
             <MenuIcon size={20} />
           </button>
-          <KVEmblem size={30} />
+          <div className="lg:hidden">
+            <KVEmblem size={28} />
+          </div>
+          {personMenu && <div className="ml-auto">{personMenu}</div>}
         </header>
 
         {/* Each section is its own block on the page — no shared wrapper. */}
