@@ -13,7 +13,7 @@ import { ProgressIcon, ArrowRightIcon } from "@/components/icons";
 import { getStaffScope, getSectionStudents } from "@/lib/data/scope";
 import { getSectionAnalytics, getClassAnalytics, getExamAnalytics, getScopeExams, getStudentProgress, getStudentStanding, getMyChildren } from "@/lib/data/analytics";
 
-import { numParam, strParam } from "@/lib/utils";
+import { numParam, strParam, cn } from "@/lib/utils";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 const num = numParam;
@@ -45,24 +45,23 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
     ]);
     return (
       <div>
-        {session.role === "guardian" && children.length > 1 && (
-          <div className="mb-5 flex flex-wrap gap-2">
-            {children.map((c) => {
-              const active = c.id === studentId;
-              return (
-                <Link key={c.id} href={`/progress?child=${c.id}`}
-                  className={`rounded-sm border px-3 py-1.5 text-[13px] font-medium ${active ? "border-gold-500 bg-gold-100 text-ink-900" : "border-hair bg-surface text-ink-500 hover:bg-panel"}`}>
-                  {c.full_name}
-                </Link>
-              );
-            })}
-          </div>
-        )}
         <SessionChooser
           years={data.years}
           active={lifetime ? "lifetime" : String(selectedYearId ?? "lifetime")}
           lifetimeLabel={t("progress.lifetime")}
           childId={session.role === "guardian" ? studentId : undefined}
+          leading={session.role === "guardian" && children.length > 1
+            ? children.map((c) => {
+                const active = c.id === studentId;
+                return (
+                  <Link key={c.id} href={`/progress?child=${c.id}`}
+                    className={cn("rounded-sm border px-3 py-1.5 text-[13px] font-medium transition-colors",
+                      active ? "border-black bg-black text-white" : "border-hair bg-surface text-ink-900 hover:bg-panel")}>
+                    {c.full_name}
+                  </Link>
+                );
+              })
+            : undefined}
         />
         <StudentProgressView data={data} standing={standing} />
       </div>

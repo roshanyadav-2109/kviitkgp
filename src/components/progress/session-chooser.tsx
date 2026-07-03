@@ -10,11 +10,13 @@ export function SessionChooser({
   active,
   lifetimeLabel,
   childId,
+  leading,
 }: {
   years: YearOpt[];
   active: string; // "lifetime" | "<yearId>"
   lifetimeLabel: string;
   childId?: number;
+  leading?: React.ReactNode; // e.g. the ward switcher, shown in the same row
 }) {
   const href = (session: string) => {
     const p = new URLSearchParams();
@@ -24,7 +26,9 @@ export function SessionChooser({
   };
   const opts = [{ key: "lifetime", label: lifetimeLabel }, ...years.map((y) => ({ key: String(y.yearId), label: y.yearName }))];
   return (
-    <div className="mb-5 flex flex-wrap gap-2">
+    <div className="mb-5 flex flex-wrap items-center gap-2">
+      {leading}
+      {leading && <span className="mx-1 hidden h-5 w-px bg-hair sm:block" />}
       {opts.map((o) => {
         const isActive = active === o.key;
         return (
