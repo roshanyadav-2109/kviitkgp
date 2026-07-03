@@ -28,7 +28,7 @@ export function SessionDetail({ sessions }: { sessions: Sessions }) {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[520px] text-[13px]">
           <thead>
-            <tr className="text-left text-[11px] uppercase tracking-wide text-muted">
+            <tr className="text-left text-[11px] uppercase tracking-wide text-ink-900">
               <th className="pb-2 pr-3 font-semibold">{t("common.subject")}</th>
               {sess.assessments.map((a) => (<th key={a} className="px-1.5 pb-2 text-center font-semibold">{a}</th>))}
             </tr>
@@ -36,7 +36,7 @@ export function SessionDetail({ sessions }: { sessions: Sessions }) {
           <tbody>
             {sess.subjects.map((sub) => (
               <tr key={sub.code} className="border-t border-hair">
-                <td className="py-1.5 pr-3 font-medium text-ink-900">{sub.name}</td>
+                <td className="py-1.5 pr-3 font-semibold text-ink-900">{sub.name}</td>
                 {sess.assessments.map((a) => {
                   const c = sub.cells[a];
                   return (

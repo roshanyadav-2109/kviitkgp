@@ -34,7 +34,7 @@ export function SessionChooser({
             aria-current={isActive ? "true" : undefined}
             className={cn(
               "rounded-sm border px-3 py-1.5 text-[13px] font-medium transition-colors",
-              isActive ? "border-gold-500 bg-gold-100 text-ink-900" : "border-hair bg-surface text-ink-500 hover:bg-panel",
+              isActive ? "border-black bg-black text-white" : "border-hair bg-surface text-ink-900 hover:bg-panel",
             )}
           >
             {o.label}

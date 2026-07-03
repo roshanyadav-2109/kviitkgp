@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { DeltaBadge, BandChip } from "@/components/ui/status";
 import { EmptyState } from "@/components/ui/empty";
 import { KVLineChart, KVBarChart, SERIES } from "@/components/charts";
-import { ProgressIcon, NotebookIcon, TrophyIcon } from "@/components/icons";
+import { ProgressIcon, NotebookIcon } from "@/components/icons";
 import { SessionDetail } from "@/components/progress/session-detail";
 import { useI18n } from "@/i18n/provider";
 import { fmtDate, fmtPercent } from "@/i18n/format";
@@ -32,13 +32,13 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardBody>
-            <div className="t-label">{t("progress.overall")} · {t("progress.average")}</div>
-            <div className="mt-1 text-[34px] font-bold leading-none tabular text-ink-900">{fmtPercent(locale, data.currentAvg, 1)}</div>
+            <div className="text-[12px] font-normal text-ink-900">{t("progress.overall")} · {t("progress.average")}</div>
+            <div className="mt-1 text-[34px] font-normal leading-none tabular text-ink-900">{fmtPercent(locale, data.currentAvg, 1)}</div>
             <div className="mt-3 space-y-1">
               {data.yearOnYear.map((y) => (
                 <div key={y.year} className="flex items-center justify-between text-[13px]">
-                  <span className="text-ink-500">{y.year}</span>
-                  <span className="font-semibold tabular text-ink-900">{fmtPercent(locale, y.avg, 1)}</span>
+                  <span className="text-ink-900">{y.year}</span>
+                  <span className="font-normal tabular text-ink-900">{fmtPercent(locale, y.avg, 1)}</span>
                 </div>
               ))}
             </div>
@@ -67,11 +67,11 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
                 <BandChip band={s.band} />
               </div>
               <div className="mt-2 flex items-end gap-2">
-                <span className="text-[26px] font-bold leading-none tabular text-ink-900">{s.latest}</span>
-                <span className="pb-0.5 text-[13px] text-muted">%</span>
+                <span className="text-[26px] font-normal leading-none tabular text-ink-900">{s.latest}</span>
+                <span className="pb-0.5 text-[13px] text-ink-900">%</span>
                 <DeltaBadge value={s.delta} className="mb-0.5 ml-auto" />
               </div>
-              <div className="mt-1 text-[12px] text-ink-500">{deltaText(s.delta, s.prev)}</div>
+              <div className="mt-1 text-[12px] text-ink-900">{deltaText(s.delta, s.prev)}</div>
             </div>
           ))}
         </CardBody>
@@ -100,7 +100,7 @@ export function StudentProgressView({ data, standing }: { data: Progress; standi
             <ul className="space-y-3">
               {data.observations.map((o) => (
                 <li key={o.id} className="flex gap-3">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-gold-100 text-gold-700"><NotebookIcon size={15} /></span>
+                  <span className="mt-0.5 shrink-0 text-ink-900"><NotebookIcon size={15} /></span>
                   <div className="min-w-0">
                     <div className="text-[14px] text-ink-900">{o.body}</div>
                     <div className="mt-0.5 text-[12px] text-muted"><span className="capitalize">{o.category}</span>{o.subject ? ` · ${o.subject}` : ""} · {o.staff} · {fmtDate(locale, o.date)}</div>
@@ -124,20 +124,20 @@ function StandingCard({ label, rank, size, groupAvg, groupLabel, locale, t }: {
   return (
     <Card>
       <CardBody>
-        <div className="t-label flex items-center gap-1.5"><TrophyIcon size={14} className="text-gold-700" />{label}</div>
+        <div className="text-[12px] font-normal text-ink-900">{label}</div>
         {rank && size ? (
           <>
             <div className="mt-1 flex items-baseline gap-1.5">
-              <span className="text-[34px] font-bold leading-none tabular text-ink-900">{rank}</span>
-              <span className="text-[15px] text-muted tabular">/ {size}</span>
+              <span className="text-[34px] font-normal leading-none tabular text-ink-900">{rank}</span>
+              <span className="text-[15px] tabular text-ink-900">/ {size}</span>
             </div>
             <div className="mt-3 flex items-center justify-between text-[13px]">
-              <span className="text-ink-500">{groupLabel}</span>
-              <span className="tabular text-ink-700">{fmtPercent(locale, groupAvg, 1)}</span>
+              <span className="text-ink-900">{groupLabel}</span>
+              <span className="tabular text-ink-900">{fmtPercent(locale, groupAvg, 1)}</span>
             </div>
           </>
         ) : (
-          <p className="mt-2 text-[13px] text-ink-500">{t("common.noData")}</p>
+          <p className="mt-2 text-[13px] text-ink-900">{t("common.noData")}</p>
         )}
       </CardBody>
     </Card>
