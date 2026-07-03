@@ -44,11 +44,11 @@ export async function StudentDashboard({ session }: { session: Session }) {
   return (
     <div className="grid items-start gap-3 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
       <MainContent name={session.fullName} standing={standing} att={att} />
-      <Panel className="divide-y divide-hair">
+      <div className="flex flex-col gap-3">
         <ProfileCard name={session.fullName} studentId={studentId} />
         <AnnouncementsCard />
         <EventCalendarCard />
-      </Panel>
+      </div>
     </div>
   );
 }
@@ -65,24 +65,26 @@ async function ProfileCard({ name, studentId }: { name: string; studentId: numbe
     [t("dashboard.classTeacher"), card?.classTeacher ?? "—"],
   ];
   return (
-    <CardBody>
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0 truncate text-[20px] font-normal leading-tight text-ink-900">{name}</div>
-        <ProfileMenu
-          promptLabel={t("dashboard.logoutPrompt")}
-          confirmLabel={t("dashboard.confirmSignOut")}
-          cancelLabel={t("dashboard.cancel")}
-        />
-      </div>
-      <dl className="mt-3.5 space-y-2 border-t border-hair pt-3">
-        {rows.map(([label, value]) => (
-          <div key={label} className="flex items-baseline justify-between gap-3">
-            <dt className="text-[12px] text-ink-900">{label}</dt>
-            <dd className="min-w-0 truncate text-right text-[13px] font-normal text-ink-900 tabular">{value}</dd>
-          </div>
-        ))}
-      </dl>
-    </CardBody>
+    <Panel>
+      <CardBody>
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0 truncate text-[20px] font-normal leading-tight text-ink-900">{name}</div>
+          <ProfileMenu
+            promptLabel={t("dashboard.logoutPrompt")}
+            confirmLabel={t("dashboard.confirmSignOut")}
+            cancelLabel={t("dashboard.cancel")}
+          />
+        </div>
+        <dl className="mt-3.5 space-y-2 border-t border-hair pt-3">
+          {rows.map(([label, value]) => (
+            <div key={label} className="flex items-baseline justify-between gap-3">
+              <dt className="text-[12px] text-ink-900">{label}</dt>
+              <dd className="min-w-0 truncate text-right text-[13px] font-normal text-ink-900 tabular">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </CardBody>
+    </Panel>
   );
 }
 
@@ -161,7 +163,7 @@ async function AnnouncementsCard() {
     .limit(4);
   const items = (data ?? []).map((a) => ({ id: a.id, title: a.title, body: a.body, date: fmtDate(locale, a.published_at) }));
   return (
-    <div>
+    <Panel>
       <CardHeader
         title={t("announce.title")}
         action={
@@ -174,7 +176,7 @@ async function AnnouncementsCard() {
       <CardBody className="pt-2">
         <AnnouncementsList items={items} emptyLabel={t("common.noData")} />
       </CardBody>
-    </div>
+    </Panel>
   );
 }
 
@@ -192,7 +194,7 @@ async function EventCalendarCard() {
   const events = (inMonth && inMonth.length ? inMonth : future ?? []).slice(0, 5);
 
   return (
-    <div>
+    <Panel>
       <CardHeader
         title={t("announce.events")}
         action={
@@ -230,6 +232,6 @@ async function EventCalendarCard() {
           </div>
         )}
       </CardBody>
-    </div>
+    </Panel>
   );
 }
