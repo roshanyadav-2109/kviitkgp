@@ -21,8 +21,8 @@
   /* Warm neutrals */
   --color-paper: #fbf8f3;
   --color-surface: #ffffff;
-  --color-panel: #f6f1e9; /* subtle panels / table headers */
-  --color-hair: #e9e0d4; /* hairline borders */
+  --color-panel: #f4f4f5; /* subtle panels / table headers (neutral grey) */
+  --color-hair: #e4e4e7; /* hairline borders (neutral grey) */
 
   /* Semantic — DATA STATUS ONLY */
   --color-up: #157d1c;

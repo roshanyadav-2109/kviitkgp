@@ -4,7 +4,7 @@ export function Card({ className, children }: { className?: string; children: Re
   return (
     <div
       className={cn(
-        "rounded-md border border-hair bg-surface shadow-[var(--shadow-card)]",
+        "rounded-md border border-hair bg-surface",
         className,
       )}
     >

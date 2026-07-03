@@ -42,7 +42,7 @@ export async function StudentDashboard({ session }: { session: Session }) {
   ]);
 
   return (
-    <div className="grid items-start gap-3 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
+    <div className="grid max-w-6xl items-start gap-3 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
       <MainContent name={session.fullName} standing={standing} att={att} />
       <div className="flex flex-col gap-3">
         <ProfileCard name={session.fullName} studentId={studentId} />
