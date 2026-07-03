@@ -103,7 +103,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
     "/leave": "text-[rgb(13,148,136)]",
   };
   return (
-    <Panel className="flex flex-col p-6">
+    <section className="flex flex-col gap-3">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
@@ -112,7 +112,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
         <LocaleSwitcher />
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <Stat label={`${t("progress.overall")} ${t("progress.average")}`} value={fmtPercent(locale, standing?.studentAvg ?? null, 1)} tone="gold" />
         <Stat label={t("attendance.percent")} value={att ? `${att.pct}%` : "—"} tone={att && att.pct < 75 ? "down" : "up"} sub={att ? `${att.present}/${att.total}` : undefined} />
         <Stat label={t("progress.sectionStanding")} value={standing?.sectionRank ? `${standing.sectionRank}/${standing.sectionSize}` : "—"} sub={standing ? `${t("progress.sectionAvg")} ${fmtPercent(locale, standing.sectionAvg, 1)}` : undefined} />
@@ -120,7 +120,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
       </div>
 
       {/* Quick links — one section, horizontal scroll, above My Progress */}
-      <div className="mt-5 rounded-md border border-hair p-4">
+      <div className="rounded-md border border-hair bg-surface p-4">
         <div className="mb-2.5 text-[13px] font-semibold text-ink-900">{t("dashboard.quickLinks")}</div>
         <div className="flex gap-2.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {links.map((l) => {
@@ -140,7 +140,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
       </div>
 
       {/* Progress call-to-action */}
-      <div className="mt-5 rounded-sm border border-hair bg-surface p-5">
+      <div className="rounded-sm border border-hair bg-surface p-5">
         <h3 className="t-h3 text-ink-900">{t("progress.title")}</h3>
         <p className="mt-1.5 text-[14px] leading-relaxed text-ink-900">{t("dashboard.progressCta")}</p>
         <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-ink-900 px-3.5 py-2 text-[13px] font-normal text-gold-100 transition-colors hover:bg-ink-700">
@@ -148,7 +148,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
           <ArrowRightIcon size={14} />
         </Link>
       </div>
-    </Panel>
+    </section>
   );
 }
 
