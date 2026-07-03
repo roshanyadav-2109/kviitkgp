@@ -90,16 +90,15 @@ export function KVLineChart({
   yDomain?: [number, number];
 }) {
   const Chart = area ? AreaChart : LineChart;
-  // Many points → give the plot a min width (scrolls) and angle the labels so
-  // they don't overlap.
-  const many = data.length > 6;
-  const minWidth = many ? data.length * 64 : undefined;
+  // Reserve ~64px per label; if that exceeds the container the plot scrolls so
+  // every label stays fully visible.
+  const minWidth = data.length * 64;
   return (
     <HScroll minWidth={minWidth}>
       <ResponsiveContainer width="100%" height={height}>
         <Chart data={data} margin={{ top: 8, right: 12, left: -12, bottom: 4 }}>
           <CartesianGrid stroke={C.hair} strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey={xKey} {...axis} interval={many ? 0 : "preserveStartEnd"} height={30} tickMargin={6} />
+          <XAxis dataKey={xKey} {...axis} interval={0} height={30} tickMargin={6} />
           <YAxis domain={yDomain} {...axis} width={40} />
           <Tooltip content={<TooltipBox />} cursor={{ stroke: "#2563eb", strokeOpacity: 0.3 }} />
           {lines.map((l, i) =>
@@ -129,14 +128,13 @@ export function KVGroupedBarChart({
   height?: number;
   yDomain?: [number, number];
 }) {
-  const many = data.length > 6;
-  const minWidth = many ? data.length * Math.max(bars.length * 16, 64) : undefined;
+  const minWidth = data.length * Math.max(bars.length * 16, 64);
   return (
     <HScroll minWidth={minWidth}>
       <ResponsiveContainer width="100%" height={height}>
         <BarChart data={data} margin={{ top: 8, right: 12, left: -12, bottom: 4 }}>
           <CartesianGrid stroke={C.hair} strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey={xKey} {...axis} interval={many ? 0 : "preserveStartEnd"} height={30} tickMargin={6} />
+          <XAxis dataKey={xKey} {...axis} interval={0} height={30} tickMargin={6} />
           <YAxis domain={yDomain} {...axis} width={40} />
           <Tooltip content={<TooltipBox />} cursor={{ fill: "#2563eb", fillOpacity: 0.06 }} />
           {bars.map((b, i) => (
