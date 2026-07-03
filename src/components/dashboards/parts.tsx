@@ -83,7 +83,7 @@ export async function EventsPanel() {
           <ul className="divide-y divide-hair">
             {rows.map((e) => (
               <li key={e.id} className="flex items-center gap-3 py-3">
-                <CalendarIcon size={18} className="shrink-0 text-[rgb(219,39,119)]" />
+                <CalendarIcon size={18} className="shrink-0 text-ink-900" />
                 <div className="min-w-0 flex-1">
                   <div className="text-[14px] font-semibold text-ink-900">{e.title}</div>
                   <div className="text-[12px] capitalize text-ink-900">{e.event_type}</div>
