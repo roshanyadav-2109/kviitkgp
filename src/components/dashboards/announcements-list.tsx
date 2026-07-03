@@ -18,13 +18,13 @@ export function AnnouncementsList({ items, emptyLabel }: { items: AnnItem[]; emp
           <li key={a.id}>
             <button
               onClick={() => setSel(a)}
-              className="flex w-full gap-3 rounded-md p-2.5 text-left transition-colors hover:bg-surface"
+              className="flex w-full gap-3 rounded-md p-2.5 text-left transition-colors hover:bg-panel"
             >
               <AnnounceIcon size={16} className="mt-0.5 shrink-0 text-gold-700" />
               <div className="min-w-0">
                 <div className="text-[14px] font-semibold text-ink-900">{a.title}</div>
-                <div className="line-clamp-1 text-[13px] text-ink-500">{a.body}</div>
-                <div className="mt-0.5 text-[12px] text-muted">{a.date}</div>
+                <div className="line-clamp-1 text-[13px] text-ink-900">{a.body}</div>
+                <div className="mt-0.5 text-[12px] text-ink-900">{a.date}</div>
               </div>
             </button>
           </li>

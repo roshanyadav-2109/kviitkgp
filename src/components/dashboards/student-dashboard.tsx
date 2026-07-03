@@ -16,18 +16,17 @@ import { cn } from "@/lib/utils";
 type Att = Awaited<ReturnType<typeof getStudentAttendance>>;
 type Standing = Awaited<ReturnType<typeof getStudentStanding>>;
 
-// Flat, borderless section on the white page — separated by fill + spacing only.
+// White section, defined by a hairline border on the page.
 function Panel({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <div className={cn("rounded-sm bg-panel/50", className)}>{children}</div>;
+  return <div className={cn("rounded-md border border-hair bg-surface", className)}>{children}</div>;
 }
 
-function Stat({ label, value, sub, tone = "ink" }: { label: string; value: React.ReactNode; sub?: string; tone?: "ink" | "up" | "down" | "gold" }) {
-  const toneCls = { ink: "text-ink-900", up: "text-up", down: "text-down", gold: "text-gold-700" }[tone];
+function Stat({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string; tone?: "ink" | "up" | "down" | "gold" }) {
   return (
-    <div className="rounded-sm bg-surface p-4">
-      <div className="t-label">{label}</div>
-      <div className={cn("mt-1 text-[28px] font-bold leading-none tabular", toneCls)}>{value}</div>
-      {sub && <div className="mt-1.5 text-[12px] text-muted">{sub}</div>}
+    <div className="rounded-sm border border-hair bg-surface p-4">
+      <div className="text-[12px] font-normal text-ink-900">{label}</div>
+      <div className="mt-1 text-[28px] font-normal leading-none tabular text-ink-900">{value}</div>
+      {sub && <div className="mt-1.5 text-[12px] font-normal text-ink-900">{sub}</div>}
     </div>
   );
 }
@@ -79,8 +78,8 @@ async function ProfileCard({ name, studentId }: { name: string; studentId: numbe
         <dl className="mt-3.5 space-y-2 border-t border-hair pt-3">
           {rows.map(([label, value]) => (
             <div key={label} className="flex items-baseline justify-between gap-3">
-              <dt className="text-[12px] text-muted">{label}</dt>
-              <dd className="min-w-0 truncate text-right text-[13px] font-medium text-ink-900 tabular">{value}</dd>
+              <dt className="text-[12px] text-ink-900">{label}</dt>
+              <dd className="min-w-0 truncate text-right text-[13px] font-normal text-ink-900 tabular">{value}</dd>
             </div>
           ))}
         </dl>
@@ -108,7 +107,7 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="t-h1 text-ink-900">{t("dashboard.hello", { name: firstName })}</h1>
-          <p className="mt-1 text-[14px] text-ink-500">{t("dashboard.overview")}</p>
+          <p className="mt-1 text-[14px] text-ink-900">{t("dashboard.overview")}</p>
         </div>
         <LocaleSwitcher />
       </div>
@@ -141,10 +140,9 @@ async function MainContent({ name, standing, att }: { name: string; standing: St
       </div>
 
       {/* Progress call-to-action */}
-      <div className="mt-5 rounded-sm bg-surface p-5">
-        <div className="t-label mb-1">{t("nav.myProgress")}</div>
+      <div className="mt-5 rounded-sm border border-hair bg-surface p-5">
         <h3 className="t-h3 text-ink-900">{t("progress.title")}</h3>
-        <p className="mt-1.5 text-[14px] leading-relaxed text-ink-500">{t("dashboard.progressCta")}</p>
+        <p className="mt-1.5 text-[14px] leading-relaxed text-ink-900">{t("dashboard.progressCta")}</p>
         <Link href="/progress" className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-ink-900 px-3.5 py-2 text-[13px] font-normal text-gold-100 transition-colors hover:bg-ink-700">
           {t("nav.myProgress")}
           <ArrowRightIcon size={14} />
@@ -213,14 +211,14 @@ async function EventCalendarCard() {
               const d = new Date(e.start_date);
               return (
                 <li key={e.id}>
-                  <Link href="/calendar" className="group flex items-center gap-2.5 rounded-sm p-1 transition-colors hover:bg-surface">
+                  <Link href="/calendar" className="group flex items-center gap-2.5 rounded-sm p-1 transition-colors hover:bg-panel">
                     <span className="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-sm bg-ink-900 leading-none text-gold-100">
                       <span className="text-[15px] font-bold tabular">{fmtDate(locale, d, { day: "2-digit" })}</span>
                       <span className="text-[9px] font-semibold uppercase tracking-wide text-gold-300">{fmtDate(locale, d, { month: "short" })}</span>
                     </span>
                     <span className="min-w-0">
                       <span className="block truncate text-[13px] font-semibold text-ink-900 group-hover:text-gold-700">{e.title}</span>
-                      <span className="block text-[11px] capitalize text-muted">{e.event_type}</span>
+                      <span className="block text-[11px] capitalize text-ink-900">{e.event_type}</span>
                     </span>
                   </Link>
                 </li>
@@ -228,8 +226,8 @@ async function EventCalendarCard() {
             })}
           </ul>
         ) : (
-          <div className="flex items-center gap-2 rounded-sm bg-surface px-3 py-4 text-[13px] text-muted">
-            <CalendarIcon size={16} className="text-muted" />
+          <div className="flex items-center gap-2 rounded-sm border border-hair px-3 py-4 text-[13px] text-ink-900">
+            <CalendarIcon size={16} className="text-ink-900" />
             {t("dashboard.noEventsMonth")}
           </div>
         )}
