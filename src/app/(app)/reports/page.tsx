@@ -92,7 +92,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: SP }
         <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("report.title")} description={t("report.studentDetail")} />
         <ScopeBar years={scope.years} sections={scope.sections} yearId={yearId} sectionId={section.id} />
         <StaffReportBar type={type} view={view} month={month} examName={examName} exams={exams}
-          students={roster.map((s) => ({ id: s.id, name: s.name }))} studentId={studentId} />
+          students={roster.map((s) => ({ id: s.id, name: s.name }))} studentId={studentId} sort="roll" />
         {report ? (
           <ReportCard report={report} periodLabel={periodLabel} />
         ) : (
@@ -107,6 +107,12 @@ export default async function ReportsPage({ searchParams }: { searchParams: SP }
   if (type === "exam") { if (examName) rows = await getClassExamReport(section.id, yearId, examName); }
   else rows = await getClassReport(section.id, yearId, range.start, range.end);
 
+  // Order: by roll number (register order) or by average marks, highest first.
+  const sort = str(sp.sort) === "marks" ? "marks" : "roll";
+  rows = [...rows].sort((a, b) => sort === "marks"
+    ? (b.avg ?? -1) - (a.avg ?? -1)
+    : (a.roll ?? Number.MAX_SAFE_INTEGER) - (b.roll ?? Number.MAX_SAFE_INTEGER));
+
   const headers = ["#", t("common.student"), t("report.avgMarks"), ...(showAtt ? [t("attendance.percent")] : [])];
   const xlsx = {
     filename: `${section.class_name}-${section.name} ${periodLabel}`,
@@ -120,7 +126,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: SP }
       <PageHeader eyebrow={`${section.class_name}-${section.name}`} title={t("report.title")} description={t("report.classDetail")} />
       <ScopeBar years={scope.years} sections={scope.sections} yearId={yearId} sectionId={section.id} />
       <StaffReportBar type={type} view={view} month={month} examName={examName} exams={exams}
-        students={roster.map((s) => ({ id: s.id, name: s.name }))} studentId={studentId} xlsx={xlsx} />
+        students={roster.map((s) => ({ id: s.id, name: s.name }))} studentId={studentId} sort={sort} xlsx={xlsx} />
       <Card className="print-area">
         <CardHeader eyebrow={`${section.class_name}-${section.name} · ${periodLabel}`} title={yearName} />
         <CardBody className="pt-2">

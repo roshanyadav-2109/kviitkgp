@@ -15,7 +15,7 @@ type Row = { id: number; name: string };
 // Staff report controls: report type (monthly / yearly / exam), the detail level
 // (whole class or one student), the period/exam picker, and the download.
 export function StaffReportBar({
-  type, view, month, examName, exams, students, studentId, xlsx,
+  type, view, month, examName, exams, students, studentId, sort, xlsx,
 }: {
   type: ReportType;
   view: View;
@@ -24,6 +24,7 @@ export function StaffReportBar({
   exams: string[];
   students: Row[];
   studentId: number | null;
+  sort: "roll" | "marks";
   xlsx?: XlsxExport;
 }) {
   const t = useT();
@@ -49,6 +50,13 @@ export function StaffReportBar({
     <button onClick={() => push({ view: v }, v === "overview" ? ["student"] : [])} aria-pressed={view === v}
       className={cn("h-10 rounded-sm px-3 text-[13px] font-medium transition-colors",
         view === v ? "bg-black text-white" : "bg-panel text-ink-900 hover:bg-[rgb(37,99,235)]/[0.05]")}>
+      {label}
+    </button>
+  );
+  const SortChip = ({ v, label }: { v: "roll" | "marks"; label: string }) => (
+    <button onClick={() => push({ sort: v })} aria-pressed={sort === v}
+      className={cn("h-10 rounded-sm px-3 text-[13px] font-medium transition-colors",
+        sort === v ? "bg-black text-white" : "bg-panel text-ink-900 hover:bg-[rgb(37,99,235)]/[0.05]")}>
       {label}
     </button>
   );
@@ -95,6 +103,16 @@ export function StaffReportBar({
             <option value="" disabled>{t("x.reportPickStudent")}</option>
             {students.map((s) => (<option key={s.id} value={s.id}>{s.name}</option>))}
           </Select>
+        </div>
+      )}
+
+      {view === "overview" && (
+        <div>
+          <label className="t-label mb-1 block">{t("report.order")}</label>
+          <div className="flex gap-1.5">
+            <SortChip v="roll" label={t("report.byRoll")} />
+            <SortChip v="marks" label={t("report.byMarks")} />
+          </div>
         </div>
       )}
 
