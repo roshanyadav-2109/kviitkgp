@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KV No.1 IIT Kharagpur — School Portal User Manual</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 18mm 15mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: #1a1a1a; font-size: 11.2px; line-height: 1.55; margin: 0;
+  }
+  h1, h2, h3 { color: #111; margin: 0; font-weight: 700; }
+  p { margin: 0 0 8px; }
+  .blue { color: #2563eb; }
+  .muted { color: #555; }
+
+  /* ---- Cover ---- */
+  .cover {
+    height: 261mm; display: flex; flex-direction: column; justify-content: space-between;
+    page-break-after: always; padding: 6mm 2mm;
+  }
+  .cover .top { border-top: 6px solid #2563eb; padding-top: 14mm; }
+  .cover .kicker { letter-spacing: .22em; text-transform: uppercase; font-size: 11px; font-weight: 700; color: #2563eb; }
+  .cover h1 { font-size: 40px; line-height: 1.05; margin-top: 10px; letter-spacing: -0.5px; }
+  .cover .sub { font-size: 15px; color: #333; margin-top: 12px; max-width: 150mm; }
+  .cover .school { margin-top: 26mm; font-size: 20px; font-weight: 700; }
+  .cover .school span { display:block; font-size: 13px; font-weight: 500; color:#555; margin-top:2px;}
+  .propose {
+    border: 1.5px solid #e5e5e5; border-left: 5px solid #2563eb; border-radius: 6px;
+    padding: 14px 18px; background: #f8fafc;
+  }
+  .propose .lbl { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color:#2563eb; font-weight:700; }
+  .propose .nm { font-size: 18px; font-weight: 700; margin-top: 4px; }
+  .propose .ct { font-size: 12.5px; color:#333; margin-top: 4px; }
+
+  /* ---- Sections ---- */
+  section { page-break-inside: avoid; }
+  .page-break { page-break-before: always; }
+  .sec-head { border-bottom: 2px solid #2563eb; padding-bottom: 6px; margin: 6px 0 12px; display:flex; align-items:baseline; gap:10px; }
+  .sec-head .no { font-size: 12px; font-weight: 700; color:#fff; background:#2563eb; border-radius: 4px; padding: 2px 8px; }
+  .sec-head h2 { font-size: 20px; }
+  h3.role { font-size: 15px; margin: 14px 0 6px; color:#2563eb; }
+
+  figure { margin: 8px 0 12px; page-break-inside: avoid; }
+  figure img { width: 100%; max-height: 148mm; object-fit: contain; object-position: top;
+    border: 1px solid #e2e2e2; border-radius: 6px; }
+  figcaption { font-size: 10px; color:#666; margin-top: 5px; text-align: center; }
+
+  ul.pts { margin: 4px 0 10px; padding-left: 0; list-style: none; }
+  ul.pts li { position: relative; padding-left: 16px; margin-bottom: 4px; }
+  ul.pts li:before { content:""; position:absolute; left:2px; top:6px; width:6px; height:6px; border-radius:50%; background:#2563eb; }
+  ul.pts li b { color:#111; }
+
+  .two { display:flex; gap: 14px; }
+  .two > div { flex: 1; }
+  .box { border:1px solid #e5e5e5; border-radius:6px; padding:10px 12px; background:#fafafa; margin: 6px 0 10px; }
+  .box .t { font-weight:700; font-size: 11px; color:#2563eb; text-transform:uppercase; letter-spacing:.08em; margin-bottom:4px; }
+
+  table.roles { width:100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 10.6px; }
+  table.roles th, table.roles td { border:1px solid #e3e3e3; padding: 6px 8px; text-align:left; vertical-align: top; }
+  table.roles th { background:#f1f5ff; color:#1e3a8a; font-weight:700; }
+  .tag { display:inline-block; font-size:9.5px; font-weight:700; padding:1px 6px; border-radius:4px; background:#eff2ff; color:#2563eb; }
+
+  .toc { margin-top: 6px; }
+  .toc li { margin-bottom: 5px; font-size: 12.5px; }
+  .footer-note { font-size: 10px; color:#777; text-align:center; margin-top: 10mm; border-top:1px solid #eee; padding-top:6px; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<div class="cover">
+  <div>
+    <div class="top">
+      <div class="kicker">School Portal · User Manual</div>
+      <h1>How to Use the<br>School Portal</h1>
+      <div class="sub">A simple, step-by-step guide for students, parents, teachers, the principal and the office — in plain language, with pictures of every screen.</div>
+      <div class="school">Kendriya Vidyalaya No. 1<span>IIT Kharagpur</span></div>
+    </div>
+  </div>
+  <div class="propose">
+    <div class="lbl">Proposed by</div>
+    <div class="nm">Roshan Singh</div>
+    <div class="ct">+91 86170 07380 &nbsp;·&nbsp; roshan.business023@gmail.com</div>
+  </div>
+</div>
+
+<!-- ============ CONTENTS ============ -->
+<section>
+  <div class="sec-head"><span class="no">i</span><h2>What's inside</h2></div>
+  <ol class="toc">
+    <li><b>Getting started</b> — what this portal is, and who uses it</li>
+    <li><b>How to log in</b> — signing in step by step</li>
+    <li><b>Finding your way around</b> — the menu, your name card, language & sign-out</li>
+    <li><b>The Student view</b> — marks, attendance, progress</li>
+    <li><b>The Parent view</b> — your children at a glance</li>
+    <li><b>The Teacher view</b> — your class and your subjects</li>
+    <li><b>The Principal view</b> — the whole school at a glance</li>
+    <li><b>The Office / Admin view</b> — running the school</li>
+    <li><b>Everyday tasks</b> — attendance, marks, progress, reports, announcements, calendar, leave</li>
+    <li><b>Good to know</b> — common questions</li>
+  </ol>
+  <div class="box">
+    <div class="t">In one line</div>
+    This portal keeps every student's <b>marks, attendance and progress</b> in one place — and shows each person exactly what they need, nothing more.
+  </div>
+</section>
+
+<!-- ============ 1. GETTING STARTED ============ -->
+<section class="page-break">
+  <div class="sec-head"><span class="no">1</span><h2>Getting started</h2></div>
+  <p>The portal is a single website that the whole school shares. What you see depends on <b>who you are</b>. You never have to set anything up — you just sign in, and the right screen opens for you.</p>
+  <table class="roles">
+    <tr><th style="width:26%">If you are a…</th><th>You can…</th></tr>
+    <tr><td><b>Student</b></td><td>See your own marks, attendance and progress, read announcements, check the calendar, and give a reason for any absence.</td></tr>
+    <tr><td><b>Parent / Guardian</b></td><td>See each of your children in one place, open their detailed progress, and explain their absences.</td></tr>
+    <tr><td><b>Teacher</b></td><td>Mark attendance for your class, enter and release marks, and view the progress of your class and subjects.</td></tr>
+    <tr><td><b>Principal</b></td><td>See the whole school — averages, attendance, and which students need support — without editing marks.</td></tr>
+    <tr><td><b>Office / Admin</b></td><td>Manage the school — students, teacher assignments, marks, reports, and moving students to the next class.</td></tr>
+  </table>
+  <div class="box"><div class="t">The golden rule</div>You can only ever see and change what belongs to you. A subject teacher sees their subjects; a class teacher sees their whole class; a parent sees only their own children. This keeps everyone's data private and safe.</div>
+</section>
+
+<!-- ============ 2. HOW TO LOG IN ============ -->
+<section class="page-break">
+  <div class="sec-head"><span class="no">2</span><h2>How to log in</h2></div>
+  <figure><img src="img/login.png" alt="Login screen"><figcaption>The sign-in screen</figcaption></figure>
+  <ul class="pts">
+    <li><b>Open the portal</b> in any web browser on a phone, tablet or computer.</li>
+    <li>On the right you'll see three ways to sign in — <b>Google</b>, <b>Microsoft</b> and <b>Zoho</b>. Tap the one your school gave you an account with.</li>
+    <li>Under <b>“Demo logins”</b> there are ready-made accounts (Principal, Teacher, Parent, Student, Office). Tapping one signs you straight in — handy for trying things out or for a demonstration.</li>
+    <li>Once you sign in, your own dashboard opens automatically. You will not see anyone else's private information.</li>
+  </ul>
+  <div class="box"><div class="t">On a phone</div>The picture on the left is hidden on small screens so the sign-in options fill the whole screen. Everything still works exactly the same.</div>
+</section>
+
+<!-- ============ 3. GETTING AROUND ============ -->
+<section class="page-break">
+  <div class="sec-head"><span class="no">3</span><h2>Finding your way around</h2></div>
+  <p>Every screen shares the same simple layout, so once you learn it once, you know it everywhere.</p>
+  <ul class="pts">
+    <li><b>The menu (left side):</b> your links — Dashboard, Attendance, Marks, Progress, Announcements, Calendar, Reports and more. On a phone, tap the <b>☰</b> button at the top to open the menu.</li>
+    <li><b>Your name card (top-right of the dashboard):</b> shows your name and role. Tap it to <b>sign out</b> — a confirmation box appears so you never sign out by accident.</li>
+    <li><b>Language:</b> parents can switch between <b>English, Hindi and Bengali</b> using the language box next to the name card.</li>
+    <li><b>Coloured icons</b> mark each section so it's easy to spot the one you want.</li>
+  </ul>
+  <div class="box"><div class="t">Tip</div>Anything that is a link will gently highlight when you move your pointer over it (or tap it). If it highlights, you can open it.</div>
+</section>
+
+<!-- ============ 4. STUDENT ============ -->
+<section class="page-break">
+  <div class="sec-head"><span class="no">4</span><h2>The Student view</h2></div>
+  <figure><img src="img/student-dashboard.png" alt="Student dashboard"><figcaption>A student's home screen</figcaption></figure>
+  <ul class="pts">
+    <li><b>Your name and class card</b> sits at the top-right, with your roll number, class-section and class teacher.</li>
+    <li><b>Quick links</b> take you straight to your Progress, Attendance, Announcements and Calendar.</li>
+    <li><b>Announcements and Events</b> keep you up to date with school notices and important dates.</li>
+  </ul>
+  <h3 class="role">Seeing your progress</h3>
+  <figure><img src="img/student-progress.png" alt="Student progress"><figcaption>Your subject-wise progress over time</figcaption></figure>
+  <ul class="pts">
+    <li>See your <b>average</b> and how each subject is going, exam by exam.</li>
+    <li>Use the <b>session picker</b> at the top to look at this year, an earlier year, or your whole history in one view.</li>
+    <li>Only <b>released</b> results appear — a teacher chooses when marks become visible.</li>
+  </ul>
+</section>
+
+<!-- ============ 5. PARENT ============ -->
+<section class="page-break">
+  <div class="sec-head"><span class="no">5</span><h2>The Parent / Guardian view</h2></div>
+  <figure><img src="img/parent-dashboard.png" alt="Parent dashboard"><figcaption>All your children on one screen</figcaption></figure>
+  <ul class="pts">
+    <li>Each child appears as a neat <b>ID card</b> showing their <b>Class, Section and Roll number</b>.</li>
+    <li>Tap the <b>blue arrow</b> on a card to open that child's full progress record.</li>
+    <li>If your child was marked absent, you'll be asked to <b>add a reason</b> — just a couple of taps.</li>
+    <li>Use the <b>language box</b> at the top to read everything in English, Hindi or Bengali.</li>
+  </ul>
+</section>
+
+<!-- ============ 6. TEACHER ============ -->
+<section class="page-break">
+  <div class="sec-head"><span class="no">6</span><h2>The Teacher view</h2></div>
+  <figure><img src="img/teacher-dashboard.png" alt="Teacher dashboard"><figcaption>Your class and your subjects, together</figcaption></figure>
+  <ul class="pts">
+    <li><b>My Class</b> (for class teachers) gives one-tap access to <b>Progress, Attendance, Marks and Students</b> for your own class.</li>
+    <li><b>Other Subject Classes</b> lists the sections where you teach a subject — tap any to see its progress.</li>
+    <li>A class teacher can act as the subject teacher for <b>any subject in their own class</b>.</li>
+  </ul>
+  <h3 class="role">Marking attendance</h3>
+  <figure><img src="img/attendance-mark.png" alt="Marking attendance"><figcaption>Marking today's attendance</figcaption></figure>
+  <ul class="pts">
+    <li>Mark each student <b>Present (P)</b> or <b>Absent (A)</b>. Use <b>Mark all present / absent</b> to save time.</li>
+    <li>Turn on <b>Holiday</b> for a day off — it's kept out of the attendance calculation.</li>
+    <li>Tap <b>Save attendance</b> when done. Students below the required attendance are flagged for you.</li>
+  </ul>
+  <h3 class="role">Entering marks</h3>
+  <figure><img src="img/marks-entry.png" alt="Entering marks"><figcaption>Entering marks for an exam</figcaption></figure>
+  <ul class="pts">
+    <li>Pick the <b>section, subject and exam</b>, then type each student's marks (or mark them absent).</li>
+    <li>Marks stay a <b>Draft</b> (hidden from parents) until you press the black <b>Release results</b> button.</li>
+    <li>Need a new exam column? Use <b>New exam</b> — it appears for every section of the class.</li>
+  </ul>
+</section>
+
+<!-- ============ 7. PRINCIPAL ============ -->
+<section class="page-break">
+  <div class="sec-head"><span class="no">7</span><h2>The Principal view</h2></div>
+  <figure><img src="img/principal-dashboard.png" alt="Principal dashboard"><figcaption>The whole school at a glance</figcaption></figure>
+  <ul class="pts">
+    <li>The top cards show <b>total students</b>, the <b>overall average</b>, <b>attendance %</b>, and how many students are <b>falling behind</b>.</li>
+    <li><b>Every card is clickable</b> — tap one to jump to its detail (for example, tap “Falling behind” to see the students who need support).</li>
+    <li>A class-by-class chart shows how each class is performing.</li>
+    <li>The principal can <b>view everything but does not enter marks</b> — that's done by teachers and the office.</li>
+  </ul>
+</section>
+
+<!-- ============ 8. OFFICE ============ -->
+<section class="page-break">
+  <div class="sec-head"><span class="no">8</span><h2>The Office / Admin view</h2></div>
+  <figure><img src="img/office-dashboard.png" alt="Office dashboard"><figcaption>Running the school day to day</figcaption></figure>
+  <ul class="pts">
+    <li>See headline numbers — students, staff, teacher assignments, and how many results are released vs. still draft.</li>
+    <li>A <b>pending-work</b> banner reminds the office of results still waiting to be released.</li>
+    <li>Quick links reach <b>Students, Marks, Reports, Assigned Teachers, Promotion</b> and more.</li>
+  </ul>
+  <div class="box"><div class="t">Moving to the next class</div>The <b>Promotion</b> screen is where the office creates the next school year and moves each class up. Class XII students graduate; a fresh Class I intake begins.</div>
+</section>
+
+<!-- ============ 9. EVERYDAY TASKS ============ -->
+<section class="page-break">
+  <div class="sec-head"><span class="no">9</span><h2>Everyday tasks</h2></div>
+
+  <h3 class="role">Progress &amp; analytics</h3>
+  <figure><img src="img/progress.png" alt="Progress analytics"><figcaption>Filter by class, section, subject, exam or a single student</figcaption></figure>
+  <ul class="pts">
+    <li>Use the filters at the top to narrow down: <b>Year → Class → Section → Subject → Exam → Student</b>. Each choice updates the ones after it.</li>
+    <li>See <b>best performers</b>, <b>students needing support</b>, grade spread and subject comparisons. <b>Tap any student's name</b> to open their full record.</li>
+  </ul>
+
+  <h3 class="role">Attendance overview (principal &amp; office)</h3>
+  <figure><img src="img/attendance-overview.png" alt="Attendance overview"><figcaption>School-wide attendance, class by class</figcaption></figure>
+  <ul class="pts">
+    <li>See attendance for a <b>day</b> or a whole <b>month</b>, rolled up by class and section.</li>
+    <li>Tap a section to open its <b>own page</b> with each student's attendance in a clear table.</li>
+  </ul>
+
+  <h3 class="role">Reports</h3>
+  <figure><img src="img/reports.png" alt="Reports"><figcaption>Monthly, yearly or exam-wise — for a class or one student</figcaption></figure>
+  <ul class="pts">
+    <li>Choose the <b>report type</b> (Monthly / Yearly / By exam) and the <b>detail</b> (whole class or one student).</li>
+    <li>A <b>class</b> report downloads as an <b>Excel file</b>; a single <b>student</b> report prints as a <b>PDF</b>.</li>
+    <li>The class table can be ordered by <b>roll number</b> or <b>highest marks first</b>. “Average marks percent” means the student's average across all marks in that period.</li>
+  </ul>
+
+  <h3 class="role">Announcements &amp; Calendar</h3>
+  <div class="two">
+    <div><figure><img src="img/announcements.png" alt="Announcements" style="max-height:78mm"><figcaption>Notices from the school</figcaption></figure></div>
+    <div><figure><img src="img/calendar.png" alt="Calendar" style="max-height:78mm"><figcaption>Exams, holidays and events</figcaption></figure></div>
+  </div>
+  <ul class="pts">
+    <li>Tap any announcement to read it in full. Notices are clearly marked as coming from the <b>Principal's Desk</b>, <b>School Office</b> or a <b>Class Teacher</b>.</li>
+    <li>The calendar shows exams, activities and holidays so nothing is missed.</li>
+  </ul>
+
+  <h3 class="role">Leave &amp; absence reasons</h3>
+  <figure><img src="img/leave.png" alt="Leave" style="max-height:82mm"><figcaption>Explaining an absence</figcaption></figure>
+  <ul class="pts">
+    <li>Students and parents can <b>apply for leave</b> and <b>give a reason</b> for any day marked absent.</li>
+    <li>Class teachers can review and approve these requests.</li>
+  </ul>
+</section>
+
+<!-- ============ 10. GOOD TO KNOW ============ -->
+<section class="page-break">
+  <div class="sec-head"><span class="no">10</span><h2>Good to know</h2></div>
+  <ul class="pts">
+    <li><b>Why can't I see my marks yet?</b> Results appear only after the teacher <b>releases</b> them. Until then they're a private draft.</li>
+    <li><b>Why do I see different screens than my friend?</b> The portal shows each role only what it needs — a student, parent, teacher and principal each see a different home screen.</li>
+    <li><b>Does it work on my phone?</b> Yes. The whole portal adjusts to phones and tablets; the menu tucks behind the <b>☰</b> button.</li>
+    <li><b>How do I change the language?</b> Parents can switch between English, Hindi and Bengali from the language box near their name.</li>
+    <li><b>How do I sign out?</b> Tap your name card on the dashboard and confirm.</li>
+  </ul>
+
+  <div class="propose" style="margin-top: 16mm;">
+    <div class="lbl">Proposed by</div>
+    <div class="nm">Roshan Singh</div>
+    <div class="ct">+91 86170 07380 &nbsp;·&nbsp; roshan.business023@gmail.com</div>
+  </div>
+  <div class="footer-note">Kendriya Vidyalaya No. 1, IIT Kharagpur — School Portal User Manual. Prepared for everyday users; no technical knowledge needed.</div>
+</section>
+
+</body>
+</html>
