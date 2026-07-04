@@ -107,7 +107,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: SP }
   if (type === "exam") { if (examName) rows = await getClassExamReport(section.id, yearId, examName); }
   else rows = await getClassReport(section.id, yearId, range.start, range.end);
 
-  const headers = ["#", t("common.student"), t("report.marks"), ...(showAtt ? [t("attendance.percent")] : [])];
+  const headers = ["#", t("common.student"), t("report.avgMarks"), ...(showAtt ? [t("attendance.percent")] : [])];
   const xlsx = {
     filename: `${section.class_name}-${section.name} ${periodLabel}`,
     sheetName: `${section.class_name}-${section.name}`,
@@ -130,7 +130,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: SP }
                 <tr className="text-left text-[12px] text-muted">
                   <th className="pb-2 font-semibold">#</th>
                   <th className="pb-2 font-semibold">{t("common.student")}</th>
-                  <th className="pb-2 text-right font-semibold">{t("report.marks")}</th>
+                  <th className="pb-2 text-right font-semibold">{t("report.avgMarks")}</th>
                   {showAtt && <th className="pb-2 text-right font-semibold">{t("attendance.percent")}</th>}
                 </tr>
               </thead>

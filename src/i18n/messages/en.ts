@@ -234,6 +234,7 @@ const en = {
     classDetail: "Class detail",
     studentDetail: "Student detail",
     marks: "Marks",
+    avgMarks: "Average %",
     attendance: "Attendance",
     exam: "Exam",
     pickExam: "Select an exam",
