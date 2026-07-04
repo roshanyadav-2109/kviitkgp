@@ -235,7 +235,7 @@ const bn: Messages = {
     classDetail: "শ্রেণি বিবরণ",
     studentDetail: "ছাত্র বিবরণ",
     marks: "নম্বর",
-    avgMarks: "গড় %",
+    avgMarks: "গড় নম্বর শতাংশ",
     attendance: "উপস্থিতি",
     exam: "পরীক্ষা",
     pickExam: "একটি পরীক্ষা বেছে নিন",

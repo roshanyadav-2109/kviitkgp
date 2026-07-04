@@ -235,7 +235,7 @@ const hi: Messages = {
     classDetail: "कक्षा विवरण",
     studentDetail: "छात्र विवरण",
     marks: "अंक",
-    avgMarks: "औसत %",
+    avgMarks: "औसत अंक प्रतिशत",
     attendance: "उपस्थिति",
     exam: "परीक्षा",
     pickExam: "परीक्षा चुनें",
