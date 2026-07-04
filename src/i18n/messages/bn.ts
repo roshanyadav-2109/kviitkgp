@@ -46,7 +46,7 @@ const bn: Messages = {
     reports: "প্রতিবেদন",
     leave: "ছুটি",
     feedback: "মতামত",
-    allotments: "বরাদ্দ",
+    allotments: "নিযুক্ত শিক্ষক",
     promotion: "উত্তরণ",
   },
   auth: {

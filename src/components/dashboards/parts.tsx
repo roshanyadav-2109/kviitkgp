@@ -35,15 +35,18 @@ export async function DashHeader({ name, subtitleKey = "dashboard.overview", emo
   );
 }
 
-export function StatCard({ label, value, sub, tone = "ink" }: { label: string; value: React.ReactNode; sub?: string; tone?: "ink" | "up" | "down" | "watch" | "gold" }) {
+export function StatCard({ label, value, sub, tone = "ink", href }: { label: string; value: React.ReactNode; sub?: string; tone?: "ink" | "up" | "down" | "watch" | "gold"; href?: string }) {
   const toneCls = { ink: "text-ink-900", up: "text-up", down: "text-down", watch: "text-watch", gold: "text-[rgb(37,99,235)]" }[tone];
-  return (
-    <div className="rounded-md border border-hair bg-surface p-4">
+  const inner = (
+    <>
       <div className="text-[12px] font-normal text-ink-900">{label}</div>
       <div className={cn("mt-1 text-[30px] font-normal leading-none tabular", toneCls)}>{value}</div>
       {sub && <div className="mt-1.5 text-[12px] text-ink-900">{sub}</div>}
-    </div>
+    </>
   );
+  const base = "block rounded-md border border-hair bg-surface p-4";
+  if (href) return <Link href={href} className={cn(base, "transition-colors hover:border-black")}>{inner}</Link>;
+  return <div className={base}>{inner}</div>;
 }
 
 // Reusable async panels (RLS-scoped) used across every role dashboard.

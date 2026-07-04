@@ -17,10 +17,10 @@ export async function PrincipalDashboard({ session }: { session: Session }) {
     <div>
       <DashHeader name={session.fullName} />
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label={t("common.students")} value={ov?.students ?? "—"} tone="gold" />
-        <StatCard label={`${t("progress.overall")} ${t("progress.average")}`} value={fmtPercent(locale, ov?.avg ?? null, 1)} />
-        <StatCard label={t("attendance.percent")} value={ov?.attendancePct != null ? `${ov.attendancePct}%` : "—"} tone={ov && ov.attendancePct != null && ov.attendancePct < 75 ? "down" : "up"} />
-        <StatCard label={t("progress.slippage")} value={ov?.slippage ?? 0} tone={ov && ov.slippage > 0 ? "watch" : "up"} sub={t("progress.needsSupport")} />
+        <StatCard label={t("common.students")} value={ov?.students ?? "—"} tone="gold" href="/students" />
+        <StatCard label={`${t("progress.overall")} ${t("progress.average")}`} value={fmtPercent(locale, ov?.avg ?? null, 1)} href="/progress" />
+        <StatCard label={t("attendance.percent")} value={ov?.attendancePct != null ? `${ov.attendancePct}%` : "—"} tone={ov && ov.attendancePct != null && ov.attendancePct < 75 ? "down" : "up"} href="/attendance" />
+        <StatCard label={t("progress.slippage")} value={ov?.slippage ?? 0} tone={ov && ov.slippage > 0 ? "watch" : "up"} sub={t("progress.needsSupport")} href="/progress" />
       </div>
 
       {classBars.length > 0 && (

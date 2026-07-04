@@ -46,7 +46,7 @@ const hi: Messages = {
     reports: "रिपोर्ट",
     leave: "अवकाश",
     feedback: "प्रतिक्रिया",
-    allotments: "आवंटन",
+    allotments: "नियुक्त शिक्षक",
     promotion: "पदोन्नति",
   },
   auth: {

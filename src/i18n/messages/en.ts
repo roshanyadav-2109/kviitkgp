@@ -45,7 +45,7 @@ const en = {
     reports: "Reports",
     leave: "Leave",
     feedback: "Feedback",
-    allotments: "Teaching assignments",
+    allotments: "Assigned Teachers",
     promotion: "Promotion",
   },
   auth: {
