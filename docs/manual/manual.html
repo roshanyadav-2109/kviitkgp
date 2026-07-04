@@ -4,119 +4,86 @@
 <meta charset="utf-8">
 <title>KV No.1 IIT Kharagpur — School Portal · User Manual</title>
 <style>
-  :root{
-    --ink:#17181c; --ink2:#41444d; --soft:#6b6e77;
-    --accent:#1f3b63;            /* deep navy */
-    --accent-soft:#eef2f7;
-    --gold:#a8853f;              /* muted brass hairline */
-    --paper:#f7f4ee;
-    --line:#e4e0d7;
-  }
-  @page { size: A4; margin: 17mm 16mm 16mm 16mm; }
+  @font-face{ font-family:'Inter'; src:url('fonts/inter-400.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'Inter'; src:url('fonts/inter-500.woff2') format('woff2'); font-weight:500; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'Inter'; src:url('fonts/inter-600.woff2') format('woff2'); font-weight:600; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'Inter'; src:url('fonts/inter-700.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+
+  :root{ --line:#dcdcdc; --line2:#eeeeee; }
+  @page{ size:A4; margin:17mm 16mm 16mm 16mm; }
   html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   *{ box-sizing:border-box; }
   body{
-    margin:0; color:var(--ink);
-    font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;
-    font-size:11px; line-height:1.6;
+    margin:0; color:#000;
+    font-family:'Inter','Segoe UI',Arial,sans-serif;
+    font-size:11px; line-height:1.62; letter-spacing:-0.005em;
   }
-  .serif{ font-family:Georgia,"Times New Roman",serif; }
-
-  /* type helpers */
-  .kicker{ font-size:9.5px; letter-spacing:.32em; text-transform:uppercase; color:var(--gold); font-weight:700; }
-  .lede{ font-size:12.5px; line-height:1.7; color:var(--ink2); }
   p{ margin:0 0 9px; }
-  b,strong{ color:var(--ink); font-weight:700; }
-  .em{ color:var(--accent); font-weight:700; }
+  b,strong{ font-weight:700; color:#000; }
+
+  .kicker{ font-size:9px; letter-spacing:.26em; text-transform:uppercase; color:#000; font-weight:600; }
+  .lede{ font-size:12px; line-height:1.72; color:#000; }
 
   /* ---------- COVER ---------- */
-  .cover{
-    position:relative; height:262mm; page-break-after:always;
-    background:var(--paper); margin:-17mm -16mm 0; padding:22mm 20mm 18mm;
-    display:flex; flex-direction:column;
-  }
-  .cover:before{ content:""; position:absolute; left:20mm; right:20mm; top:15mm; height:2px; background:var(--gold); }
-  .cover .crest{ font-family:Georgia,serif; font-size:12px; letter-spacing:.06em; color:var(--accent); font-weight:700; }
-  .cover h1{
-    font-family:Georgia,serif; font-weight:700; color:var(--ink);
-    font-size:52px; line-height:1.02; letter-spacing:-.5px; margin:16mm 0 0;
-  }
-  .cover h1 small{ display:block; font-size:20px; font-weight:400; font-style:italic; color:var(--accent); letter-spacing:0; margin-top:8px; }
-  .cover .plate{ margin-top:12mm; border:1px solid var(--line); padding:6px; background:#fff; }
-  .cover .plate img{ display:block; width:100%; height:64mm; object-fit:cover; }
-  .cover .foot{ margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--line); padding-top:10px; }
-  .cover .foot .who .t{ font-size:8.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--soft); }
-  .cover .foot .who .n{ font-family:Georgia,serif; font-size:17px; font-weight:700; margin-top:2px; }
-  .cover .foot .who .c{ font-size:10.5px; color:var(--ink2); margin-top:1px; }
-  .cover .foot .yr{ font-family:Georgia,serif; font-size:12px; color:var(--soft); }
+  .cover{ height:262mm; page-break-after:always; display:flex; flex-direction:column; }
+  .cover h1{ font-weight:700; font-size:50px; line-height:1.02; letter-spacing:-.02em; margin:14mm 0 0; color:#000; }
+  .cover .sub{ font-size:15px; font-weight:400; color:#000; margin-top:10px; }
+  .cover .plate{ margin-top:12mm; border:1px solid var(--line); padding:6px; }
+  .cover .plate img{ display:block; width:100%; height:66mm; object-fit:cover; }
+  .cover .credit{ margin-top:auto; border-top:1px solid #000; padding-top:12px; }
+  .cover .credit .t{ font-size:8.5px; letter-spacing:.24em; text-transform:uppercase; color:#000; font-weight:600; }
+  .cover .credit .n{ font-size:18px; font-weight:700; margin-top:3px; color:#000; }
+  .cover .credit .c{ font-size:11px; color:#000; margin-top:2px; }
 
   /* ---------- SECTIONS ---------- */
   .sec{ page-break-before:always; }
-  .opener{ display:flex; align-items:flex-start; gap:16px; border-bottom:1px solid var(--line); padding-bottom:12px; margin-bottom:16px; }
-  .opener .num{ font-family:Georgia,serif; font-size:40px; line-height:.9; color:var(--gold); font-weight:400; min-width:52px; }
-  .opener .tt .kicker{ margin-bottom:3px; }
-  .opener h2{ font-family:Georgia,serif; font-size:23px; font-weight:700; letter-spacing:-.2px; margin:0; }
+  .opener{ display:flex; align-items:flex-start; gap:16px; border-bottom:1px solid #000; padding-bottom:12px; margin-bottom:16px; }
+  .opener .num{ font-size:34px; line-height:.92; font-weight:700; min-width:48px; color:#000; letter-spacing:-.02em; }
+  .opener .tt .kicker{ margin-bottom:4px; }
+  .opener h2{ font-size:22px; font-weight:700; letter-spacing:-.02em; margin:0; color:#000; }
 
-  h3.sub{ font-family:Georgia,serif; font-size:14.5px; color:var(--accent); font-weight:700; margin:16px 0 7px; }
-  h3.sub:before{ content:"—  "; color:var(--gold); }
+  h3.sub{ font-size:13px; font-weight:700; letter-spacing:-.01em; margin:16px 0 7px; color:#000; text-transform:uppercase; letter-spacing:.02em; }
 
-  /* lists */
   ul.pts{ margin:6px 0 12px; padding:0; list-style:none; }
-  ul.pts li{ position:relative; padding-left:15px; margin-bottom:5px; line-height:1.55; }
-  ul.pts li:before{ content:""; position:absolute; left:0; top:7px; width:5px; height:5px; background:var(--accent); border-radius:50%; }
+  ul.pts li{ position:relative; padding-left:15px; margin-bottom:5px; line-height:1.58; color:#000; }
+  ul.pts li:before{ content:""; position:absolute; left:0; top:7px; width:4px; height:4px; background:#000; border-radius:50%; }
 
-  /* figure / plate */
   figure{ margin:10px 0 14px; page-break-inside:avoid; }
-  figure .frame{ border:1px solid var(--line); padding:5px; background:#fff; }
+  figure .frame{ border:1px solid var(--line); padding:5px; }
   figure img{ display:block; width:100%; max-height:120mm; object-fit:contain; object-position:top; }
-  figcaption{ margin-top:6px; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); }
-  figcaption b{ color:var(--accent); font-weight:700; letter-spacing:.14em; }
+  figcaption{ margin-top:6px; font-size:8.5px; letter-spacing:.16em; text-transform:uppercase; color:#000; font-weight:500; }
 
-  /* note */
-  .note{ border-left:2px solid var(--gold); padding:2px 0 2px 14px; margin:10px 0 12px; color:var(--ink2); font-size:10.6px; }
-  .note .h{ font-family:Georgia,serif; font-style:italic; color:var(--accent); font-weight:700; display:block; margin-bottom:1px; }
+  .note{ border-left:2px solid #000; padding:2px 0 2px 13px; margin:10px 0 12px; color:#000; font-size:10.6px; }
+  .note .h{ font-weight:700; display:block; margin-bottom:1px; }
 
-  /* role table */
-  table.roles{ width:100%; border-collapse:collapse; margin:8px 0 12px; font-size:10.4px; }
-  table.roles td{ border-bottom:1px solid var(--line); padding:8px 6px; vertical-align:top; }
-  table.roles td.r{ width:24%; font-family:Georgia,serif; font-weight:700; color:var(--accent); font-size:11.5px; }
-  table.roles tr:first-child td{ border-top:1px solid var(--ink); }
+  table.roles{ width:100%; border-collapse:collapse; margin:8px 0 12px; font-size:10.5px; }
+  table.roles td{ border-bottom:1px solid var(--line); padding:8px 6px; vertical-align:top; color:#000; }
+  table.roles td.r{ width:24%; font-weight:700; }
+  table.roles tr:first-child td{ border-top:1px solid #000; }
 
-  /* two-up plates */
   .two{ display:flex; gap:12px; }
   .two figure{ flex:1; margin-top:2px; }
   .two figure img{ max-height:70mm; }
 
-  /* contents */
   ol.toc{ counter-reset:t; list-style:none; margin:8px 0 0; padding:0; }
-  ol.toc li{ counter-increment:t; padding:7px 0; border-bottom:1px solid var(--line); display:flex; gap:12px; align-items:baseline; }
-  ol.toc li:before{ content:counter(t,decimal-leading-zero); font-family:Georgia,serif; color:var(--gold); font-size:13px; min-width:26px; }
-  ol.toc .lbl{ font-family:Georgia,serif; font-weight:700; font-size:12.5px; }
-  ol.toc .dsc{ color:var(--soft); font-size:10.5px; }
-
-  .colophon{ margin-top:16mm; border-top:1px solid var(--ink); padding-top:12px; display:flex; justify-content:space-between; align-items:flex-end; }
-  .colophon .t{ font-size:8.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--soft); }
-  .colophon .n{ font-family:Georgia,serif; font-size:17px; font-weight:700; margin-top:3px; }
-  .colophon .c{ font-size:10.5px; color:var(--ink2); margin-top:2px; }
-  .colophon .mk{ font-family:Georgia,serif; font-style:italic; color:var(--gold); font-size:12px; }
+  ol.toc li{ counter-increment:t; padding:7px 0; border-bottom:1px solid var(--line); display:flex; gap:12px; align-items:baseline; color:#000; }
+  ol.toc li:before{ content:counter(t,decimal-leading-zero); font-weight:700; font-size:12px; min-width:24px; }
+  ol.toc .lbl{ font-weight:700; font-size:12px; }
+  ol.toc .dsc{ color:#000; font-size:10.5px; }
 </style>
 </head>
 <body>
 
 <!-- ============================== COVER ============================== -->
 <div class="cover">
-  <div class="crest">Kendriya Vidyalaya No.&nbsp;1 · IIT Kharagpur</div>
-  <h1>The School Portal
-    <small>A plain-language guide for students, parents &amp; staff</small>
-  </h1>
+  <div class="kicker">Kendriya Vidyalaya No.&nbsp;1 · IIT Kharagpur</div>
+  <h1>The School Portal</h1>
+  <div class="sub">A plain-language guide for students, parents &amp; staff.</div>
   <div class="plate"><img src="img/school.webp" alt="Kendriya Vidyalaya No. 1, IIT Kharagpur"></div>
-  <div class="foot">
-    <div class="who">
-      <div class="t">Proposed by</div>
-      <div class="n serif">Roshan Singh</div>
-      <div class="c">+91 86170 07380 · roshan.business023@gmail.com</div>
-    </div>
-    <div class="yr">User Manual · 2025–26</div>
+  <div class="credit">
+    <div class="t">Proposed by</div>
+    <div class="n">Roshan Singh</div>
+    <div class="c">+91 86170 07380 · roshan.business023@gmail.com</div>
   </div>
 </div>
 
@@ -155,7 +122,7 @@
 <!-- ============================== 2 ============================== -->
 <div class="sec">
   <div class="opener"><div class="num">2</div><div class="tt"><div class="kicker">Access</div><h2>How to sign in</h2></div></div>
-  <figure><div class="frame"><img src="img/login.png" alt="The sign-in screen"></div><figcaption><b>Fig. 1</b> &nbsp;— &nbsp;The sign-in screen</figcaption></figure>
+  <figure><div class="frame"><img src="img/login.png" alt="The sign-in screen"></div><figcaption>Fig. 1 — The sign-in screen</figcaption></figure>
   <ul class="pts">
     <li><b>Open the portal</b> in any browser — on a phone, tablet or computer.</li>
     <li>On the right, choose how to sign in: <b>Google</b>, <b>Microsoft</b> or <b>Zoho</b> — whichever account your school gave you.</li>
@@ -181,14 +148,14 @@
 <!-- ============================== 4 ============================== -->
 <div class="sec">
   <div class="opener"><div class="num">4</div><div class="tt"><div class="kicker">For students</div><h2>The Student view</h2></div></div>
-  <figure><div class="frame"><img src="img/student-dashboard.png" alt="Student dashboard"></div><figcaption><b>Fig. 2</b> &nbsp;— &nbsp;A student's home screen</figcaption></figure>
+  <figure><div class="frame"><img src="img/student-dashboard.png" alt="Student dashboard"></div><figcaption>Fig. 2 — A student's home screen</figcaption></figure>
   <ul class="pts">
     <li>Your <b>name and class card</b> sits at the top-right, with your roll number, class-section and class teacher.</li>
     <li><b>Quick links</b> jump straight to Progress, Attendance, Announcements and the Calendar.</li>
     <li><b>Announcements and Events</b> keep you up to date with notices and important dates.</li>
   </ul>
   <h3 class="sub">Seeing your progress</h3>
-  <figure><div class="frame"><img src="img/student-progress.png" alt="Student progress"></div><figcaption><b>Fig. 3</b> &nbsp;— &nbsp;Your subject-wise progress over time</figcaption></figure>
+  <figure><div class="frame"><img src="img/student-progress.png" alt="Student progress"></div><figcaption>Fig. 3 — Your subject-wise progress over time</figcaption></figure>
   <ul class="pts">
     <li>See your <b>average</b> and how each subject is going, exam by exam.</li>
     <li>Use the <b>session picker</b> to view this year, an earlier year, or your whole history together.</li>
@@ -199,10 +166,10 @@
 <!-- ============================== 5 ============================== -->
 <div class="sec">
   <div class="opener"><div class="num">5</div><div class="tt"><div class="kicker">For parents</div><h2>The Parent / Guardian view</h2></div></div>
-  <figure><div class="frame"><img src="img/parent-dashboard.png" alt="Parent dashboard"></div><figcaption><b>Fig. 4</b> &nbsp;— &nbsp;All your children on one screen</figcaption></figure>
+  <figure><div class="frame"><img src="img/parent-dashboard.png" alt="Parent dashboard"></div><figcaption>Fig. 4 — All your children on one screen</figcaption></figure>
   <ul class="pts">
     <li>Each child appears as a neat <b>ID card</b> showing their <b>Class, Section and Roll number</b>.</li>
-    <li>Tap the <b>blue arrow</b> on a card to open that child's full progress record.</li>
+    <li>Tap the <b>arrow</b> on a card to open that child's full progress record.</li>
     <li>If a child was marked absent, you'll be asked to <b>add a reason</b> — just a couple of taps.</li>
     <li>Read everything in <b>English, Hindi or Bengali</b> using the language box at the top.</li>
   </ul>
@@ -211,21 +178,21 @@
 <!-- ============================== 6 ============================== -->
 <div class="sec">
   <div class="opener"><div class="num">6</div><div class="tt"><div class="kicker">For teachers</div><h2>The Teacher view</h2></div></div>
-  <figure><div class="frame"><img src="img/teacher-dashboard.png" alt="Teacher dashboard"></div><figcaption><b>Fig. 5</b> &nbsp;— &nbsp;Your class and your subjects, together</figcaption></figure>
+  <figure><div class="frame"><img src="img/teacher-dashboard.png" alt="Teacher dashboard"></div><figcaption>Fig. 5 — Your class and your subjects, together</figcaption></figure>
   <ul class="pts">
     <li><b>My Class</b> (for class teachers) gives one-tap access to <b>Progress, Attendance, Marks and Students</b> for your own class.</li>
     <li><b>Other Subject Classes</b> lists the sections where you teach a subject — tap any to see its progress.</li>
     <li>A class teacher can act as the subject teacher for <b>any subject in their own class</b>.</li>
   </ul>
   <h3 class="sub">Marking attendance</h3>
-  <figure><div class="frame"><img src="img/attendance-mark.png" alt="Marking attendance"></div><figcaption><b>Fig. 6</b> &nbsp;— &nbsp;Marking today's attendance</figcaption></figure>
+  <figure><div class="frame"><img src="img/attendance-mark.png" alt="Marking attendance"></div><figcaption>Fig. 6 — Marking today's attendance</figcaption></figure>
   <ul class="pts">
     <li>Mark each student <b>Present&nbsp;(P)</b> or <b>Absent&nbsp;(A)</b>; use <b>Mark all present / absent</b> to save time.</li>
     <li>Turn on <b>Holiday</b> for a day off — it's kept out of the attendance calculation.</li>
     <li>Tap <b>Save attendance</b> when done; students below the required attendance are flagged for you.</li>
   </ul>
   <h3 class="sub">Entering marks</h3>
-  <figure><div class="frame"><img src="img/marks-entry.png" alt="Entering marks"></div><figcaption><b>Fig. 7</b> &nbsp;— &nbsp;Entering marks for an exam</figcaption></figure>
+  <figure><div class="frame"><img src="img/marks-entry.png" alt="Entering marks"></div><figcaption>Fig. 7 — Entering marks for an exam</figcaption></figure>
   <ul class="pts">
     <li>Pick the <b>section, subject and exam</b>, then type each student's marks (or mark them absent).</li>
     <li>Marks stay a <b>Draft</b> — hidden from parents — until you press the black <b>Release results</b> button.</li>
@@ -236,7 +203,7 @@
 <!-- ============================== 7 ============================== -->
 <div class="sec">
   <div class="opener"><div class="num">7</div><div class="tt"><div class="kicker">For the principal</div><h2>The Principal view</h2></div></div>
-  <figure><div class="frame"><img src="img/principal-dashboard.png" alt="Principal dashboard"></div><figcaption><b>Fig. 8</b> &nbsp;— &nbsp;The whole school at a glance</figcaption></figure>
+  <figure><div class="frame"><img src="img/principal-dashboard.png" alt="Principal dashboard"></div><figcaption>Fig. 8 — The whole school at a glance</figcaption></figure>
   <ul class="pts">
     <li>The top cards show <b>total students</b>, the <b>overall average</b>, <b>attendance %</b>, and how many students are <b>falling behind</b>.</li>
     <li><b>Every card is clickable</b> — tap one to open its detail (for example, tap “Falling behind” to see the students who need support).</li>
@@ -248,7 +215,7 @@
 <!-- ============================== 8 ============================== -->
 <div class="sec">
   <div class="opener"><div class="num">8</div><div class="tt"><div class="kicker">For the office</div><h2>The Office / Admin view</h2></div></div>
-  <figure><div class="frame"><img src="img/office-dashboard.png" alt="Office dashboard"></div><figcaption><b>Fig. 9</b> &nbsp;— &nbsp;Running the school day to day</figcaption></figure>
+  <figure><div class="frame"><img src="img/office-dashboard.png" alt="Office dashboard"></div><figcaption>Fig. 9 — Running the school day to day</figcaption></figure>
   <ul class="pts">
     <li>See headline numbers — students, staff, teacher assignments, and results released versus still in draft.</li>
     <li>A <b>pending-work</b> banner flags results still waiting to be released.</li>
@@ -262,21 +229,21 @@
   <div class="opener"><div class="num">9</div><div class="tt"><div class="kicker">Reference</div><h2>Everyday tasks</h2></div></div>
 
   <h3 class="sub">Progress &amp; analytics</h3>
-  <figure><div class="frame"><img src="img/progress.png" alt="Progress analytics"></div><figcaption><b>Fig. 10</b> &nbsp;— &nbsp;Filter by class, section, subject, exam or a single student</figcaption></figure>
+  <figure><div class="frame"><img src="img/progress.png" alt="Progress analytics"></div><figcaption>Fig. 10 — Filter by class, section, subject, exam or a single student</figcaption></figure>
   <ul class="pts">
     <li>Narrow down with the filters: <b>Year → Class → Section → Subject → Exam → Student</b>. Each choice refines the next.</li>
     <li>See <b>best performers</b>, <b>students needing support</b>, grade spread and subject comparisons. <b>Tap any student's name</b> to open their full record.</li>
   </ul>
 
   <h3 class="sub">Attendance overview — principal &amp; office</h3>
-  <figure><div class="frame"><img src="img/attendance-overview.png" alt="Attendance overview"></div><figcaption><b>Fig. 11</b> &nbsp;— &nbsp;School-wide attendance, class by class</figcaption></figure>
+  <figure><div class="frame"><img src="img/attendance-overview.png" alt="Attendance overview"></div><figcaption>Fig. 11 — School-wide attendance, class by class</figcaption></figure>
   <ul class="pts">
     <li>See attendance for a <b>day</b> or a whole <b>month</b>, rolled up by class and section.</li>
     <li>Tap a section to open its <b>own page</b> with each student's attendance in a clear table.</li>
   </ul>
 
   <h3 class="sub">Reports</h3>
-  <figure><div class="frame"><img src="img/reports.png" alt="Reports"></div><figcaption><b>Fig. 12</b> &nbsp;— &nbsp;Monthly, yearly or exam-wise — for a class or one student</figcaption></figure>
+  <figure><div class="frame"><img src="img/reports.png" alt="Reports"></div><figcaption>Fig. 12 — Monthly, yearly or exam-wise — for a class or one student</figcaption></figure>
   <ul class="pts">
     <li>Choose the <b>type</b> (Monthly / Yearly / By exam) and the <b>detail</b> (whole class or one student).</li>
     <li>A <b>class</b> report downloads as an <b>Excel file</b>; a single <b>student</b> report prints as a <b>PDF</b>.</li>
@@ -285,8 +252,8 @@
 
   <h3 class="sub">Announcements &amp; Calendar</h3>
   <div class="two">
-    <figure><div class="frame"><img src="img/announcements.png" alt="Announcements"></div><figcaption><b>Fig. 13</b> &nbsp;— &nbsp;Notices from the school</figcaption></figure>
-    <figure><div class="frame"><img src="img/calendar.png" alt="Calendar"></div><figcaption><b>Fig. 14</b> &nbsp;— &nbsp;Exams, holidays &amp; events</figcaption></figure>
+    <figure><div class="frame"><img src="img/announcements.png" alt="Announcements"></div><figcaption>Fig. 13 — Notices from the school</figcaption></figure>
+    <figure><div class="frame"><img src="img/calendar.png" alt="Calendar"></div><figcaption>Fig. 14 — Exams, holidays &amp; events</figcaption></figure>
   </div>
   <ul class="pts">
     <li>Tap an announcement to read it in full. Notices are marked as from the <b>Principal's Desk</b>, <b>School Office</b> or a <b>Class Teacher</b>.</li>
@@ -294,7 +261,7 @@
   </ul>
 
   <h3 class="sub">Leave &amp; absence reasons</h3>
-  <figure><div class="frame"><img src="img/leave.png" alt="Leave"></div><figcaption><b>Fig. 15</b> &nbsp;— &nbsp;Explaining an absence</figcaption></figure>
+  <figure><div class="frame"><img src="img/leave.png" alt="Leave"></div><figcaption>Fig. 15 — Explaining an absence</figcaption></figure>
   <ul class="pts">
     <li>Students and parents can <b>apply for leave</b> and <b>give a reason</b> for any day marked absent.</li>
     <li>Class teachers review and approve these requests.</li>
@@ -312,13 +279,12 @@
     <li><b>How do I sign out?</b> &nbsp;Tap your name card on the dashboard and confirm.</li>
   </ul>
 
-  <div class="colophon">
-    <div>
+  <div class="cover" style="height:auto; page-break-after:auto; page-break-before:auto;">
+    <div class="credit" style="margin-top:16mm;">
       <div class="t">Proposed by</div>
-      <div class="n serif">Roshan Singh</div>
+      <div class="n">Roshan Singh</div>
       <div class="c">+91 86170 07380 · roshan.business023@gmail.com</div>
     </div>
-    <div class="mk">Kendriya Vidyalaya No.&nbsp;1 · IIT Kharagpur</div>
   </div>
 </div>
 
