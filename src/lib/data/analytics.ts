@@ -68,7 +68,7 @@ export async function getSectionAnalytics(
   }
   const distribution = bands.map((band) => ({ band, n: bandAgg.get(band) ?? 0 }));
 
-  const needsSupport = (needs.data ?? []) as Array<{ student_name: string; avg_percent: number; weak_subjects: string | null; recent_trend: number }>;
+  const needsSupport = (needs.data ?? []) as Array<{ student_id: number; student_name: string; avg_percent: number; weak_subjects: string | null; recent_trend: number }>;
 
   const conclusions: Insight[] = [];
   if (subjectAverages.length) conclusions.push({ key: "x.insightStrongest", vars: { subject: subjectAverages[0].subject, avg: subjectAverages[0].avg } });
@@ -79,7 +79,7 @@ export async function getSectionAnalytics(
     subjectAverages,
     termTrend,
     distribution,
-    topPerformers: (top.data ?? []) as Array<{ student_name: string; avg_percent: number; n_marks: number }>,
+    topPerformers: (top.data ?? []) as Array<{ student_id: number; student_name: string; avg_percent: number; n_marks: number }>,
     needsSupport,
     conclusions,
     sectionComparison: (comparison.data ?? []) as Array<{ section_name: string; avg_percent: number; n_students: number }>,
@@ -126,8 +126,8 @@ export async function getClassAnalytics(
   for (const r of dist ?? []) { if (subjectId && r.subject_id !== subjectId) continue; bandAgg.set(r.band!, (bandAgg.get(r.band!) ?? 0) + Number(r.n)); }
   const distribution = bands.map((band) => ({ band, n: bandAgg.get(band) ?? 0 }));
 
-  const topPerformers = (top.data ?? []) as Array<{ student_name: string; section_name: string; avg_percent: number }>;
-  const needsSupport = (needs.data ?? []) as Array<{ student_name: string; section_name: string; avg_percent: number; weak_subjects: string | null; recent_trend: number }>;
+  const topPerformers = (top.data ?? []) as Array<{ student_id: number; student_name: string; section_name: string; avg_percent: number }>;
+  const needsSupport = (needs.data ?? []) as Array<{ student_id: number; student_name: string; section_name: string; avg_percent: number; weak_subjects: string | null; recent_trend: number }>;
 
   // structured class conclusions (rendered via t() in the active locale)
   const conclusions: Insight[] = [];
