@@ -106,11 +106,43 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
   const wantExam = str(sp.exam);
   const examName = wantExam && exams.some((e) => e.name === wantExam) ? wantExam : null;
 
+  // Students in the current scope (one section, or every section of the class) —
+  // this list drives the Student picker and refreshes when the scope changes.
+  const scopeRoster = level === "class" && cls
+    ? (await Promise.all(scopeSectionIds.map((id) => getSectionStudents(id, yearId)))).flat().sort((a, b) => a.name.localeCompare(b.name))
+    : await getSectionStudents(section.id, yearId);
+  const wantStudent = num(sp.studentId);
+  const studentId = wantStudent != null && scopeRoster.some((s) => s.id === wantStudent) ? wantStudent : null;
+
   const filters = (
     <FilterBar years={scope.years} classes={scope.classes} sectionMeta={scope.sectionMeta} subjects={scope.subjects} subjectsByClass={scope.subjectsByClass}
       exams={exams.map((e) => e.name)} examName={examName}
+      students={scopeRoster.map((s) => ({ id: s.id, name: s.name }))} studentId={studentId}
       yearId={yearId} level={level} scopeId={scopeId} subjectId={subjectId} />
   );
+
+  // One pupil's record — works from any scope (section or whole class).
+  if (studentId) {
+    const [data, standing] = await Promise.all([
+      getStudentProgress(studentId),
+      getStudentStanding(studentId, yearId),
+    ]);
+    const backQs = new URLSearchParams({ year: String(yearId) });
+    if (level === "class" && cls) backQs.set("class", String(cls.id)); else backQs.set("section", String(section.id));
+    if (subjectId) backQs.set("subject", String(subjectId));
+    const backLabel = level === "class" && cls ? `${t("common.class")} ${cls.name}` : `${section.class_name}-${section.name}`;
+    return (
+      <div>
+        <PageHeader title={t("progress.title")}
+          description={data.student ? `${data.student.full_name} · ${data.student.admission_no}` : undefined} />
+        {filters}
+        <Link href={`/progress?${backQs.toString()}`} className="mb-4 inline-flex items-center gap-1 text-[13px] font-medium text-[rgb(37,99,235)] hover:underline">
+          <ArrowRightIcon size={14} className="rotate-180" /> {backLabel}
+        </Link>
+        <StudentProgressView data={data} standing={standing} />
+      </div>
+    );
+  }
 
   // Exam-scoped view: one exam across the scope (optionally one subject).
   if (examName) {
@@ -139,42 +171,14 @@ export default async function ProgressPage({ searchParams }: { searchParams: SP 
     );
   }
 
-  const backQs = new URLSearchParams();
-  backQs.set("year", String(yearId));
-  backQs.set("section", String(section.id));
-  if (subjectId) backQs.set("subject", String(subjectId));
-
-  // Drill-down into one student's record
-  const studentId = num(sp.studentId);
-  if (studentId) {
-    const [data, standing] = await Promise.all([
-      getStudentProgress(studentId),
-      getStudentStanding(studentId, yearId),
-    ]);
-    return (
-      <div>
-        <PageHeader title={t("progress.title")}
-          description={data.student ? `${data.student.full_name} · ${data.student.admission_no}` : undefined} />
-        {filters}
-        <Link href={`/progress?${backQs.toString()}`} className="mb-4 inline-flex items-center gap-1 text-[13px] font-medium text-gold-700 hover:underline">
-          <ArrowRightIcon size={14} className="rotate-180" /> {section.class_name}-{section.name}
-        </Link>
-        <StudentProgressView data={data} standing={standing} />
-      </div>
-    );
-  }
-
-  const [analytics, roster] = await Promise.all([
-    getSectionAnalytics(section.id, section.class_id, yearId, subjectId),
-    getSectionStudents(section.id, yearId),
-  ]);
+  const analytics = await getSectionAnalytics(section.id, section.class_id, yearId, subjectId);
 
   return (
     <div>
       <PageHeader title={t("progress.title")}
         description={`${scope.isAdmin ? t("x.progSchoolScope") : t("x.progAllottedScope")} · ${t("x.scopeSections", { n: scope.sections.length })}`} />
       {filters}
-      <SectionAnalyticsView data={analytics} roster={roster} subjectName={subjectName} />
+      <SectionAnalyticsView data={analytics} roster={scopeRoster} subjectName={subjectName} />
     </div>
   );
 }

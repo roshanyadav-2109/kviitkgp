@@ -5,7 +5,7 @@ import { useT } from "@/i18n/provider";
 import type { YearOpt, SectionMeta, ClassOpt, SubjectOpt } from "@/lib/data/scope";
 
 export function FilterBar({
-  years, classes, sectionMeta, subjects, subjectsByClass, exams, examName, yearId, level, scopeId, subjectId,
+  years, classes, sectionMeta, subjects, subjectsByClass, exams, examName, students, studentId, yearId, level, scopeId, subjectId,
 }: {
   years: YearOpt[];
   classes: ClassOpt[];
@@ -14,6 +14,8 @@ export function FilterBar({
   subjectsByClass: Record<number, SubjectOpt[]>;
   exams: string[];
   examName: string | null;
+  students: { id: number; name: string }[];
+  studentId: number | null;
   yearId: number;
   level: "class" | "section";
   scopeId: number;
@@ -71,6 +73,12 @@ export function FilterBar({
     if (v) next.set("exam", v); else next.delete("exam");
     push(next);
   }
+  // Student picker opens one pupil's record — keep it out of push() (which clears it).
+  function setStudent(v: string) {
+    const next = new URLSearchParams(params.toString());
+    if (v) next.set("studentId", v); else next.delete("studentId");
+    router.push(`${pathname}?${next.toString()}`);
+  }
 
   return (
     <div className="mb-5 flex flex-wrap items-end gap-3 rounded-md border border-hair bg-surface p-3">
@@ -105,6 +113,13 @@ export function FilterBar({
         <Select value={examName ?? ""} onChange={(e) => setExam(e.target.value)} disabled={!exams.length}>
           <option value="">{t("common.all")}</option>
           {exams.map((name) => (<option key={name} value={name}>{name}</option>))}
+        </Select>
+      </div>
+      <div className="min-w-[150px] flex-1">
+        <label className="t-label mb-1 block">{t("common.student")}</label>
+        <Select value={studentId ?? ""} onChange={(e) => setStudent(e.target.value)} disabled={!students.length}>
+          <option value="">{t("common.all")}</option>
+          {students.map((s) => (<option key={s.id} value={s.id}>{s.name}</option>))}
         </Select>
       </div>
     </div>
