@@ -158,17 +158,20 @@ export function KVBarChart({
   showValues?: boolean;
   maxDomain?: number;
 }) {
-  const bandColor: Record<string, string> = { A1: C.up, A2: C.up, B1: C.gold, B2: C.gold, C1: C.watch, C2: C.watch, D: C.down, E: C.down };
-  // Vertical bars with many categories scroll horizontally instead of squashing.
+  const BAR = "#2563eb"; // clear royal-blue bars (was gold/mud)
+  const bandColor: Record<string, string> = { A1: C.up, A2: C.up, B1: "#65a30d", B2: "#65a30d", C1: C.watch, C2: C.watch, D: C.down, E: C.down };
+  // Vertical bars with many categories scroll horizontally instead of squashing;
+  // horizontal bars grow taller so each row stays readable.
   const minWidth = !horizontal && data.length > 8 ? data.length * 52 : undefined;
+  const h = horizontal ? Math.max(height, data.length * 34 + 24) : height;
   const chart = (
-    <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={data} layout={horizontal ? "vertical" : "horizontal"} margin={{ top: 8, right: 16, left: horizontal ? 8 : -12, bottom: 4 }}>
+    <ResponsiveContainer width="100%" height={h}>
+      <BarChart data={data} layout={horizontal ? "vertical" : "horizontal"} margin={{ top: 8, right: 24, left: horizontal ? 8 : -12, bottom: 4 }}>
         <CartesianGrid stroke={C.hair} strokeDasharray="3 3" horizontal={!horizontal} vertical={horizontal} />
         {horizontal ? (
           <>
             <XAxis type="number" domain={[0, maxDomain]} {...axis} />
-            <YAxis type="category" dataKey={xKey} {...axis} width={96} />
+            <YAxis type="category" dataKey={xKey} {...axis} width={110} />
           </>
         ) : (
           <>
@@ -183,7 +186,7 @@ export function KVBarChart({
               style={{ fill: "#111827", fontSize: 11, fontWeight: 600 }} />
           )}
           {data.map((d, i) => (
-            <Cell key={i} fill={colorByBand ? bandColor[String(d[xKey])] ?? C.gold : C.gold} />
+            <Cell key={i} fill={colorByBand ? bandColor[String(d[xKey])] ?? BAR : BAR} />
           ))}
         </Bar>
       </BarChart>

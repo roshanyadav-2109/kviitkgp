@@ -48,7 +48,8 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
           </CardBody>
         </Card>
 
-        {/* Subject-wise ranking */}
+        {/* Subject-wise ranking — only meaningful across all subjects */}
+        {!subjectName && (
         <Card>
           <CardHeader title={t("progress.subjectRanking")} />
           <CardBody className="pt-1">
@@ -63,6 +64,7 @@ export function ClassAnalyticsView({ data, subjectName }: { data: Analytics; sub
             </ol>
           </CardBody>
         </Card>
+        )}
 
         {/* Distribution across the class */}
         <Card>
